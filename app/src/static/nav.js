@@ -7,7 +7,7 @@ import qs from 'query-string'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHome } from '@fortawesome/free-solid-svg-icons'
 
-import logo from '../resources/images/openc2-logo.png'
+import logo from '../../resources/images/openc2-logo.png'
 
 class NavItem extends Component {
   constructor(props, context) {
@@ -56,6 +56,8 @@ class Nav extends Component {
     setTimeout(() => {
       if (!this.navContainer) { return; }
       let padding = 0
+      let height = this.navContainer.getBoundingClientRect().height
+
       if (this.context.sidebarDocked) {
         let sidebarWidth = document.getElementById("sidebarContents").getBoundingClientRect().width
         padding = sidebarWidth - this.leftNavContainer.getBoundingClientRect().left
@@ -64,7 +66,6 @@ class Nav extends Component {
         }
         document.getElementById("sidebarContents").style.paddingTop = (height + 10) + 'px'
       }
-      let height = this.navContainer.getBoundingClientRect().height
       document.getElementById("contents").style.paddingTop = (height + 10) + 'px'
     }, 100)
   }
@@ -72,6 +73,9 @@ class Nav extends Component {
   navigate(e) {
     e.preventDefault()
     if (e.target.href === null || e.target.href === undefined ) { return }
+
+    console.log(window.location)
+
     let href = e.target.href.replace(window.location.origin, '')
     let query = {}
 
@@ -87,15 +91,10 @@ class Nav extends Component {
     return (
       <ul className="nav navbar-nav mr-auto" ref={ (elm) => this.leftNavContainer = elm}>
         <NavItem href="/" text="Home" active={ this.state.active } click={ this.navigate }/>
-
         {/* <NavItem href="/orchestrator" text="Orchestrators" active={ this.state.active } click={ this.navigate.bind(this) }/> */}
-
         <NavItem href="/device" text="Devices" active={ this.state.active } click={ this.navigate }/>
-
         <NavItem href="/actuator" text="Actuators" active={ this.state.active } click={ this.navigate }/>
-
         <NavItem href="/command" text="Commands" active={ this.state.active } click={ this.navigate }/>
-
         <NavItem href="/command/generate" text="Command Generator" active={ this.state.active } click={ this.navigate }/>
       </ul>
     )

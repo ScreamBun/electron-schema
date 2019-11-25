@@ -19,16 +19,16 @@ module.exports = api => {
   const development = api.env(developmentEnvironments);
 
   return {
+    babelrc: false,
     presets: [
+      [require('@babel/preset-react'), { development }],
       [
         require('@babel/preset-env'),
         {
-          targets: { electron: require('electron/package.json').version },
-          useBuiltIns: 'usage'
+          targets: { electron: require('electron/package.json').version }
         }
       ],
-      require('@babel/preset-flow'),
-      [require('@babel/preset-react'), { development }]
+      require('@babel/preset-flow')
     ],
     plugins: [
       // Stage 0

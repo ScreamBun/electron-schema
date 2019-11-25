@@ -6,7 +6,7 @@
  *
  * https://webpack.js.org/concepts/hot-module-replacement/
  */
-import baseConfig from './webpack.base'
+import baseConfig from './webpack.config.base'
 
 import webpack from 'webpack'
 import merge from 'webpack-merge'
@@ -19,12 +19,10 @@ import CheckNodeEnv from '../internals/scripts/CheckNodeEnv'
 
 const env = 'development'
 CheckNodeEnv(env)
-console.log('NODE_ENV - Renderer: ' + env)
 
 const ROOT_DIR = path.join(__dirname, '..')
-const APP_DIR = path.join(ROOT_DIR, 'app')
 const DLL_DIR = path.join(ROOT_DIR, 'dll')
-const DIST_DIR = path.join(APP_DIR, 'dist')
+const DIST_DIR = path.join(__dirname, 'dist')
 
 const port = process.env.PORT || 1212
 const publicPath = `http://localhost:${port}/dist`
@@ -35,10 +33,9 @@ const requiredByDLLConfig = module.parent.filename.includes('webpack.config.rend
  * Warn if the DLL is not built
  */
 if (!requiredByDLLConfig && !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))) {
-  console.log(
-    chalk.black.bgYellow.bold('The DLL files are missing. Sit back while we build them for you with "yarn build-dll"')
-  );
-  execSync('yarn build-dll');
+  const msg = 'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"'
+  console.log(chalk.black.bgYellow.bold(msg))
+  execSync('yarn build-dll')
 }
 
 export default merge.smart(baseConfig, {
@@ -72,7 +69,7 @@ export default merge.smart(baseConfig, {
     }),
     new webpack.NoEmitOnErrorsPlugin(),
     /**
-     * Create global constants which can be configured at compile time.
+     * Create global constants which can be configured at compile time
      * Useful for allowing different behaviour between development builds and release builds
      * NODE_ENV should be production so that modules do not perform certain development checks
      * By default, use 'development' as NODE_ENV. This can be overriden with
@@ -132,39 +129,21 @@ export default merge.smart(baseConfig, {
         }
       },
       {
-        test: /\.global\.(c|le)ss$/,
+        test: /\.(c|le)ss$/,
         use: [
-          {
-            loader: 'style-loader'
-          },
+          'style-loader',
           {
             loader: 'css-loader',
             options: {
-              sourceMap: true
-            }
-          },
-          {
-            loader: 'less-loader'
-          }
-        ]
-      },
-      {
-        test: /^((?!\.global).)*\.(c|le)ss$/,
-        use: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
               sourceMap: true,
-              importLoaders: 1,
-              localIdentName: '[name]__[local]__[hash:base64:5]'
+              importLoaders: 1
             }
           },
           {
-            loader: 'less-loader'
+            loader: 'less-loader',
+            options: {
+              strictMath: true,
+            }
           }
         ]
       },
@@ -174,7 +153,7 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
+            limit: 10*1024,
             mimetype: 'application/font-woff'
           }
         }
@@ -185,7 +164,7 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
+            limit: 10*1024,
             mimetype: 'application/font-woff'
           }
         }
@@ -196,7 +175,7 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
+            limit: 10*1024,
             mimetype: 'application/octet-stream'
           }
         }
@@ -212,7 +191,8 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
+
+            limit: 10*1024,
             mimetype: 'image/svg+xml'
           }
         }

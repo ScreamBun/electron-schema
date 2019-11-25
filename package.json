@@ -1,24 +1,62 @@
 {
   "name": "electron_app",
+  "productName": "ElectronReactApp",
   "version": "1.0.0",
   "description": "",
-  "main": "app/main.js",
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "scripts": {
+    "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
+    "build-dll": "cross-env NODE_ENV=development webpack --config ./config/webpack.config.renderer.dev.dll.babel.js --colors",
+    "build-e2e": "cross-env E2E_BUILD=true yarn build",
+    "build-main": "cross-env NODE_ENV=production webpack --config ./config/webpack.config.main.prod.babel.js --colors",
+    "build-renderer": "cross-env NODE_ENV=production webpack --config ./config/webpack.config.renderer.prod.babel.js --colors",
+    "dev": "cross-env START_HOT=1 node -r @babel/register ./internals/scripts/CheckPortInUse.js && cross-env START_HOT=1 yarn start-renderer-dev",
+    "download-themes": "node ./internals/scripts/DownloadBootswatch.js",
+    "flow": "flow",
+    "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true",
+    "package": "yarn build && electron-builder build --publish never",
+    "package-all": "yarn build && electron-builder build -mwl",
+    "package-ci": "yarn postinstall && yarn build && electron-builder --publish always",
+    "package-linux": "yarn build && electron-builder build --linux",
+    "package-win": "yarn build && electron-builder build --win --x64",
+    "postinstall": "yarn flow-typed && electron-builder install-app-deps package.json && yarn build-dll && opencollective-postinstall",
+    "preinstall": "node ./internals/scripts/CheckYarn.js",
+    "prestart": "yarn build",
     "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
-    "start-dev": "cross-env HOT=1 NODE_ENV=development electron -r @babel/register ./app/main.dev.js",
-    "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
-    "build-main": "cross-env NODE_ENV=production webpack --config ./config/webpack.main.prod.js --colors",
-    "build-renderer": "cross-env NODE_ENV=production webpack --config ./config/webpack.renderer.prod.js --colors",
-    "package": "npm run build && electron-packager ./ --out=./builds --platform=all"
+    "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r @babel/register ./app/main.dev.js",
+    "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.config.renderer.dev.babel.js"
   },
   "dependencies": {
-    "electron": "^7.1.1",
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@fortawesome/react-fontawesome": "^0.1.7",
+    "@hot-loader/react-dom": "^16.11.0",
+    "bootstrap": "^4.3.1",
+    "connected-react-router": "^6.6.0",
+    "core-js": "3.4.1",
+    "devtron": "^1.4.0",
+    "electron-debug": "^3.0.1",
+    "electron-log": "^3.0.9",
     "electron-store": "^5.1.0",
+    "electron-updater": "^4.2.0",
+    "history": "^4.10.1",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.16.0",
+    "query-string": "^6.9.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-hot-loader": "^4.12.18"
+    "react-hot-loader": "^4.12.18",
+    "react-redux": "^7.1.3",
+    "react-router-dom": "^5.1.2",
+    "react-sidebar": "^3.0.2",
+    "redux": "^4.0.4",
+    "redux-api-middleware": "^3.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
+    "redux-persist-transform-filter": "^0.0.20",
+    "source-map-support": "^0.5.16",
+    "string-format": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
@@ -29,41 +67,108 @@
     "@babel/plugin-proposal-export-namespace-from": "^7.5.2",
     "@babel/plugin-proposal-function-bind": "^7.2.0",
     "@babel/plugin-proposal-function-sent": "^7.7.0",
+    "@babel/plugin-proposal-json-strings": "^7.2.0",
     "@babel/plugin-proposal-logical-assignment-operators": "^7.2.0",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.4.4",
     "@babel/plugin-proposal-numeric-separator": "^7.2.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",
     "@babel/plugin-proposal-pipeline-operator": "^7.5.0",
     "@babel/plugin-proposal-throw-expressions": "^7.2.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-syntax-import-meta": "^7.2.0",
     "@babel/plugin-transform-react-constant-elements": "^7.6.3",
     "@babel/plugin-transform-react-inline-elements": "^7.2.0",
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.7.0",
-    "@babel/register": "^7.4.0",
+    "@babel/register": "^7.7.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-dev-expression": "^0.2.2",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "chalk": "^3.0.0",
+    "clean-webpack-plugin": "^3.0.0",
     "concurrently": "^5.0.0",
+    "copy-webpack-plugin": "^5.0.5",
     "cross-env": "^6.0.3",
+    "cross-spawn": "^7.0.1",
     "css-loader": "^3.2.0",
-    "electron-debug": "^3.0.1",
+    "csso": "^4.0.2",
+    "detect-port": "^1.3.0",
+    "download-file": "^0.1.5",
+    "electron": "^7.1.1",
+    "electron-builder": "^21.2.0",
     "electron-devtools-installer": "^2.2.4",
-    "electron-packager": "^14.1.0",
+    "electron-rebuild": "^1.8.6",
     "file-loader": "^4.2.0",
-    "html-webpack-plugin": "^3.2.0",
+    "flow-bin": "^0.112.0",
+    "flow-runtime": "^0.17.0",
+    "flow-typed": "^2.6.2",
+    "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "mini-css-extract-plugin": "^0.8.0",
+    "named-regexp-groups": "^1.0.5",
+    "opencollective-postinstall": "^2.0.2",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "rimraf": "^3.0.0",
     "style-loader": "^1.0.0",
-    "svg-url-loader": "^3.0.2",
+    "sync-request": "^6.1.0",
     "terser-webpack-plugin": "^2.2.1",
+    "url-loader": "^2.2.0",
     "webpack": "^4.41.2",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0",
-    "webpack-merge": "^4.2.2"
-  }
+    "webpack-merge": "^4.2.2",
+    "yarn": "^1.19.1"
+  },
+  "build": {
+    "productName": "ElectronReactApp",
+    "appId": "org.develar.ElectronReactApp",
+    "files": [
+      "dist/",
+      "node_modules/",
+      "app.html",
+      "main.prod.js",
+      "main.prod.js.map",
+      "package.json"
+    ],
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "msi"
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "rpm",
+        "AppImage"
+      ],
+      "category": "Development"
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
+    }
+  },
+  "devEngines": {
+    "node": ">=7.x",
+    "npm": ">=4.x",
+    "yarn": ">=0.21.3"
+  },
+  "browserslist": "electron 1.6"
 }

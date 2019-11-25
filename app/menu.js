@@ -1,14 +1,14 @@
 // @flow
-import { app, Menu, shell, BrowserWindow } from 'electron'
+import { app, dialog, shell, BrowserWindow, Menu } from 'electron'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const isMac = process.platform === 'darwin'
 
 export default class MenuBuilder {
-  mainWindow: BrowserWindow;
+  mainWindow: BrowserWindow
 
   constructor(mainWindow: BrowserWindow) {
-    this.mainWindow = mainWindow;
+    this.mainWindow = mainWindow
   }
 
   buildMenu() {
@@ -40,7 +40,7 @@ export default class MenuBuilder {
 
   buildDarwinTemplate() {
     const subMenuAbout = {
-      label: 'Electron',
+      label: app.name,
       submenu: [
         {
           label: 'About ElectronReact',
@@ -67,6 +67,29 @@ export default class MenuBuilder {
           click: () => {
             app.quit();
           }
+        }
+      ]
+    };
+    const subMenuFile = {
+      label: 'File',
+      submenu: [
+        {
+          label: 'New',
+          accelerator: 'Command+N'
+        },
+        {
+          label: 'Open',
+          accelerator: 'Command+O',
+          click: () => this.openFile()
+        },
+        {
+          label: 'Save',
+          accelerator: 'Command+S',
+          click: () => this.saveFile()
+        },
+        {
+          label: 'Recent Schemas',
+          submenu: this.recentDocuments()
         }
       ]
     };
@@ -170,7 +193,7 @@ export default class MenuBuilder {
     };
 
     const subMenuView = isDevelopment ? subMenuViewDev : subMenuViewProd;
-    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
+    return [subMenuAbout, subMenuFile, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
   }
 
   buildDefaultTemplate() {
@@ -266,5 +289,57 @@ export default class MenuBuilder {
     ];
 
     return templateDefault;
+  }
+
+  openFile(file) {
+    if (file) {
+      console.log(file)
+    } else {
+      dialog.showOpenDialog({
+        properties: ['openFile'],
+        defaultPath: app.getPath('documents'),
+        filters: [
+          { name: 'Default', extensions: ['jadn'] }
+        ]
+      }).then(result => {
+        if (!result.canceled) {
+          console.log(result)
+          app.addRecentDocument(result.filePaths[0])
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  }
+
+  saveFile() {
+    dialog.showSaveDialog(this.mainWindow, {
+      title: 'Save Schema',
+      defaultPath: app.getPath('documents'),
+      filters: [
+          { name: 'Default', extensions: ['jadn'] },
+          { name: 'JSON Schema', extensions: ['json'] }
+        ]
+    }).then(result => {
+        if (!result.canceled) {
+          console.log(result)
+          app.addRecentDocument(result.filePaths[0])
+        }
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  recentDocuments() {
+    if (false) {
+      // limit 10...
+      return []
+    }
+
+    return [{
+      key: 'null',
+      label: 'No Recent Schemas',
+      enabled: false
+    }]
   }
 }

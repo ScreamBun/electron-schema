@@ -1,7 +1,7 @@
 /**
  * Build config for electron renderer process
  */
-import baseConfig from './webpack.base'
+import baseConfig from './webpack.config.base'
 
 import webpack from 'webpack'
 import merge from 'webpack-merge'
@@ -11,11 +11,11 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import TerserPlugin from 'terser-webpack-plugin'
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv'
 
 const env = 'production'
 CheckNodeEnv(env)
-console.log('NODE_ENV - Renderer: ' + env)
 
 const ROOT_DIR = path.join(__dirname, '..')
 const APP_DIR = path.join(ROOT_DIR, 'app')
@@ -32,7 +32,7 @@ export default merge.smart(baseConfig, {
   },
   plugins: [
     /**
-     * Create global constants which can be configured at compile time.
+     * Create global constants which can be configured at compile time
      * Useful for allowing different behaviour between development builds and release builds
      * NODE_ENV should be production so that modules do not perform certain development checks
      */
@@ -40,12 +40,15 @@ export default merge.smart(baseConfig, {
       NODE_ENV: env
     }),
     new MiniCssExtractPlugin({
-      filename: 'style.css'
+      filename: 'css/styles.css'
     }),
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
       openAnalyzer: process.env.OPEN_ANALYZER === 'true'
-    })
+    }),
+    new CleanWebpackPlugin({
+      dry: false
+    }),
   ],
   optimization: {
     minimizer: process.env.E2E_BUILD
@@ -69,39 +72,23 @@ export default merge.smart(baseConfig, {
   target: 'electron-renderer',
   module: {
     rules: [
-      // Extract all .global.css to style.css as is
       {
-        test: /\.global\.(c|le)ss$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: './'
-            }
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true
-            }
-          },
-          'less-loader'
-        ]
-      },
-      // Pipe other styles through css modules and append to style.css
-      {
-        test: /^((?!\.global).)*\.(c|le)ss$/,
+        test: /\.(c|le)ss$/,
         use: [
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              localIdentName: '[name]__[local]__[hash:base64:5]',
-              sourceMap: true
+              sourceMap: true,
+              url: false
             }
           },
-          'less-loader'
+          {
+            loader: 'less-loader',
+            options: {
+              strictMath: true
+            }
+          }
         ]
       },
       // WOFF Font
@@ -110,8 +97,15 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
-            mimetype: 'application/font-woff'
+            limit: 10*1024,
+            mimetype: 'application/font-woff',
+            fallback: {
+              loader: 'file-loader',
+              options: {
+                name: 'fonts/[name].[ext]'
+
+              }
+            }
           }
         }
       },
@@ -121,8 +115,14 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
-            mimetype: 'application/font-woff'
+            limit: 10*1024,
+            mimetype: 'application/font-woff',
+            fallback: {
+              loader: 'file-loader',
+              options: {
+                name: 'fonts/[name].[ext]'
+              }
+            }
           }
         }
       },
@@ -132,15 +132,26 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
-            mimetype: 'application/octet-stream'
+            limit: 10*1024,
+            mimetype: 'application/octet-stream',
+            fallback: {
+              loader: 'file-loader',
+              options: {
+                name: 'fonts/[name].[ext]'
+              }
+            }
           }
         }
       },
       // EOT Font
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'file-loader'
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: 'fonts/[name].[ext]'
+          }
+        }
       },
       // SVG Font
       {
@@ -148,15 +159,27 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
-            mimetype: 'image/svg+xml'
+            limit: 10*1024,
+            mimetype: 'image/svg+xml',
+            name: 'fonts/[name].[ext]'
           }
         }
       },
       // Common Image Formats
       {
         test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
-        use: 'url-loader'
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 10*1024,
+            fallback: {
+              loader: 'file-loader',
+              options: {
+                name: 'img/[name].[ext]'
+              }
+            }
+          }
+        }
       }
     ]
   }

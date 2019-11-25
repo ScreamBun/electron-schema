@@ -76,14 +76,7 @@ for (let theme of themes["themes"]) {
     post_css_lines.push(line)
   }
 
-  let theme_css = fs.createWriteStream(path.join(ROOT_DIR, "themes", theme_name + ".css"), {flags: "w"});
-
-  styles = csso.minify(post_css_lines.join(""), {
-    comments: false,
-    restructure: true,
-    sourceMap: false
-  }).css
-
-  theme_css.write(styles)
+  let theme_css = fs.createWriteStream(path.join(ROOT_DIR, "themes", theme_name + ".css"), {flags: "w"})
+  theme_css.write(post_css_lines.join("\n"))
   theme_css.end()
 }

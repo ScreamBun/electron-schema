@@ -1,28 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Helmet } from 'react-helmet-async'
 
-import OpenC2_Logo from '../dependencies/img/openc2-logo.png'
-
-const str_fmt = require('string-format')
+import OpenC2_Logo from '../../resources/images/openc2-logo.png'
 
 class Home extends Component {
   constructor(props, context) {
     super(props, context)
-
-    this.meta = {
-      title: str_fmt('{base} | {page}', {base: this.props.siteTitle, page: 'Home'}),
-      canonical: str_fmt('{origin}{path}', {origin: window.location.origin, path: window.location.pathname})
-    }
   }
 
   render() {
     return (
       <div className="row mx-auto">
-        <Helmet>
-          <title>{ this.meta.title }</title>
-          <link rel="canonical" href={ this.meta.canonical } />
-        </Helmet>
         <div className="col-12">
           <img src={ OpenC2_Logo } alt="OpenC2 Logo" className="float-left col-md-4 col-xs-12 mr-3 mb-3" />
 
@@ -47,13 +35,15 @@ class Home extends Component {
             Nisi ut leberkas labore, shoulder shank cow turducken nostrud non et velit ad veniam.
             Fatback cupidatat pancetta est laborum chuck quis flank ipsum ribeye.</p>
         </div>
+        <div>
+          <p>{ window.location.pathname }</p>
+        </div>
       </div>
     )
   }
 }
 
 const mapStateToProps = (state) => ({
-  siteTitle: state.Util.site_title
 })
 
 export default connect(mapStateToProps)(Home)

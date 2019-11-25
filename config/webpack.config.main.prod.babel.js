@@ -1,7 +1,7 @@
 /**
  * Webpack config for production electron main process
  */
-import baseConfig from './webpack.base'
+import baseConfig from './webpack.config.base'
 
 import webpack from 'webpack'
 import merge from 'webpack-merge'
@@ -13,11 +13,8 @@ import CheckNodeEnv from '../internals/scripts/CheckNodeEnv'
 
 const env = 'production'
 CheckNodeEnv(env)
-console.log('NODE_ENV - Main: ' + env)
 
 const ROOT_DIR = path.join(__dirname, '..')
-const APP_DIR = path.join(ROOT_DIR, 'app')
-const DIST_DIR = path.join(APP_DIR, 'dist')
 
 export default merge.smart(baseConfig, {
   mode: env,
@@ -33,7 +30,7 @@ export default merge.smart(baseConfig, {
       openAnalyzer: process.env.OPEN_ANALYZER === 'true'
     }),
     /**
-     * Create global constants which can be configured at compile time.
+     * Create global constants which can be configured at compile time
      * Useful for allowing different behaviour between development builds and release builds
      * NODE_ENV should be production so that modules do not perform certain development checks
      */

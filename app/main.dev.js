@@ -1,20 +1,45 @@
+/* eslint global-require: off */
 import { app, BrowserWindow } from 'electron'
+import Store from 'electron-store'
+import { autoUpdater } from 'electron-updater'
+import log from 'electron-log'
+
 import MenuBuilder from './menu'
 
 const url = require('url')
 const path = require('path')
 
 // Paths
-const ROOT_DIR = __dirname
+const ROOT_DIR = path.join(__dirname, '..')
 const APP_DIR = path.join(ROOT_DIR, 'app')
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const isMac = process.platform === 'darwin'
 
-// Window objects
-let mainWindow
-// import Menu from './menu'
+export default class AppUpdater {
+  constructor() {
+    log.transports.file.level = 'info';
+    autoUpdater.logger = log;
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+}
 
+const installExtensions = async () => {
+  const installer = require('electron-devtools-installer')
+  const forceDownload = !!process.env.UPGRADE_EXTENSIONS
+  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS']
+
+  return Promise.all(
+    extensions.map(name => installer.default(installer[name], forceDownload))
+  ).catch(console.log)
+}
+
+// Window objects
+let mainWindow = null
+
+// Share global objects
+let args = isDevelopment ? {cwd: ROOT_DIR, name: 'config.dev'} : {}
+global.store = new Store(args)
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support')
@@ -32,7 +57,6 @@ if (process.platform === 'win32') {
   app.commandLine.appendSwitch('force-device-scale-factor', '1')
 }
 
-console.log(app)
 /* Add event listeners... */
 function createMainWindow() {
   // Create the browser window.
@@ -41,8 +65,8 @@ function createMainWindow() {
     height: 768,
     show: false,
     webPreferences: {
-      nodeIntegration: false,
-      preload: './preload.js'
+      nodeIntegration: true,
+      preload: path.join(APP_DIR, 'preload.js')
     }
   })
 
@@ -67,11 +91,7 @@ function createMainWindow() {
     })
   }
   */
-
-  const windowParams = {
-    // store: new Store()
-  }
-  mainWindow.loadURL(windowURL, windowParams)
+  mainWindow.loadURL(windowURL)
 
   // Don't show until we are ready and loaded
   mainWindow.once('ready-to-show', () => {
@@ -94,6 +114,10 @@ function createMainWindow() {
       mainWindow.focus()
     })
   })
+
+  // Build and add app menu
+  const menuBuilder = new MenuBuilder(mainWindow)
+  menuBuilder.buildMenu()
 }
 
 app.on('window-all-closed', () => {
@@ -105,10 +129,13 @@ app.on('window-all-closed', () => {
 })
 
 // create main BrowserWindow when electron is ready
-app.on('ready', () => {
+app.on('ready', async () => {
+  if (isDevelopment || process.env.DEBUG_PROD === 'true') {
+    await installExtensions()
+  }
+
   createMainWindow()
-  const menuBuilder = new MenuBuilder(mainWindow)
-  menuBuilder.buildMenu()
+  new AppUpdater()
 })
 
 app.on('activate', () => {

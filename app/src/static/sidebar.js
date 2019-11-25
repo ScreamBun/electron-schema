@@ -48,12 +48,12 @@ class SidebarMenu extends Component {
   }
 
   renderContents() {
-    let toggle = <p>Toggle</p>
+    let toggle = <li className="nav-item"><a className="nav-link" href="#">Toggle</a></li>
     return (
-      <div id='sidebarContents'>
+      <ul id='sidebarContents'>
         { this.state.sidebarDocked ? '' : toggle }
-        <p>Sidebar Contents</p>
-      </div>
+        <li className="nav-item"><a className="nav-link" href="#">Sidebar Contents</a></li>
+      </ul>
     )
   }
 
@@ -77,4 +77,4 @@ SidebarMenu.childContextTypes = {
   sidebarDocked: PropTypes.bool
 }
 
-export default SidebarMenu
+export default connect()(SidebarMenu)
