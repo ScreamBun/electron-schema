@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import qs from 'query-string'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHome } from '@fortawesome/free-solid-svg-icons'
@@ -18,7 +17,7 @@ class NavItem extends Component {
 
   render() {
     let active = (this.props.href === this.props.active)
-    let href = (this.props.href || '').endsWith('/') ? this.props.href : this.props.href + '/'
+    let href = this.props.href || ''
 
     return (
       <li onClick={ this.external ? () => {} : this.props.click } className={ this.props.liClassName + active ? ' active' : '' } >
@@ -26,7 +25,7 @@ class NavItem extends Component {
           { this.props.icon ? <FontAwesomeIcon icon={ this.props.icon } size='lg' /> : '' } { this.props.text }
         </a>
       </li>
-    );
+    )
   }
 }
 
@@ -73,29 +72,21 @@ class Nav extends Component {
   navigate(e) {
     e.preventDefault()
     if (e.target.href === null || e.target.href === undefined ) { return }
-
-    console.log(window.location)
-
     let href = e.target.href.replace(window.location.origin, '')
-    let query = {}
 
     this.props.history.push({
-      pathname: href,
-      search: qs.stringify(query)
+      pathname: href
     })
 
     this.setState({ active: href })
   }
 
   leftNav() {
+    let baseRef = window.location.pathname.split('/').slice(0, -1).join('/')
     return (
       <ul className="nav navbar-nav mr-auto" ref={ (elm) => this.leftNavContainer = elm}>
-        <NavItem href="/" text="Home" active={ this.state.active } click={ this.navigate }/>
-        {/* <NavItem href="/orchestrator" text="Orchestrators" active={ this.state.active } click={ this.navigate.bind(this) }/> */}
-        <NavItem href="/device" text="Devices" active={ this.state.active } click={ this.navigate }/>
-        <NavItem href="/actuator" text="Actuators" active={ this.state.active } click={ this.navigate }/>
-        <NavItem href="/command" text="Commands" active={ this.state.active } click={ this.navigate }/>
-        <NavItem href="/command/generate" text="Command Generator" active={ this.state.active } click={ this.navigate }/>
+        <NavItem href={ baseRef + '/app.html'} text="Home" active={ this.state.active } click={ this.navigate }/>
+        <NavItem href={ baseRef + '/generate'} text="Schema Generator" active={ this.state.active } click={ this.navigate }/>
       </ul>
     )
   }

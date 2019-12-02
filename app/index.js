@@ -7,6 +7,8 @@ import { AppContainer as ReactHotAppContainer } from 'react-hot-loader'
 
 // Custom Components
 import {
+  Error,
+  GenerateSchema,
   Home,
   Nav,
   Sidebar
@@ -25,6 +27,7 @@ import './resources/themes/lumen.css'
 import './resources/styles.global.less'
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
+const baseRef = window.location.pathname.split('/').slice(0, -1).join('/')
 
 // Create main App component
 const Root = () => (
@@ -34,13 +37,11 @@ const Root = () => (
         <div id='contents' className='container-fluid mt-3' >
           <Nav history={ history } />
           <ConnectedRouter history={ history }>
-            <div className="row mx-auto">
-              <div className="col-12">
-                <Switch>
-                  <Route path="/*" component={ Home } />
-                </Switch>
-              </div>
-            </div>
+            <Switch>
+              {/* <Route exact path={ baseRef + '/app.html' } component={ Home } /> */}
+              <Route exact path={ baseRef + '/app.html' } component={ GenerateSchema } />
+              <Route component={ Error } /> // This should always be last route
+            </Switch>
           </ConnectedRouter>
         </div>
       {/* </Sidebar> */}
