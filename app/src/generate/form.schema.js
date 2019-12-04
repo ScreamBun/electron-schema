@@ -204,22 +204,22 @@ const TypeData = {
     },
     'Field': {
       'properties': {
-        'fieldID': {
+        'FieldID': {
           'type': 'integer'
         },
-        'fieldName': {
+        'FieldName': {
           'type': 'string'
         },
-        'typeRef': {
+        'TypeRef': {
           'type': 'string'
         },
-        'options': {
+        'Options': {
           'type': 'array',
           'items': {
             'type': 'string'
           }
         },
-        'description': {
+        'Description': {
           'type': 'string'
         }
       }
@@ -240,75 +240,107 @@ const TypeData = {
     'TypeDefinition': {
       'type': 'object',
       'description': 'Type definition',
-      'required': ['typeName', 'baseType'],
+      'required': ['TypeName', 'BaseType'],
       'properties': {
-        'typeName': {
+        'TypeName': {
           '$ref': '#/definitions/TypeData/TypeName'
         },
-        'baseType': {
+        'BaseType': {
           '$ref': '#/definitions/TypeData/BaseTypes'
         },
-        'options': {
+        'Options': {
           'type': 'array',
           'items': {
             'type': 'string'
           }
         },
-        'description': {
+        'Description': {
           'type': 'string'
         },
-        'fields': {
+        'Fields': {
           'type': 'array',
           'items': {
             'oneOf': [
               {
-                'title': 'Field',
+                'title': 'Structure Fields',
                 '$ref': '#/definitions/TypeData/Field'
               },
               {
-                'title': 'Enum Field',
+                'title': 'Enumerated Fields',
                 '$ref': '#/definitions/TypeData/Item'
               }
             ]
           }
         }
       },
+      /*
       'dependencies': {
-        'baseType': {
-          'oneOf': [
-            {
-              'baseType': {
-                '$ref': '#/definitions/TypeData/BaseTypes',
-                'enum': ['Binary', 'Boolean', 'Integer', 'Number', 'Null', 'String', 'ArrayOf', 'MapOf']
-              }
+        'BaseType': {
+          'properties': {
+            'BaseType': {
+              'enum': ['Choice', 'Array', 'Map', 'Record']
             },
-            {
-              'baseType': {
-                '$ref': '#/definitions/TypeData/BaseTypes',
-                'enum': ['Enumerated']
-              },
-              'fields': {
-                'type': 'array',
-                'items': {
-                  '$ref': '#/definitions/TypeData/Item'
-                }
-              }
-            },
-            {
-              'baseType': {
-                '$ref': '#/definitions/TypeData/BaseTypes',
-                'enum': ['Choice', 'Array', 'Map', 'Record']
-              },
-              'fields': {
-                'type': 'array',
-                'items': {
-                  '$ref': '#/definitions/TypeData/Field'
-                }
+            'Fields': {
+              'type': 'array',
+              'items': {
+                '$ref': '#/definitions/TypeData/Field'
               }
             }
-          ]
+          }
+        },
+        {
+          'title': 'Enumerated Definition',
+          'properties': {
+            'BaseType': {
+              'oneOf': [
+                {
+                  'const': 'Enumerated'
+                }
+              ]
+            },
+            'Fields': {
+              'type': 'array',
+              'items': {
+                '$ref': '#/definitions/TypeData/Item'
+              }
+            }
+          }
+        },
+        {
+          'title': 'Custom DataType',
+          'properties': {
+            'BaseType': {
+              'oneOf': [
+                {
+                  'const': 'Binary'
+                },
+                {
+                  'const': 'Boolean'
+                },
+                {
+                  'const': 'Integer'
+                },
+                {
+                  'const': 'Number'
+                },
+                {
+                  'const': 'Null'
+                },
+                {
+                  'const': 'String'
+                },
+                {
+                  'const': 'ArrayOf'
+                },
+                {
+                  'const': 'MapOf'
+                }
+              ]
+            }
+          }
         }
-      }
+      ]
+      */
     }
   }
 }
@@ -317,23 +349,55 @@ const dataSchema = {
   'title': 'Schema Editor',
   'type': 'object',
   'required': [
-    //'meta',
-    'types'
+    // 'meta',
+    // 'types'
   ],
+  'additionalProperties': false,
   'properties': {
-    //'meta': MetaData.root,
+    // 'meta': MetaData.root,
     'types': TypeData.root
   },
   'definitions': {
-    //'MetaData': MetaData.definitions,
+    'MetaData': MetaData.definitions,
     'TypeData': TypeData.definitions
   }
 }
 
 const uiSchema = {
+  /*
   // General
+  'classNames': 'col-12',
+  'ui:options': {
+    'inline': true
+  },
 
   // Specific
+  'meta': {
+    'classNames': 'row',
+    'module': {
+      'classNames': 'col-md-12'
+    },
+    'patch': {
+      'classNames': 'col-md-4'
+    }
+  },
+  'types': {
+    'items': {
+      'typeName': {
+        'ui:title': 'Type Name',
+        'classNames': 'col-md-4'
+      },
+      'baseType': {
+        'ui:title': 'Base Type',
+        'classNames': 'col-md-4'
+      },
+      'options': {},
+      'description': {
+        'ui:widget': 'textarea'
+      },
+      'fields': {},
+    }
+  }*/
 }
 
 export {

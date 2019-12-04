@@ -63,6 +63,12 @@ export default {
             cacheDirectory: true
           }
         }
+      },{
+        test: /\.jadn$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'json-loader'
+        }
       }
     ]
   }
