@@ -7302,6 +7302,11 @@ react-dom@^16.12.0:
     prop-types "^15.6.2"
     scheduler "^0.18.0"
 
+react-drag-and-drop@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-drag-and-drop/-/react-drag-and-drop-3.0.0.tgz#8adfe14994b4c36969aa7e104776acd566e4a000"
+  integrity sha512-NO/BVF8LxinZSJlm3DpWWgIndCy6gu/gHwORPE+I3YINBLi+EF3WlYmho8ooKkHRfefz1Fd1cfoVASKJ1bOhbg==
+
 react-hot-loader@^4.12.18:
   version "4.12.18"
   resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.12.18.tgz#a9029e34af2690d76208f9a35189d73c2dfea6a7"
