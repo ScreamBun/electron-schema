@@ -60,8 +60,6 @@ const KeyObjectEditor = (props) => {
     props.change(tmpValue)
   }
 
-  console.log(props.value)
-
   return (
     <div className='border m-1 p-1'>
       <Button color='danger' size='sm' className='float-right' onClick={ removeAll } >
@@ -82,7 +80,6 @@ const KeyObjectEditor = (props) => {
           if (props.value.hasOwnProperty(key)) {
             keyProps['value'] = props.value[key]
           }
-          console.log(idx, key, props)
           return <KeyValueEditor key={ idx } id={ key } { ...keyProps } />
         }) }
       </div>

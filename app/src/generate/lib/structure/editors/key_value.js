@@ -30,9 +30,7 @@ const KeyValueEditor = (props) => (
       { props.removable ? (
         <div className="input-group-append">
           <Button color='danger' onClick={ () => props.remove(props.id.toLowerCase()) }>
-            <FontAwesomeIcon
-              icon={ faMinusSquare }
-            />
+            <FontAwesomeIcon icon={ faMinusSquare } />
           </Button>
         </div>
       ) : '' }

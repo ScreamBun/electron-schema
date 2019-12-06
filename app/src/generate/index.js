@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Sidebar from 'react-sidebar'
 
 import classnames from 'classnames'
 import {
@@ -10,6 +11,9 @@ import {
 import {
   Button,
   ButtonGroup,
+  Card,
+  CardBody,
+  CardHeader,
   ListGroup,
   ListGroupItem,
   Nav,
@@ -20,33 +24,78 @@ import {
   Tooltip
 } from 'reactstrap'
 
-import SchemaStructure from './lib/structure'
+import { dialog, ipcRenderer } from 'electron'
 
-// import oc2ls from '../../resources/oc2ls-v1_0_1.keys.json'
-// import oc2ls from '../../resources/oc2ls-v1_0_1.simple.jadn'
+import SchemaStructure from './lib/structure'
+import { jadn_format } from '../utils'
 
 class GenerateSchema extends Component {
   constructor(props, context) {
     super(props, context)
+    this.mql = window.matchMedia('(min-width: 768px)')
+
     this.onDrop = this.onDrop.bind(this)
 
     this.state = {
-		    schema: {},
-		    activeOption: 'meta',
-		    activeView: 'editor',
+		  activeView: 'editor',
+		  schema: {},
+		  schemaPath: ''
 		}
+
     this.linkStyles = {
       'cursor': 'pointer'
     }
-    this.keys = SchemaStructure
-  }
 
-  toggleOptions(opt) {
-    if (this.state.activeOption !== opt) {
+    this.keys = SchemaStructure
+    this.minHeight = '50em'
+
+    ipcRenderer.on('file-open', (event, store) => {
       this.setState({
-        activeOption: opt
+        schema: store.contents,
+        schemaPath: store.filePaths[0]
       })
-    }
+    })
+
+    ipcRenderer.on('file-save', (event, store) => {
+      store.contents = this.state.schema
+      store.filePath = this.state.schemaPath
+      ipcRenderer.send('file-save', store)
+    })
+
+    ipcRenderer.on('save-reply', (event, store) => {
+      this.setState(prevState => {
+        return store.action == 'erase' ?
+          {
+            schema: {},
+            schemaPath: ''
+          } : {
+            schemaPath: store.filePath
+          }
+      })
+    })
+
+    ipcRenderer.on('schema-new', async (event, store) => {
+      let stateUpdate = {}
+      switch(store.action) {
+        case 'save':
+          store = {
+            action: 'erase',
+            contents: this.state.schema,
+            filePath: this.state.schemaPath
+          }
+          ipcRenderer.send('file-save', store)
+          break;
+
+        case 'erase':
+        default:
+          stateUpdate.schema = {}
+          stateUpdate.schemaPath = ''
+          break;
+      }
+      this.setState(stateUpdate)
+    })
+
+
   }
 
   toggleViews(view) {
@@ -87,54 +136,6 @@ class GenerateSchema extends Component {
     } else {
       console.log('oops...')
     }
-  }
-
-  SchemaOptions() {
-    let metaKeys = Object.keys(this.keys.meta).map((k, i) => (
-      <Draggable type="meta" data={ k } key={ i }>
-        <ListGroupItem action>{ this.keys.meta[k].key }</ListGroupItem>
-      </Draggable>
-    ))
-
-    let typesKeys = Object.keys(this.keys.types).map((k, i) => (
-      <Draggable type="types" data={ k } key={ i }>
-        <ListGroupItem action>{ this.keys.types[k].key }</ListGroupItem>
-      </Draggable>
-    ))
-
-    return (
-      <div id='schema-options' className='col-md-2'>
-        <Nav tabs>
-          <NavItem>
-            <NavLink
-              className={ classnames({ active: this.state.activeOption === 'meta' }) }
-              style={ this.linkStyles }
-              onClick={ () => this.toggleOptions('meta') }
-            >Meta</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={ classnames({ active: this.state.activeOption === 'types' }) }
-              style={ this.linkStyles }
-              onClick={ () => this.toggleOptions('types') }
-            >Types</NavLink>
-          </NavItem>
-        </Nav>
-
-        <TabContent activeTab={ this.state.activeOption }>
-          <TabPane tabId='meta'>
-            <ListGroup>
-              { metaKeys }
-            </ListGroup>
-          </TabPane>
-          <TabPane tabId='types'>
-            <ListGroup>
-              { typesKeys }
-            </ListGroup>
-          </TabPane>
-        </TabContent>
-      </div>
-    )
   }
 
   SchemaEditor() {
@@ -215,54 +216,47 @@ class GenerateSchema extends Component {
     )
   }
 
-  SchemaView() {
-    return (
-      <div id='schema-view' className='col-md-10'>
-        <Nav tabs>
-          <NavItem>
-            <NavLink
-              className={ classnames({ active: this.state.activeView === 'editor' }) }
-              style={ this.linkStyles }
-              onClick={ () => this.toggleViews('editor') }
-            >Editor</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={ classnames({ active: this.state.activeView === 'jadn' }) }
-              style={ this.linkStyles }
-              onClick={ () => this.toggleViews('jadn') }
-            >JADN</NavLink>
-          </NavItem>
-        </Nav>
-
-        <Droppable
-          types={ ['meta', 'types'] } // <= allowed drop types
-          onDrop={ this.onDrop }
-          className='border col-12 p-0'
-          style={{
-            minHeight: 20+'em'
-          }}
-        >
-          <TabContent activeTab={ this.state.activeView }>
-            <TabPane tabId='editor'>
-              { this.SchemaEditor() }
-            </TabPane>
-            <TabPane tabId='jadn'>
-              <div className="form-control m-0 p-0" style={{ minHeight: 20+'em' }}>
-                <pre>{ JSON.stringify(this.state.schema) }</pre>
-              </div>
-            </TabPane>
-          </TabContent>
-        </Droppable>
-      </div>
-    )
-  }
-
   render() {
     return (
-      <div className="row mx-auto">
-        { this.SchemaOptions() }
-        { this.SchemaView() }
+      <div className='row mx-auto'>
+        <div id='schema-view' className='col-12'>
+          <Nav tabs>
+            <NavItem>
+              <NavLink
+                className={ classnames({ active: this.state.activeView === 'editor' }) }
+                style={ this.linkStyles }
+                onClick={ () => this.toggleViews('editor') }
+              >Editor</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={ classnames({ active: this.state.activeView === 'jadn' }) }
+                style={ this.linkStyles }
+                onClick={ () => this.toggleViews('jadn') }
+              >JADN</NavLink>
+            </NavItem>
+          </Nav>
+
+          <Droppable
+            types={ ['meta', 'types'] } // <= allowed drop types
+            onDrop={ this.onDrop }
+            className='col-12 p-0'
+            style={{
+              minHeight: this.minHeight
+            }}
+          >
+            <TabContent activeTab={ this.state.activeView }>
+              <TabPane tabId='editor' className='border'>
+                { this.SchemaEditor() }
+              </TabPane>
+              <TabPane tabId='jadn'>
+                <pre className='border p-1'>
+                  { jadn_format(this.state.schema) }
+                </pre>
+              </TabPane>
+            </TabContent>
+          </Droppable>
+        </div>
       </div>
     )
   }

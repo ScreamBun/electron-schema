@@ -1,13 +1,16 @@
 /* eslint global-require: off */
-import { app, BrowserWindow } from 'electron'
+import { app, dialog, ipcMain, BrowserWindow } from 'electron'
 import Store from 'electron-store'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
+import fs from 'fs-extra'
 
 import MenuBuilder from './menu'
 
 const url = require('url')
 const path = require('path')
+
+import { jadn_format } from './src/utils'
 
 // Paths
 const ROOT_DIR = path.join(__dirname, '..')
@@ -58,7 +61,7 @@ if (process.platform === 'win32') {
 }
 
 /* Add event listeners... */
-function createMainWindow() {
+const createMainWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1024,
@@ -143,4 +146,59 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createMainWindow()
   }
+})
+
+// Recent Documents action `Open`
+app.on('open-file', (event, filePath) => {
+  fs.readJson(filePath, (err, packageObj) => {
+    if (err){
+      dialog.showMessageBoxSync(mainWindow, {
+        type: 'error',
+        title: 'Open Error',
+        detail: 'DETAILS -> TBD...'
+      })
+      console.error(err)
+    } else {
+      let result = {
+        filePaths: [filePath],
+        contents: packageObj
+      }
+      mainWindow.webContents.send('file-open', result)
+    }
+  })
+})
+
+// Renderer event actions
+ipcMain.on('file-save', (event, arg) => {
+  dialog.showSaveDialog(mainWindow, {
+    title: 'Save Schema',
+    defaultPath: arg.filePath || app.getPath('documents'),
+    filters: [
+      { name: 'Default', extensions: ['jadn'] },
+      { name: 'JSON Schema', extensions: ['json'] }
+    ]
+  }).then(result => {
+    if (!result.canceled) {
+      arg.filePath = result.filePath
+      fs.outputFile(arg.filePath, jadn_format(arg.contents), err => {
+        if (err){
+          dialog.showMessageSync(this.mainWindow, {
+            type: 'error',
+            title: 'Open Error',
+            detail: 'DETAILS -> TBD...'
+          })
+          console.error(err)
+        } else {
+          event.reply('save-reply', arg)
+        }
+      })
+    }
+  }).catch(err => {
+    dialog.showMessageBoxSync(this.mainWindow, {
+      type: 'error',
+      title: 'Open Error',
+      detail: 'DETAILS -> TBD...'
+    })
+    console.log(err)
+  })
 })

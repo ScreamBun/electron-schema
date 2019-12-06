@@ -1,8 +1,10 @@
 // @flow
 import { app, dialog, shell, BrowserWindow, Menu } from 'electron'
+import fs from 'fs-extra'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const isMac = process.platform === 'darwin'
+const isWin = ['win32', 'win64'].includes(process.platform)
 
 export default class MenuBuilder {
   mainWindow: BrowserWindow
@@ -16,7 +18,7 @@ export default class MenuBuilder {
       this.setupDevelopmentEnvironment();
     }
 
-    const template = isMac ? this.buildDarwinTemplate() : this.buildDefaultTemplate();
+    const template = this.buildTemplate();  // isMac ? this.buildDarwinTemplate() : this.buildDefaultTemplate();
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
     return menu;
@@ -38,7 +40,8 @@ export default class MenuBuilder {
     });
   }
 
-  buildDarwinTemplate() {
+  buildTemplate() {
+    // Mac only menus
     const subMenuAbout = {
       label: app.name,
       submenu: [
@@ -64,86 +67,7 @@ export default class MenuBuilder {
         {
           label: 'Quit',
           accelerator: 'Command+Q',
-          click: () => {
-            app.quit();
-          }
-        }
-      ]
-    };
-    const subMenuFile = {
-      label: 'File',
-      submenu: [
-        {
-          label: 'New',
-          accelerator: 'Command+N'
-        },
-        {
-          label: 'Open',
-          accelerator: 'Command+O',
-          click: () => this.openFile()
-        },
-        {
-          label: 'Save',
-          accelerator: 'Command+S',
-          click: () => this.saveFile()
-        },
-        {
-          label: 'Recent Schemas',
-          submenu: this.recentDocuments()
-        }
-      ]
-    };
-    const subMenuEdit = {
-      label: 'Edit',
-      submenu: [
-        { label: 'Undo', accelerator: 'Command+Z', selector: 'undo:' },
-        { label: 'Redo', accelerator: 'Shift+Command+Z', selector: 'redo:' },
-        { type: 'separator' },
-        { label: 'Cut', accelerator: 'Command+X', selector: 'cut:' },
-        { label: 'Copy', accelerator: 'Command+C', selector: 'copy:' },
-        { label: 'Paste', accelerator: 'Command+V', selector: 'paste:' },
-        {
-          label: 'Select All',
-          accelerator: 'Command+A',
-          selector: 'selectAll:'
-        }
-      ]
-    };
-    const subMenuViewDev = {
-      label: 'View',
-      submenu: [
-        {
-          label: 'Reload',
-          accelerator: 'Command+R',
-          click: () => {
-            this.mainWindow.webContents.reload();
-          }
-        },
-        {
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
-          click: () => {
-            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          }
-        },
-        {
-          label: 'Toggle Developer Tools',
-          accelerator: 'Alt+Command+I',
-          click: () => {
-            this.mainWindow.toggleDevTools();
-          }
-        }
-      ]
-    };
-    const subMenuViewProd = {
-      label: 'View',
-      submenu: [
-        {
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
-          click: () => {
-            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          }
+          click: () => app.quit()
         }
       ]
     };
@@ -160,135 +84,111 @@ export default class MenuBuilder {
         { label: 'Bring All to Front', selector: 'arrangeInFront:' }
       ]
     };
+
+    // Windows only menus
+
+    // Shared menus
+    const subMenuFile = {
+      label: '&File',
+      submenu: [
+        {
+          label: '&New',
+          accelerator: isMac ? 'Command+N' : 'Ctrl+N',
+          click: () => this.newSchema()
+        },
+        {
+          label: '&Open',
+          accelerator: isMac ? 'Command+O': 'Ctrl+O',
+          click: () => this.openFile()
+        },
+        {
+          label: '&Save',
+          accelerator: isMac ? 'Command+S' : 'Ctrl+S',
+          click: () => this.mainWindow.webContents.send('file-save', {})
+        },
+        { type: 'separator' },
+        {
+          label: 'Recent Documents',
+          role: 'recentDocuments'
+        }
+      ]
+    };
+    if (isWin) {
+      subMenuFile.submenu.push(
+        { type: 'separator' },
+        {
+          label: '&Close',
+          accelerator: 'Ctrl+W',
+          click: () => this.mainWindow.close()
+        }
+      )
+    }
+
+    const subMenuViewDev = {
+      label: '&View',
+      submenu: [
+        {
+          label: '&Reload',
+          accelerator: isMac ? 'Command+R' : 'Ctrl+R',
+          click: () => {
+            this.mainWindow.webContents.reload();
+          }
+        },
+        {
+          label: 'Toggle Full Screen',
+          accelerator: isMac ? 'Ctrl+Command+F' : 'F11',
+          click: () => {
+            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
+          }
+        },
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: isMac ? 'Alt+Command+I' : 'Alt+Ctrl+I',
+          click: () => {
+            this.mainWindow.toggleDevTools();
+          }
+        }
+      ]
+    };
+    const subMenuViewProd = {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Toggle &Full Screen',
+          accelerator: isMac ? 'Ctrl+Command+F' : 'F11',
+          click: () => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
+        }
+      ]
+    };
+    const subMenuView = isDevelopment ? subMenuViewDev : subMenuViewProd;
+
     const subMenuHelp = {
       label: 'Help',
       submenu: [
         {
           label: 'Learn More',
-          click() {
-            shell.openExternal('http://electron.atom.io');
-          }
+          click: () => shell.openExternal('http://electron.atom.io')
         },
         {
           label: 'Documentation',
-          click() {
-            shell.openExternal(
-              'https://github.com/atom/electron/tree/master/docs#readme'
-            );
-          }
+          click: () => shell.openExternal('https://github.com/atom/electron/tree/master/docs#readme')
         },
         {
           label: 'Community Discussions',
-          click() {
-            shell.openExternal('https://discuss.atom.io/c/electron');
-          }
+          click: () => shell.openExternal('https://discuss.atom.io/c/electron')
         },
         {
           label: 'Search Issues',
-          click() {
-            shell.openExternal('https://github.com/atom/electron/issues');
-          }
+          click: () => shell.openExternal('https://github.com/atom/electron/issues')
         }
       ]
     };
 
-    const subMenuView = isDevelopment ? subMenuViewDev : subMenuViewProd;
-    return [subMenuAbout, subMenuFile, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
-  }
-
-  buildDefaultTemplate() {
-    const templateDefault = [
-      {
-        label: '&File',
-        submenu: [
-          {
-            label: '&Open',
-            accelerator: 'Ctrl+O'
-          },
-          {
-            label: '&Close',
-            accelerator: 'Ctrl+W',
-            click: () => {
-              this.mainWindow.close();
-            }
-          }
-        ]
-      },
-      {
-        label: '&View',
-        submenu:
-          isDevelopment
-            ? [
-                {
-                  label: '&Reload',
-                  accelerator: 'Ctrl+R',
-                  click: () => {
-                    this.mainWindow.webContents.reload();
-                  }
-                },
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen()
-                    );
-                  }
-                },
-                {
-                  label: 'Toggle &Developer Tools',
-                  accelerator: 'Alt+Ctrl+I',
-                  click: () => {
-                    this.mainWindow.toggleDevTools();
-                  }
-                }
-              ]
-            : [
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen()
-                    );
-                  }
-                }
-              ]
-      },
-      {
-        label: 'Help',
-        submenu: [
-          {
-            label: 'Learn More',
-            click() {
-              shell.openExternal('http://electron.atom.io');
-            }
-          },
-          {
-            label: 'Documentation',
-            click() {
-              shell.openExternal(
-                'https://github.com/atom/electron/tree/master/docs#readme'
-              );
-            }
-          },
-          {
-            label: 'Community Discussions',
-            click() {
-              shell.openExternal('https://discuss.atom.io/c/electron');
-            }
-          },
-          {
-            label: 'Search Issues',
-            click() {
-              shell.openExternal('https://github.com/atom/electron/issues');
-            }
-          }
-        ]
-      }
-    ];
-
-    return templateDefault;
+    if (isMac) {
+      return [subMenuAbout, subMenuFile, subMenuView, subMenuWindow, subMenuHelp];
+    } else {
+      return [subMenuFile, subMenuView, subMenuHelp];
+    }
   }
 
   openFile(file) {
@@ -303,8 +203,20 @@ export default class MenuBuilder {
         ]
       }).then(result => {
         if (!result.canceled) {
-          console.log(result)
           app.addRecentDocument(result.filePaths[0])
+          fs.readJson(result.filePaths[0], (err, packageObj) => {
+            if (err){
+              dialog.showMessageBoxSync(this.mainWindow, {
+                type: 'error',
+                title: 'Open Error',
+                detail: 'DETAILS -> TBD...'
+              })
+              console.error(err)
+            } else {
+              result.contents = packageObj
+              this.mainWindow.webContents.send('file-open', result)
+            }
+          })
         }
       }).catch(err => {
         console.log(err)
@@ -312,22 +224,20 @@ export default class MenuBuilder {
     }
   }
 
-  saveFile() {
-    dialog.showSaveDialog(this.mainWindow, {
-      title: 'Save Schema',
-      defaultPath: app.getPath('documents'),
-      filters: [
-          { name: 'Default', extensions: ['jadn'] },
-          { name: 'JSON Schema', extensions: ['json'] }
-        ]
-    }).then(result => {
-        if (!result.canceled) {
-          console.log(result)
-          app.addRecentDocument(result.filePaths[0])
-        }
-    }).catch(err => {
-      console.log(err)
+  newSchema() {
+    const buttons = ['Cancel', 'Erase', 'Save']
+    const rslt = dialog.showMessageBoxSync(this.mainWindow, {
+      type: 'question',
+      buttons: buttons,
+      title: 'New Schema',
+      message: 'Start a new schema?'
     })
+    if (rslt != 0) {
+      let result = {
+        action: buttons[rslt].toLowerCase()
+      }
+      this.mainWindow.webContents.send('schema-new', result)
+    }
   }
 
   recentDocuments() {

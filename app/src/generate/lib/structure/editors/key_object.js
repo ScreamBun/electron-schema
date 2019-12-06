@@ -46,10 +46,8 @@ const KeyObjectEditor = (props) => {
       tmpValue[index[0]] = ['', '']
     }
     tmpValue[index[0]][index[1]] = value
-    props.change(tmpValue)
   }
 
-  console.log(props.value)
   let indices = props.value.map((obj, i) => (
     <div className="input-group col-sm-12 mb-1" key={ i }>
       <Input
@@ -70,9 +68,7 @@ const KeyObjectEditor = (props) => {
       />
       <div className="input-group-append">
         <Button color='danger' onClick={ removeIndex } data-index={ i }>
-          <FontAwesomeIcon
-            icon={ faMinusSquare }
-          />
+          <FontAwesomeIcon icon={ faMinusSquare } />
         </Button>
       </div>
     </div>
@@ -87,9 +83,7 @@ const KeyObjectEditor = (props) => {
           />
         </Button>
         <Button color='danger' onClick={ removeAll } >
-          <FontAwesomeIcon
-            icon={ faMinusCircle }
-          />
+          <FontAwesomeIcon icon={ faMinusCircle } />
         </Button>
       </ButtonGroup>
       <div className='border-bottom mb-2'>

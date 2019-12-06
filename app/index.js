@@ -22,7 +22,7 @@ const history = createBrowserHistory()
 const store = configureStore(history)
 
 // Import some styles
-// import 'bootstrap'
+import 'bootstrap'
 import './resources/themes/lumen.css'
 import './resources/styles.global.less'
 
@@ -33,18 +33,12 @@ const baseRef = window.location.pathname.split('/').slice(0, -1).join('/')
 const Root = () => (
   <AppContainer>
     <Provider store={ store } >
-      {/* <Sidebar> */}
+      <Sidebar>
         <div id='contents' className='container-fluid mt-3' >
           <Nav history={ history } />
-          <ConnectedRouter history={ history }>
-            <Switch>
-              {/* <Route exact path={ baseRef + '/app.html' } component={ Home } /> */}
-              <Route exact path={ baseRef + '/app.html' } component={ GenerateSchema } />
-              <Route component={ Error } /> // This should always be last route
-            </Switch>
-          </ConnectedRouter>
+          <GenerateSchema />
         </div>
-      {/* </Sidebar> */}
+      </Sidebar>
     </Provider>
   </AppContainer>
 )

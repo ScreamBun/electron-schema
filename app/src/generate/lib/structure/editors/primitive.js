@@ -44,9 +44,7 @@ const PrimitiveEditor = (props) => {
     <div className='border m-1 p-1'>
       <ButtonGroup size='sm' className='float-right'>
         <Button color='danger' onClick={ removeAll } >
-          <FontAwesomeIcon
-            icon={ faMinusCircle }
-          />
+          <FontAwesomeIcon icon={ faMinusCircle } />
         </Button>
       </ButtonGroup>
 

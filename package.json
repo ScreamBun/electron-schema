@@ -41,6 +41,7 @@
     "electron-log": "^3.0.9",
     "electron-store": "^5.1.0",
     "electron-updater": "^4.2.0",
+    "fs-extra": "^8.1.0",
     "history": "^4.10.1",
     "jquery": "^3.4.1",
     "json-loader": "^0.5.7",

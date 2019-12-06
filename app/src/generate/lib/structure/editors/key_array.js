@@ -50,9 +50,7 @@ const KeyArrayEditor = (props) => {
       />
       <div className="input-group-append">
         <Button color='danger' onClick={ removeIndex } data-index={ i }>
-          <FontAwesomeIcon
-            icon={ faMinusSquare }
-          />
+          <FontAwesomeIcon icon={ faMinusSquare } />
         </Button>
       </div>
     </div>
@@ -62,14 +60,10 @@ const KeyArrayEditor = (props) => {
     <div className='border m-1 p-1'>
       <ButtonGroup size='sm' className='float-right'>
         <Button color='info' onClick={ addIndex } >
-          <FontAwesomeIcon
-            icon={ faPlusSquare }
-          />
+          <FontAwesomeIcon icon={ faPlusSquare } />
         </Button>
         <Button color='danger' onClick={ removeAll } >
-          <FontAwesomeIcon
-            icon={ faMinusCircle }
-          />
+          <FontAwesomeIcon icon={ faMinusCircle } />
         </Button>
       </ButtonGroup>
 

@@ -167,9 +167,7 @@ class StructureEditor extends Component {
       <div className='border m-1 p-1'>
         <ButtonGroup size='sm' className='float-right'>
           <Button color='danger' onClick={ this.removeAll } >
-            <FontAwesomeIcon
-              icon={ faMinusCircle }
-            />
+            <FontAwesomeIcon icon={ faMinusCircle } />
           </Button>
         </ButtonGroup>
 
@@ -196,16 +194,12 @@ class StructureEditor extends Component {
           <FormGroup tag='fieldset' className='col-12 border'>
             <legend>
               Fields
-              <ButtonGroup size='sm' className='float-right'>
+              <ButtonGroup className='float-right'>
                 <Button color='primary' onClick={ this.addField } >
-                  <FontAwesomeIcon
-                    icon={ faPlus }
-                  /> Field
+                  <FontAwesomeIcon icon={ faPlus } /> Field
                 </Button>
                 <Button color={ this.state.fieldCollapse ? 'warning' : 'success' } onClick={ this.toggleFields } >
-                  <FontAwesomeIcon
-                    icon={ this.state.fieldCollapse ? faMinus : faPlus }
-                  />
+                  <FontAwesomeIcon icon={ this.state.fieldCollapse ? faMinus : faPlus } />
                 </Button>
               </ButtonGroup>
             </legend>

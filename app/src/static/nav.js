@@ -8,120 +8,27 @@ import { faHome } from '@fortawesome/free-solid-svg-icons'
 
 import logo from '../../resources/images/openc2-logo.png'
 
-class NavItem extends Component {
-  constructor(props, context) {
-    super(props, context)
-    this.external = this.props.external || false
-    this.dropdown = this.props.dropdown || false
-  }
-
-  render() {
-    let active = (this.props.href === this.props.active)
-    let href = this.props.href || ''
-
-    return (
-      <li onClick={ this.external ? () => {} : this.props.click } className={ this.props.liClassName + active ? ' active' : '' } >
-        <a href={ href } target={ this.props.target } onClick={ this.external ? () => {} : (e) => { e.preventDefault() } } className={ this.dropdown ? 'dropdown-item' : 'nav-link' } >
-          { this.props.icon ? <FontAwesomeIcon icon={ this.props.icon } size='lg' /> : '' } { this.props.text }
-        </a>
-      </li>
-    )
-  }
-}
-
 class Nav extends Component {
   constructor(props, context) {
     super(props, context)
-    let act = (this.props.history.location.pathname === this.prefix)
-
-    this.navContainer = null
-    this.leftNavContainer = null
-    this.rightNavContainer = null
-    this.navigate = this.navigate.bind(this)
-    this.setSize = this.setSize.bind(this)
-
-    this.themeOptionStyles = {
-      position: 'fixed',
-      bottom: '5px',
-      right: '5px'
-    }
-
-    this.state = {
-      active: (act ? '/' : this.props.history.location.pathname),
-    }
-  }
-
-  setSize() {
-    setTimeout(() => {
-      if (!this.navContainer) { return; }
-      let padding = 0
-      let height = this.navContainer.getBoundingClientRect().height
-
-      if (this.context.sidebarDocked) {
-        let sidebarWidth = document.getElementById("sidebarContents").getBoundingClientRect().width
-        padding = sidebarWidth - this.leftNavContainer.getBoundingClientRect().left
-        if (padding > 0) {
-          this.leftNavContainer.style.paddingLeft = (padding + 5) + 'px'
-        }
-        document.getElementById("sidebarContents").style.paddingTop = (height + 10) + 'px'
-      }
-      document.getElementById("contents").style.paddingTop = (height + 10) + 'px'
-    }, 100)
-  }
-
-  navigate(e) {
-    e.preventDefault()
-    if (e.target.href === null || e.target.href === undefined ) { return }
-    let href = e.target.href.replace(window.location.origin, '')
-
-    this.props.history.push({
-      pathname: href
-    })
-
-    this.setState({ active: href })
-  }
-
-  leftNav() {
-    let baseRef = window.location.pathname.split('/').slice(0, -1).join('/')
-    return (
-      <ul className="nav navbar-nav mr-auto" ref={ (elm) => this.leftNavContainer = elm}>
-        <NavItem href={ baseRef + '/app.html'} text="Home" active={ this.state.active } click={ this.navigate }/>
-        <NavItem href={ baseRef + '/generate'} text="Schema Generator" active={ this.state.active } click={ this.navigate }/>
-      </ul>
-    )
-  }
-
-  rightNav() {
-    return (
-      <ul className="nav navbar-nav ml-auto" ref={ (elm) => this.rightNavContainer = elm}>
-        <li className="nav-item dropdown">
-        </li>
-      </ul>
-    )
   }
 
   render() {
-    this.setSize()
     return (
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" ref={ (elm) => this.navContainer = elm}>
+      <nav className="navbar navbar-expand-md navbar-dark bg-primary fixed-top" ref={ (elm) => this.navContainer = elm}>
         <a className="navbar-brand" href="#">
           <img src={ logo } alt='OpenC2 Logo' />
         </a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <button className="navbar-toggler" type="button" onClick={ () => this.context.sidebarToggle() } >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navMain">
-          { this.leftNav() }
-          { this.rightNav() }
-        </div>
       </nav>
     )
   }
 }
 
 Nav.contextTypes = {
-  sidebarOpen: PropTypes.bool,
-  sidebarDocked: PropTypes.bool
+  sidebarToggle: PropTypes.func
 }
 
 export default connect()(Nav)

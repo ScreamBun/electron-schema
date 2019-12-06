@@ -3,11 +3,22 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Sidebar from 'react-sidebar'
 
+import { Draggable } from 'react-drag-and-drop'
+
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  ListGroup,
+  ListGroupItem
+} from 'reactstrap'
+
+import SchemaStructure from '../generate/lib/structure'
 
 class SidebarMenu extends Component {
   constructor(props, context) {
     super(props, context)
-    this.mql = window.matchMedia('(min-width: 800px)')
+    this.mql = window.matchMedia('(min-width: 768px)')
 
     this.mediaQueryChanged = this.mediaQueryChanged.bind(this)
     this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this)
@@ -16,6 +27,8 @@ class SidebarMenu extends Component {
       sidebarDocked: this.mql.matches,
       sidebarOpen: false
     }
+
+    this.keys = SchemaStructure
   }
 
   componentDidMount() {
@@ -42,18 +55,44 @@ class SidebarMenu extends Component {
   // pass reference to this down to ThemeChooser component
   getChildContext() {
     return {
+      sidebarDocked: this.state.sidebarDocked,
       sidebarOpen: this.state.sidebarOpen,
-      sidebarDocked: this.state.sidebarDocked
+      sidebarToggle: () => this.onSetSidebarOpen(!this.state.sidebarOpen)
     }
   }
 
   renderContents() {
-    let toggle = <li className="nav-item"><a className="nav-link" href="#">Toggle</a></li>
+    let metaKeys = Object.keys(this.keys.meta).map((k, i) => (
+      <Draggable type="meta" data={ k } key={ i }>
+        <ListGroupItem action>{ this.keys.meta[k].key }</ListGroupItem>
+      </Draggable>
+    ))
+
+    let typesKeys = Object.keys(this.keys.types).map((k, i) => (
+      <Draggable type="types" data={ k } key={ i }>
+        <ListGroupItem action>{ this.keys.types[k].key }</ListGroupItem>
+      </Draggable>
+    ))
+
     return (
-      <ul id='sidebarContents'>
-        { this.state.sidebarDocked ? '' : toggle }
-        <li className="nav-item"><a className="nav-link" href="#">Sidebar Contents</a></li>
-      </ul>
+      <div>
+        <Card>
+          <CardHeader>Meta</CardHeader>
+          <CardBody>
+            <ListGroup>
+              { metaKeys }
+            </ListGroup>
+          </CardBody>
+        </Card>
+        <Card>
+          <CardHeader>Types</CardHeader>
+          <CardBody>
+            <ListGroup>
+              { typesKeys }
+            </ListGroup>
+          </CardBody>
+        </Card>
+      </div>
     )
   }
 
@@ -65,6 +104,11 @@ class SidebarMenu extends Component {
         docked={ this.state.sidebarDocked }
         onSetOpen={ this.onSetSidebarOpen }
         sidebarClassName='navbar-dark bg-dark'
+        pullRight={ !this.state.sidebarDocked }
+        rootId='sidebarRoot'
+        sidebarId='sidebarContents'
+        contentId='sidebarMain'
+        overlayId='sidebarOverlay'
       >
         { this.props.children || <span /> }
       </Sidebar>
@@ -73,8 +117,9 @@ class SidebarMenu extends Component {
 }
 
 SidebarMenu.childContextTypes = {
+  sidebarDocked: PropTypes.bool,
   sidebarOpen: PropTypes.bool,
-  sidebarDocked: PropTypes.bool
+  sidebarToggle: PropTypes.func
 }
 
 export default connect()(SidebarMenu)
