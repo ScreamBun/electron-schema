@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "beautifultable": [],
+    "importlib_metadata": ["zipp"],
+    "typeguard": [],
+    "zipp": ["more-itertools"],
+    "jadnschema": ["beautifultable", "inflect", "typeguard"],
+    "more-itertools": [],
+    "inflect": ["importlib_metadata"],
+    "pyparsing": [],
+    "setuptools": ["pyparsing"],
+    "test": []
+  },
+  "import_name_to_package_name": {
+    "beautifultable": "beautifultable",
+    "importlib_metadata": "importlib_metadata",
+    "typeguard": "typeguard",
+    "zipp": "zipp",
+    "jadnschema": "jadnschema",
+    "more_itertools": "more-itertools",
+    "inflect": "inflect",
+    "pyparsing": "pyparsing",
+    "setuptools": "setuptools",
+    "easy_install": "setuptools",
+    "pkg_resources": "setuptools"
+  }
+}

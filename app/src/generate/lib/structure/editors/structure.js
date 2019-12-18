@@ -196,7 +196,7 @@ class StructureEditor extends Component {
               Fields
               <ButtonGroup className='float-right'>
                 <Button color='primary' onClick={ this.addField } >
-                  <FontAwesomeIcon icon={ faPlus } /> Field
+                  <FontAwesomeIcon icon={ faPlusSquare } /> Field
                 </Button>
                 <Button color={ this.state.fieldCollapse ? 'warning' : 'success' } onClick={ this.toggleFields } >
                   <FontAwesomeIcon icon={ this.state.fieldCollapse ? faMinus : faPlus } />

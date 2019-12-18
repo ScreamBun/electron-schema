@@ -27,7 +27,19 @@ import {
 import { dialog, ipcRenderer } from 'electron'
 
 import SchemaStructure from './lib/structure'
-import { jadn_format } from '../utils'
+import { jadn_format } from '../utils/'
+
+import JADNInput from '../utils/jadn-editor'
+import JSONInput from 'react-json-editor-ajrm'
+import locale from 'react-json-editor-ajrm/locale/en'
+
+import oc2ls from '../../resources/oc2ls-v1_0_1.simple.jadn'
+
+const pythonTest = async (schema) => {
+  return await ipcRenderer.invoke('render-python', {schema})
+}
+
+const jadn2json = (schema) => schema
 
 class GenerateSchema extends Component {
   constructor(props, context) {
@@ -38,7 +50,7 @@ class GenerateSchema extends Component {
 
     this.state = {
 		  activeView: 'editor',
-		  schema: {},
+		  schema: oc2ls,
 		  schemaPath: ''
 		}
 
@@ -95,7 +107,11 @@ class GenerateSchema extends Component {
       this.setState(stateUpdate)
     })
 
-
+    setTimeout(() => {
+      pythonTest(this.state.schema).then(rslt => {
+        console.log(rslt)
+      })
+    }, 2000)
   }
 
   toggleViews(view) {
@@ -133,6 +149,7 @@ class GenerateSchema extends Component {
           }
         }
       })
+
     } else {
       console.log('oops...')
     }
@@ -235,6 +252,13 @@ class GenerateSchema extends Component {
                 onClick={ () => this.toggleViews('jadn') }
               >JADN</NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink
+                className={ classnames({ active: this.state.activeView === 'json' }) }
+                style={ this.linkStyles }
+                onClick={ () => this.toggleViews('json') }
+              >JSON</NavLink>
+            </NavItem>
           </Nav>
 
           <Droppable
@@ -250,9 +274,34 @@ class GenerateSchema extends Component {
                 { this.SchemaEditor() }
               </TabPane>
               <TabPane tabId='jadn'>
-                <pre className='border p-1'>
-                  { jadn_format(this.state.schema) }
-                </pre>
+                <div className="form-control m-0 p-0 border" style={{ minHeight: this.minHeight }}>
+                  <JADNInput
+                    id='jadn_schema'
+                    placeholder={ this.state.schema }
+                    theme='light_mitsuketa_tribute'
+                    locale={ locale }
+                    //reset={ true }
+                    height='100%'
+                    width='100%'
+                    viewOnly={ true }
+                    //waitAfterKeyPress={ 500 }
+                  />
+                </div>
+              </TabPane>
+              <TabPane tabId='json'>
+                <div className="form-control m-0 p-0 border" style={{ minHeight: this.minHeight }}>
+                  <JSONInput
+                    id='json_schema'
+                    placeholder={ this.state.schema }
+                    theme='light_mitsuketa_tribute'
+                    locale={ locale }
+                    //reset={ true }
+                    height='100%'
+                    width='100%'
+                    viewOnly={ true }
+                    //waitAfterKeyPress={ 500 }
+                  />
+                </div>
               </TabPane>
             </TabContent>
           </Droppable>
@@ -262,7 +311,8 @@ class GenerateSchema extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-})
+const mapStateToProps = (state) => ({})
 
-export default connect(mapStateToProps)(GenerateSchema)
+const mapDispatchToProps = (dispatch) => ({})
+
+export default connect(mapStateToProps, mapDispatchToProps)(GenerateSchema)

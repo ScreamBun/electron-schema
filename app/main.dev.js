@@ -1,24 +1,37 @@
 /* eslint global-require: off */
 import { app, dialog, ipcMain, BrowserWindow } from 'electron'
-import Store from 'electron-store'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import fs from 'fs-extra'
+import url from 'url'
+import path from 'path'
 
 import MenuBuilder from './menu'
 
-const url = require('url')
-const path = require('path')
+import { jadn_format, pyodideNode } from './src/utils'
 
-import { jadn_format } from './src/utils'
+// Config
+const isDevelopment = process.env.NODE_ENV !== 'production'
+const isMac = process.platform === 'darwin'
+const isWin = ['win32', 'win64'].includes(process.platform)
 
 // Paths
 const ROOT_DIR = path.join(__dirname, '..')
 const APP_DIR = path.join(ROOT_DIR, 'app')
 
-const isDevelopment = process.env.NODE_ENV !== 'production'
-const isMac = process.platform === 'darwin'
+// Python Setup
+let pyodide = null
 
+const pyodideSetup = async () => {
+  await pyodideNode.loadLanguage()
+  pyodide = pyodideNode.getModule()
+  console.log(pyodide.runPython('import sys\nsys.version'))
+  // pyodide is now ready to use...
+  await pyodide.loadPackage('jadnschema')
+}
+
+
+// App Window Setup
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -40,22 +53,16 @@ const installExtensions = async () => {
 // Window objects
 let mainWindow = null
 
-// Share global objects
-let args = isDevelopment ? {cwd: ROOT_DIR, name: 'config.dev'} : {}
-global.store = new Store(args)
-
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support')
   sourceMapSupport.install()
-}
-
-if (isDevelopment || process.env.DEBUG_PROD === 'true') {
+} else if (isDevelopment || process.env.DEBUG_PROD === 'true') {
   require('electron-debug')()
 }
 
 // Temporary fix broken high-dpi scale factor on Windows (125% scaling)
 // info: https://github.com/electron/electron/issues/9691
-if (process.platform === 'win32') {
+if (isWin) {
   app.commandLine.appendSwitch('high-dpi-support', 'true')
   app.commandLine.appendSwitch('force-device-scale-factor', '1')
 }
@@ -118,6 +125,21 @@ const createMainWindow = () => {
     })
   })
 
+  // New Window
+  mainWindow.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
+    if (frameName === 'modal') {
+      // open window as modal
+      event.preventDefault()
+      Object.assign(options, {
+        modal: true,
+        parent: mainWindow,
+        width: 300,
+        height: 300
+      })
+      event.newGuest = new BrowserWindow(options)
+    }
+  })
+
   // Build and add app menu
   const menuBuilder = new MenuBuilder(mainWindow)
   menuBuilder.buildMenu()
@@ -133,6 +155,7 @@ app.on('window-all-closed', () => {
 
 // create main BrowserWindow when electron is ready
 app.on('ready', async () => {
+  await pyodideSetup()
   if (isDevelopment || process.env.DEBUG_PROD === 'true') {
     await installExtensions()
   }
@@ -169,18 +192,18 @@ app.on('open-file', (event, filePath) => {
 })
 
 // Renderer event actions
-ipcMain.on('file-save', (event, arg) => {
+ipcMain.on('file-save', (event, args) => {
   dialog.showSaveDialog(mainWindow, {
     title: 'Save Schema',
-    defaultPath: arg.filePath || app.getPath('documents'),
+    defaultPath: args.filePath || app.getPath('documents'),
     filters: [
       { name: 'Default', extensions: ['jadn'] },
       { name: 'JSON Schema', extensions: ['json'] }
     ]
   }).then(result => {
     if (!result.canceled) {
-      arg.filePath = result.filePath
-      fs.outputFile(arg.filePath, jadn_format(arg.contents), err => {
+      args.filePath = result.filePath
+      fs.outputFile(args.filePath, jadn_format(args.contents), err => {
         if (err){
           dialog.showMessageSync(this.mainWindow, {
             type: 'error',
@@ -189,7 +212,7 @@ ipcMain.on('file-save', (event, arg) => {
           })
           console.error(err)
         } else {
-          event.reply('save-reply', arg)
+          event.reply('save-reply', args)
         }
       })
     }
@@ -201,4 +224,19 @@ ipcMain.on('file-save', (event, arg) => {
     })
     console.log(err)
   })
+})
+
+ipcMain.handle('render-python', (event, args) => {
+  let schema = args.schema ? args.schema : {}
+  // console.log(schema)
+  pyodide.runPython(
+    'def jadn_json(schema: str) -> dict:\n'+
+    '    import json\n' +
+    '    from jadnschema import (convert, jadn, schema as jadn_schema, CommentLevels)\n' +
+    '    schema = json.loads(schema)\n' +
+    '    schema_obj = jadn_schema.Schema(schema)\n' +
+    '    return convert.json_dumps(schema_obj, comm=CommentLevels.ALL)'
+  );
+  const test = pyodide.pyimport('jadn_json')
+  return test(JSON.stringify(schema))
 })

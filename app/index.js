@@ -1,18 +1,10 @@
 import React, { Fragment } from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import { ConnectedRouter } from 'connected-react-router'
-import { Route, Switch } from 'react-router'
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader'
 
-// Custom Components
-import {
-  Error,
-  GenerateSchema,
-  Home,
-  Nav,
-  Sidebar
-} from './src'
+// App Component
+import App from './src'
 
 // Config
 import { createBrowserHistory } from 'history'
@@ -33,12 +25,7 @@ const baseRef = window.location.pathname.split('/').slice(0, -1).join('/')
 const Root = () => (
   <AppContainer>
     <Provider store={ store } >
-      <Sidebar>
-        <div id='contents' className='container-fluid mt-3' >
-          <Nav history={ history } />
-          <GenerateSchema />
-        </div>
-      </Sidebar>
+      <App history={ history } />
     </Provider>
   </AppContainer>
 )

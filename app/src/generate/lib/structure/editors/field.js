@@ -66,6 +66,10 @@ const FieldEditor = (props) => {
     }
   }
 
+  let optionsModal = (e) => {
+    console.log("OPTIONS...", values.options)
+  }
+
   return (
     <div className='col-sm-12 border m-1 p-1'>
       <ButtonGroup size='sm' className='float-right'>

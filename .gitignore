@@ -181,3 +181,4 @@ main.js.map
 
 # Assorted dev files
 config.dev.json
+/app/pyapi/build/

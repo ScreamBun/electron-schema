@@ -60,6 +60,18 @@ const KeyObjectEditor = (props) => {
     props.change(tmpValue)
   }
 
+  const keys = Object.keys(ConfigKeys).map((key, idx) => {
+    let keyProps = {
+      ...ConfigKeys[key],
+      placeholder: key,
+      removable: false
+    }
+    if (props.value.hasOwnProperty(key)) {
+      keyProps['value'] = props.value[key]
+    }
+    return <KeyValueEditor key={ idx } id={ key } { ...keyProps } />
+  })
+
   return (
     <div className='border m-1 p-1'>
       <Button color='danger' size='sm' className='float-right' onClick={ removeAll } >
@@ -71,17 +83,7 @@ const KeyObjectEditor = (props) => {
         <p className='col-sm-4 my-1'><strong>{ props.id }</strong></p>
       </div>
       <div className='col-12 m-0'>
-        { Object.keys(ConfigKeys).map((key, idx) => {
-          let keyProps = {
-            ...ConfigKeys[key],
-            placeholder: key,
-            removable: false
-          }
-          if (props.value.hasOwnProperty(key)) {
-            keyProps['value'] = props.value[key]
-          }
-          return <KeyValueEditor key={ idx } id={ key } { ...keyProps } />
-        }) }
+        { keys }
       </div>
     </div>
   )
