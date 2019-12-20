@@ -51,6 +51,7 @@ class GenerateSchema extends Component {
     this.state = {
 		  activeView: 'editor',
 		  schema: oc2ls,
+      json_schema : oc2ls,
 		  schemaPath: ''
 		}
 
@@ -116,8 +117,12 @@ class GenerateSchema extends Component {
 
   toggleViews(view) {
     if (this.state.activeView !== view) {
-      this.setState({
-        activeView: view
+      pythonTest(this.state.schema).then(result => {
+        console.log(result, 'result')
+        this.setState({
+          activeView: view,
+          json_schema : result
+        })
       })
     }
   }
@@ -292,7 +297,7 @@ class GenerateSchema extends Component {
                 <div className="form-control m-0 p-0 border" style={{ minHeight: this.minHeight }}>
                   <JSONInput
                     id='json_schema'
-                    placeholder={ this.state.schema }
+                    placeholder={ this.state.json_schema }
                     theme='light_mitsuketa_tribute'
                     locale={ locale }
                     //reset={ true }
