@@ -4,6 +4,7 @@ import { createStore, compose, applyMiddleware } from 'redux'
 import { createFilter } from 'redux-persist-transform-filter'
 import { persistReducer, persistStore } from 'redux-persist'
 import { routerMiddleware } from 'connected-react-router'
+import thunk from 'redux-thunk'
 
 import createRootReducer from './reducers'
 import asyncDispatchMiddleware from './asyncDispatchMiddleware'
@@ -27,6 +28,7 @@ export default (history) => {
 
   let middleware = [
     apiMiddleware,
+    thunk,
     asyncDispatchMiddleware,
     routerMiddleware(history)
   ]

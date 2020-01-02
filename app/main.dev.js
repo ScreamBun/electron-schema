@@ -228,7 +228,6 @@ ipcMain.on('file-save', (event, args) => {
 
 ipcMain.handle('render-python', (event, args) => {
   let schema = args.schema ? args.schema : {}
-  // console.log(schema)
   pyodide.runPython(
     'def jadn_json(schema: str) -> dict:\n'+
     '    import json\n' +

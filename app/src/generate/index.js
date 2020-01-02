@@ -33,13 +33,12 @@ import JADNInput from '../utils/jadn-editor'
 import JSONInput from 'react-json-editor-ajrm'
 import locale from 'react-json-editor-ajrm/locale/en'
 
+import { convertToJSON } from '../actions/jadn'
 import oc2ls from '../../resources/oc2ls-v1_0_1.simple.jadn'
 
 const pythonTest = async (schema) => {
   return await ipcRenderer.invoke('render-python', {schema})
 }
-
-const jadn2json = (schema) => schema
 
 class GenerateSchema extends Component {
   constructor(props, context) {
@@ -51,7 +50,6 @@ class GenerateSchema extends Component {
     this.state = {
 		  activeView: 'editor',
 		  schema: oc2ls,
-      json_schema : oc2ls,
 		  schemaPath: ''
 		}
 
@@ -65,7 +63,7 @@ class GenerateSchema extends Component {
     ipcRenderer.on('file-open', (event, store) => {
       this.setState({
         schema: store.contents,
-        schemaPath: store.filePaths[0]
+        schemaPath: store.filePaths[0]    
       })
     })
 
@@ -117,13 +115,11 @@ class GenerateSchema extends Component {
 
   toggleViews(view) {
     if (this.state.activeView !== view) {
-      pythonTest(this.state.schema).then(result => {
-        console.log(result, 'result')
-        this.setState({
-          activeView: view,
-          json_schema : result
-        })
+      this.setState({
+        activeView: view
       })
+
+      this.props.jadn2json(this.state.schema);
     }
   }
 
@@ -297,7 +293,7 @@ class GenerateSchema extends Component {
                 <div className="form-control m-0 p-0 border" style={{ minHeight: this.minHeight }}>
                   <JSONInput
                     id='json_schema'
-                    placeholder={ this.state.json_schema }
+                    placeholder={ this.props.json_schema }
                     theme='light_mitsuketa_tribute'
                     locale={ locale }
                     //reset={ true }
@@ -316,8 +312,12 @@ class GenerateSchema extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({
+  json_schema: state.jadn2json.json_schema
+})
 
-const mapDispatchToProps = (dispatch) => ({})
+const mapDispatchToProps = (dispatch) => ({
+  jadn2json: (jadn) => dispatch(convertToJSON(jadn))
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(GenerateSchema)
