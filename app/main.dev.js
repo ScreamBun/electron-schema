@@ -8,7 +8,7 @@ import path from 'path'
 
 import MenuBuilder from './menu'
 
-import { jadn_format, pyodideNode } from './src/utils'
+import { jadn_format, pyodideNode, ConverterScript, SchemaFormats } from './src/utils'
 
 // Config
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -20,6 +20,7 @@ const ROOT_DIR = path.join(__dirname, '..')
 const APP_DIR = path.join(ROOT_DIR, 'app')
 
 // Python Setup
+let schemaConverters = {}
 let pyodide = null
 
 const pyodideSetup = async () => {
@@ -28,8 +29,12 @@ const pyodideSetup = async () => {
   console.log(pyodide.runPython('import sys\nsys.version'))
   // pyodide is now ready to use...
   await pyodide.loadPackage('jadnschema')
+  // configure the
+  pyodide.runPython(ConverterScript)
+  schemaConverters = Object.assign({}, ...Object.values(SchemaFormats).map(k => ({
+    [k]: (s) => pyodide.pyimport(`convert2${k}`)(JSON.stringify(s))
+  })))
 }
-
 
 // App Window Setup
 export default class AppUpdater {
@@ -226,16 +231,13 @@ ipcMain.on('file-save', (event, args) => {
   })
 })
 
-ipcMain.handle('render-python', (event, args) => {
+ipcMain.handle('convert-schema', (event, args) => {
   let schema = args.schema ? args.schema : {}
-  pyodide.runPython(
-    'def jadn_json(schema: str) -> dict:\n'+
-    '    import json\n' +
-    '    from jadnschema import (convert, jadn, schema as jadn_schema, CommentLevels)\n' +
-    '    schema = json.loads(schema)\n' +
-    '    schema_obj = jadn_schema.Schema(schema)\n' +
-    '    return convert.json_dumps(schema_obj, comm=CommentLevels.ALL)'
-  );
-  const test = pyodide.pyimport('jadn_json')
-  return test(JSON.stringify(schema))
+  let format = args.format ? args.format : "NULL"
+
+  if (Object.values(SchemaFormats).includes(format)) {
+    return schemaConverters[format](schema)
+  } else {
+    return {}
+  }
 })

@@ -9,9 +9,13 @@ import {
 
 import pyodideNode from './PyodideNode/PyodideNode'
 
+import { ConverterScript, SchemaFormats } from './schemaConverter'
+
 export {
   jadn_format,
   mergeByProperty,
   pyodideNode,
+  ConverterScript,
+  SchemaFormats,
   updateArray,
 }

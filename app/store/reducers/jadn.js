@@ -1,4 +1,4 @@
-import * as JADNActions from '../../src/actions/jadn'
+import * as JADNActions from '../actions/jadn'
 
 const initialState = {
   json_schema : {}

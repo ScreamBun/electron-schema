@@ -33,12 +33,9 @@ import JADNInput from '../utils/jadn-editor'
 import JSONInput from 'react-json-editor-ajrm'
 import locale from 'react-json-editor-ajrm/locale/en'
 
-import { convertToJSON } from '../actions/jadn'
+import { convertToJSON } from '../../store/actions/jadn'
 import oc2ls from '../../resources/oc2ls-v1_0_1.simple.jadn'
 
-const pythonTest = async (schema) => {
-  return await ipcRenderer.invoke('render-python', {schema})
-}
 
 class GenerateSchema extends Component {
   constructor(props, context) {
@@ -105,12 +102,17 @@ class GenerateSchema extends Component {
       }
       this.setState(stateUpdate)
     })
+  }
 
-    setTimeout(() => {
-      pythonTest(this.state.schema).then(rslt => {
-        console.log(rslt)
-      })
-    }, 2000)
+  shouldComponentUpdate(nextProps, nextState) {
+    let propsChange = this.props != nextProps
+    let stateChange = this.state != nextState
+
+    if (this.state.schema != nextState.schema) {
+      this.props.jadn2json(nextState.schema)
+    }
+
+    return propsChange || stateChange
   }
 
   toggleViews(view) {
@@ -118,8 +120,6 @@ class GenerateSchema extends Component {
       this.setState({
         activeView: view
       })
-
-      this.props.jadn2json(this.state.schema);
     }
   }
 
