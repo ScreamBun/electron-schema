@@ -2,6 +2,8 @@
 import { app, dialog, shell, BrowserWindow, Menu } from 'electron'
 import fs from 'fs-extra'
 
+import { SchemaFormats } from './src/utils'
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const isMac = process.platform === 'darwin'
 const isWin = ['win32', 'win64'].includes(process.platform)
@@ -18,7 +20,7 @@ export default class MenuBuilder {
       this.setupDevelopmentEnvironment();
     }
 
-    const template = this.buildTemplate();  // isMac ? this.buildDarwinTemplate() : this.buildDefaultTemplate();
+    const template = this.buildTemplate();
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
     return menu;
@@ -108,11 +110,33 @@ export default class MenuBuilder {
         },
         { type: 'separator' },
         {
-          label: 'Recent Documents',
-          role: 'recentDocuments'
+          label: 'Export As',
+          submenu: [
+            {
+              label: '&JADN Schema',
+              click: () => this.mainWindow.webContents.send('file-save', {format: SchemaFormats.JADN})
+            },
+            {
+              label: '&JSON Schema',
+              click: () => this.mainWindow.webContents.send('file-save', {format: SchemaFormats.JSON})
+            },
+            {
+              label: '&HTML',
+              click: () => this.mainWindow.webContents.send('file-save', {format: SchemaFormats.HTML})
+            },
+            {
+              label: '&MarkDown',
+              click: () => this.mainWindow.webContents.send('file-save', {format: SchemaFormats.MD})
+            }/*,
+            {
+              label: '&PDF',
+              click: () => this.mainWindow.webContents.send('file-save', {format: SchemaFormats.PDF})
+            }*/
+          ]
         }
       ]
     };
+
     if (isWin) {
       subMenuFile.submenu.push(
         { type: 'separator' },

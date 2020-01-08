@@ -26,10 +26,11 @@ let pyodide = null
 const pyodideSetup = async () => {
   await pyodideNode.loadLanguage()
   pyodide = pyodideNode.getModule()
-  console.log(pyodide.runPython('import sys\nsys.version'))
+
   // pyodide is now ready to use...
   await pyodide.loadPackage('jadnschema')
-  // configure the
+
+  // configure the python environment
   pyodide.runPython(ConverterScript)
   schemaConverters = Object.assign({}, ...Object.values(SchemaFormats).map(k => ({
     [k]: (s) => pyodide.pyimport(`convert2${k}`)(JSON.stringify(s))
@@ -197,32 +198,57 @@ app.on('open-file', (event, filePath) => {
 })
 
 // Renderer event actions
+const convertSchema = (args) => {
+  let schema = args.schema ? args.schema : {}
+  let format = args.format ? args.format : "NULL"
+
+  if (Object.values(SchemaFormats).includes(format)) {
+    return schemaConverters[format](schema)
+  } else {
+    return null
+  }
+}
+
 ipcMain.on('file-save', (event, args) => {
+  let ext = args.format ? args.format : (args.filePath ? path.extname(args.filePath).substring(1) : SchemaFormats.JADN)
+
   dialog.showSaveDialog(mainWindow, {
     title: 'Save Schema',
     defaultPath: args.filePath || app.getPath('documents'),
     filters: [
-      { name: 'Default', extensions: ['jadn'] },
-      { name: 'JSON Schema', extensions: ['json'] }
+      { name: 'Schema Format', extensions: [ext] }
     ]
   }).then(result => {
     if (!result.canceled) {
       args.filePath = result.filePath
-      fs.outputFile(args.filePath, jadn_format(args.contents), err => {
+      let contents = convertSchema({format: ext, schema: args.contents})
+      switch (ext) {
+        case SchemaFormats.JADN:
+          contents = jadn_format(contents)
+          break;
+        case SchemaFormats.JSON:
+          contents = JSON.stringify(contents, null, 2)
+          break;
+      }
+
+      fs.outputFile(args.filePath, contents, err => {
         if (err){
-          dialog.showMessageSync(this.mainWindow, {
+          dialog.showMessageSync(mainWindow, {
             type: 'error',
             title: 'Open Error',
             detail: 'DETAILS -> TBD...'
           })
           console.error(err)
         } else {
+          if (ext != SchemaFormats.JADN) {
+            delete args.filePath
+          }
           event.reply('save-reply', args)
         }
       })
     }
   }).catch(err => {
-    dialog.showMessageBoxSync(this.mainWindow, {
+    dialog.showMessageBoxSync(mainWindow, {
       type: 'error',
       title: 'Open Error',
       detail: 'DETAILS -> TBD...'
@@ -231,13 +257,4 @@ ipcMain.on('file-save', (event, args) => {
   })
 })
 
-ipcMain.handle('convert-schema', (event, args) => {
-  let schema = args.schema ? args.schema : {}
-  let format = args.format ? args.format : "NULL"
-
-  if (Object.values(SchemaFormats).includes(format)) {
-    return schemaConverters[format](schema)
-  } else {
-    return {}
-  }
-})
+ipcMain.handle('convert-schema', (event, args) => convertSchema(args))

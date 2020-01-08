@@ -49,6 +49,7 @@ class GenerateSchema extends Component {
 		  schema: oc2ls,
 		  schemaPath: ''
 		}
+    this.props.jadn2json(this.state.schema)
 
     this.linkStyles = {
       'cursor': 'pointer'
@@ -72,13 +73,16 @@ class GenerateSchema extends Component {
 
     ipcRenderer.on('save-reply', (event, store) => {
       this.setState(prevState => {
-        return store.action == 'erase' ?
-          {
+        if (store.action == 'erase') {
+          return {
             schema: {},
             schemaPath: ''
-          } : {
+          }
+        } else if (store.hasOwnProperty('filePath')) {
+          return {
             schemaPath: store.filePath
           }
+        }
       })
     })
 
