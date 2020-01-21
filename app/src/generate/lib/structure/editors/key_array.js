@@ -17,9 +17,9 @@ import {
 
 // Key Array Editor
 const KeyArrayEditor = (props) => {
-  const removeAll = (e) => props.remove(props.id.toLowerCase())
+  const removeAll = e => props.remove(props.id.toLowerCase())
 
-  const removeIndex = (e) => {
+  const removeIndex = e => {
     if (props.value.length > 1) {
       let index = e.currentTarget.attributes.getNamedItem('data-index').value
       let tmpValues = [ ...props.value ]
@@ -30,7 +30,7 @@ const KeyArrayEditor = (props) => {
 
   const addIndex= () => props.change([ ...props.value, '' ])
 
-  const onChange = (e) => {
+  const onChange = e => {
     let index = e.target.attributes.getNamedItem('data-index').value
     let value = e.target.value
     let tmpValues = [ ...props.value ]
@@ -82,10 +82,10 @@ KeyArrayEditor.defaultProps = {
   id: 'KeyValueEditor',
   placeholder: 'KeyValueEditor',
   value: {},
-  change: (val) => {
+  change: val => {
     console.log(val)
   },
-  remove: (id) => {
+  remove: id => {
     console.log(id)
   }
 }

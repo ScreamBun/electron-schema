@@ -25,7 +25,7 @@ const jadn_dump = ({schema, indent=2, level=0}) => {
   }
 }
 
-const jadn_format = (jadn) => jadn_dump({ schema: jadn })
+const jadn_format = jadn => jadn_dump({ schema: jadn })
 
 export {
   jadn_format

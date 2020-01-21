@@ -46,9 +46,9 @@ const ConfigKeys = {
 
 // Key Object Editor
 const KeyObjectEditor = (props) => {
-  const removeAll = (e) => props.remove(props.id.toLowerCase())
+  const removeAll = e => props.remove(props.id.toLowerCase())
 
-  const onChange = (e) => {
+  const onChange = e => {
     let index = e.target.attributes.getNamedItem('data-index').value.split(',')
     let value = e.target.value
 
@@ -93,10 +93,10 @@ KeyObjectEditor.defaultProps = {
   id: 'ConfigObjectEditor',
   placeholder: 'ConfigObjectEditor',
   value: [],
-  change: (val) => {
+  change: val => {
     console.log(val)
   },
-  remove: (id) => {
+  remove: id => {
     console.log(id)
   }
 }

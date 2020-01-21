@@ -13,11 +13,10 @@ import {
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faMinus,
   faMinusCircle,
   faMinusSquare,
-  faPlus,
-  faPlusSquare
+  faPlusCircle,
+  faPlusSquare,
 } from '@fortawesome/free-solid-svg-icons'
 
 import OptionsModal from './OptionsModal'
@@ -82,13 +81,11 @@ class StructureEditor extends Component {
   }
 
   addField() {
-    console.log('Add Field', this.state.values.type)
     let field = Object.values(((this.state.values.type.toLowerCase() === 'enumerated') ? EnumeratedField : StandardField))
-    console.log(field)
+    field[0] = this.state.values.fields.length + 1
 
     this.setState(prevState => {
       let tmpFields = [ ...prevState.values.fields, field ]
-      console.log(tmpFields)
       return {
         fieldCollapse: true,
         values: {
@@ -211,11 +208,11 @@ class StructureEditor extends Component {
             <legend>
               Fields
               <ButtonGroup className='float-right'>
-                <Button color='primary' onClick={ this.addField } >
-                  <FontAwesomeIcon icon={ faPlusSquare } /> Field
-                </Button>
                 <Button color={ this.state.fieldCollapse ? 'warning' : 'success' } onClick={ this.toggleFields } >
-                  <FontAwesomeIcon icon={ this.state.fieldCollapse ? faMinus : faPlus } />
+                  <FontAwesomeIcon icon={ this.state.fieldCollapse ? faMinusCircle : faPlusCircle } /> { this.state.fieldCollapse ? ' Hide' : ' Show' }
+                </Button>
+                <Button color='primary' onClick={ this.addField } >
+                  <FontAwesomeIcon icon={ faPlusSquare } /> Add
                 </Button>
               </ButtonGroup>
             </legend>
@@ -245,7 +242,7 @@ StructureEditor.defaultProps = {
   change: (vals, idx) => {
     console.log(vals, idx)
   },
-  remove: (idx) => {
+  remove: idx => {
     console.log(idx)
   }
 }

@@ -3,7 +3,6 @@ import { apiMiddleware, isRSAA } from 'redux-api-middleware'
 import { createStore, compose, applyMiddleware } from 'redux'
 import { createFilter } from 'redux-persist-transform-filter'
 import { persistReducer, persistStore } from 'redux-persist'
-import { routerMiddleware } from 'connected-react-router'
 import thunk from 'redux-thunk'
 
 import createRootReducer from './reducers'
@@ -29,13 +28,12 @@ export default (history) => {
   let middleware = [
     apiMiddleware,
     thunk,
-    asyncDispatchMiddleware,
-    routerMiddleware(history)
+    asyncDispatchMiddleware
   ]
 
   /* Logger */
   if (process.env.NODE_ENV === 'development') {
-    const { createLogger } = require('redux-logger');
+    const { createLogger } = require('redux-logger')
     const logger = createLogger({
       diff: false,
       level: 'info',

@@ -1,8 +1,6 @@
-/*
-Base on https://github.com/gabrielfreire/neuralnet.js/tree/wasm-nodejs
-*/
-const fs = require('fs')
+// Base on https://github.com/gabrielfreire/neuralnet.js/tree/wasm-nodejs
 const path = require('path')
+const fs = require('fs')
 const fetch = require('isomorphic-fetch')
 
 const externalURL = 'https://iodide.io/pyodide-demo/'
@@ -12,7 +10,7 @@ const localPackagesURL = path.join(localURL, '/packages/')
 
 const packages = require('./packages/packages.json').dependencies
 
-let loadedPackages = new Set()
+const loadedPackages = new Set()
 
 class PyodideNode {
   constructor() {

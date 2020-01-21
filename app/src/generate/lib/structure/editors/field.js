@@ -48,9 +48,9 @@ const FieldEditor = (props) => {
     }
   }
 
-  let removeAll = (e) => props.remove(props.dataIndex)
+  let removeAll = e => props.remove(props.dataIndex)
 
-  let onChange = (e) => {
+  let onChange = e => {
     let key = e.target.placeholder.toLowerCase()
     let value = e.target.value
     if (key === 'options') {
@@ -66,7 +66,7 @@ const FieldEditor = (props) => {
     }
   }
 
-  let optionsModal = (e) => {
+  let optionsModal = e => {
     console.log("OPTIONS...", values.options)
   }
 
@@ -127,7 +127,7 @@ FieldEditor.defaultProps = {
   change: (vals, idx) => {
     console.log(vals, idx)
   },
-  remove: (idx) => {
+  remove: idx => {
     console.log(idx)
   }
 }

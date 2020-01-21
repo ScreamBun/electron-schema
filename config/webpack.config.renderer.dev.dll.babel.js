@@ -33,10 +33,6 @@ export default merge.smart(baseConfig, {
   },
   context: ROOT_DIR,
   plugins: [
-    new webpack.DllPlugin({
-      path: path.join(DLL_DIR, '[name].json'),
-      name: '[name]'
-    }),
     /**
      * Create global constants which can be configured at compile time
      * Useful for allowing different behaviour between development builds and release builds
@@ -44,6 +40,10 @@ export default merge.smart(baseConfig, {
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV: env
+    }),
+    new webpack.DllPlugin({
+      path: path.join(DLL_DIR, '[name].json'),
+      name: '[name]'
     }),
     new webpack.LoaderOptionsPlugin({
       debug: true,

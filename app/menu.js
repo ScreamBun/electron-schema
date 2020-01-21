@@ -1,8 +1,9 @@
 // @flow
 import { app, dialog, shell, BrowserWindow, Menu } from 'electron'
+import contextMenu from 'electron-context-menu'
 import fs from 'fs-extra'
 
-import { SchemaFormats } from './src/utils'
+import { safe_get, SchemaFormats } from './src/utils'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const isMac = process.platform === 'darwin'
@@ -16,30 +17,44 @@ export default class MenuBuilder {
   }
 
   buildMenu() {
-    if (isDevelopment || process.env.DEBUG_PROD === 'true') {
-      this.setupDevelopmentEnvironment();
-    }
+    const template = this.buildTemplate()
+    const menu = Menu.buildFromTemplate(template)
 
-    const template = this.buildTemplate();
-    const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
-    return menu;
+    this.setupContextMenu()
+    Menu.setApplicationMenu(menu)
+    return menu
   }
 
-  setupDevelopmentEnvironment() {
-    this.mainWindow.openDevTools();
-    this.mainWindow.webContents.on('context-menu', (e, props) => {
-      const { x, y } = props;
+  setupContextMenu() {
+    const validInputFields = ['plainText', ]
 
-      Menu.buildFromTemplate([
-        {
-          label: 'Inspect element',
-          click: () => {
-            this.mainWindow.inspectElement(x, y);
-          }
-        }
-      ]).popup(this.mainWindow);
-    });
+    const isVisible = (params, action) => {
+      let vis = params.isEditable
+      vis = vis && safe_get(params.editFlags, `can${action}`, false)
+      vis = vis && validInputFields.includes(params.inputFieldType)
+      return vis
+    }
+
+    contextMenu({
+      append: (actions, params, browserWindow) => [
+        actions.separator(),
+        actions.copy({
+          visible: isVisible(params, 'Copy')
+        }),
+        actions.paste({
+          visible: isVisible(params, 'Paste')
+        }),
+        actions.separator(),
+        actions.inspect()
+      ],
+      showCopyImage: false,
+      showCopyImageAddress: false,
+      showInspectElement: false,
+      showLookUpSelection: false,
+      showSaveImageAs: false,
+      showServices: false,
+      menu: actions => []
+    })
   }
 
   buildTemplate() {
@@ -148,6 +163,43 @@ export default class MenuBuilder {
       )
     }
 
+    const subMenuEdit = {
+      label: '&Edit',
+      submenu: [
+        {
+          label: '&Undo',
+          accelerator: isMac ? 'Command+Z' : 'Ctrl+Z',
+          selector: 'undo:'
+        },
+        {
+          label: '&Redo',
+          accelerator: isMac ? 'Shift+Command+Z' : 'Shift+Ctrl+Z',
+          selector: 'redo:'
+        },
+        { type: 'separator' },
+        {
+          label: '&Cut',
+          accelerator: isMac ? 'Command+X' : 'Ctrl+X',
+          selector: 'cut:'
+        },
+        {
+          label: '&Copy',
+          accelerator: isMac ? 'Command+C' : 'Ctrl+C',
+          selector: 'copy:'
+        },
+        {
+          label: '&Paste',
+          accelerator: isMac ? 'Command+V' : 'Ctrl+V',
+          selector: 'paste:'
+        },
+        {
+          label: '&Select All',
+          accelerator: isMac ? 'Command+A' : 'Ctrl+A',
+          selector: 'selectAll:'
+        }
+      ]
+    };
+
     const subMenuViewDev = {
       label: '&View',
       submenu: [
@@ -190,28 +242,16 @@ export default class MenuBuilder {
       label: 'Help',
       submenu: [
         {
-          label: 'Learn More',
-          click: () => shell.openExternal('http://electron.atom.io')
-        },
-        {
-          label: 'Documentation',
-          click: () => shell.openExternal('https://github.com/atom/electron/tree/master/docs#readme')
-        },
-        {
-          label: 'Community Discussions',
-          click: () => shell.openExternal('https://discuss.atom.io/c/electron')
-        },
-        {
-          label: 'Search Issues',
-          click: () => shell.openExternal('https://github.com/atom/electron/issues')
+          label: 'JADN Learn More',
+          click: () => shell.openExternal('https://github.com/oasis-tcs/openc2-jadn')
         }
       ]
     };
 
     if (isMac) {
-      return [subMenuAbout, subMenuFile, subMenuView, subMenuWindow, subMenuHelp];
+      return [subMenuAbout, subMenuFile, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
     } else {
-      return [subMenuFile, subMenuView, subMenuHelp];
+      return [subMenuFile, subMenuEdit, subMenuView, subMenuHelp];
     }
   }
 

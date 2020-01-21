@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Sidebar from 'react-sidebar'
 
-import classnames from 'classnames'
 import {
   Draggable,
   Droppable
@@ -34,7 +33,6 @@ import JSONInput from 'react-json-editor-ajrm'
 import locale from 'react-json-editor-ajrm/locale/en'
 
 import { convertToJSON } from '../../store/actions/jadn'
-import oc2ls from '../../resources/oc2ls-v1_0_1.simple.jadn'
 
 
 class GenerateSchema extends Component {
@@ -46,7 +44,7 @@ class GenerateSchema extends Component {
 
     this.state = {
 		  activeView: 'editor',
-		  schema: oc2ls,
+		  schema: {meta: {}, types: []},
 		  schemaPath: ''
 		}
     this.props.jadn2json(this.state.schema)
@@ -161,34 +159,39 @@ class GenerateSchema extends Component {
   }
 
   SchemaEditor() {
-    let metaEditors = Object.keys(this.state.schema.meta || {}).map((k, i) => this.keys.meta[k].editor({
-      key: i,
-      value: this.state.schema.meta[k],
-      placeholder: k,
-      change: (val) => this.setState((prevState) => ({
-        schema: {
-          ...prevState.schema,
-          meta: {
-            ...prevState.schema.meta,
-            ...this.keys.meta[k].edit(val)
-          }
-        }
-      })),
-      remove: (id) => {
-        if (id in this.state.schema.meta) {
-          this.setState((prevState) => {
-            let tmpMeta = { ...prevState.schema.meta }
-            delete tmpMeta[id]
-            return {
-              schema: {
-                ...prevState.schema,
-                meta: tmpMeta
+    let metaEditors = Object.keys(this.keys.meta).map((k, i) => {
+      let editor = this.keys.meta[k].editor
+      if (this.state.schema.meta.hasOwnProperty(k)) {
+        return editor({
+          key: i,
+          value: this.state.schema.meta[k],
+          placeholder: k,
+          change: (val) => this.setState((prevState) => ({
+            schema: {
+              ...prevState.schema,
+              meta: {
+                ...prevState.schema.meta,
+                ...this.keys.meta[k].edit(val)
               }
             }
-          })
-        }
+          })),
+          remove: (id) => {
+            if (id in this.state.schema.meta) {
+              this.setState((prevState) => {
+                let tmpMeta = { ...prevState.schema.meta }
+                delete tmpMeta[id]
+                return {
+                  schema: {
+                    ...prevState.schema,
+                    meta: tmpMeta
+                  }
+                }
+              })
+            }
+          }
+        })
       }
-    }))
+    }).filter(Boolean)
 
     let typesEditors = (this.state.schema.types || []).map((def, i) => {
       let type = def[1].toLowerCase()
@@ -245,21 +248,21 @@ class GenerateSchema extends Component {
           <Nav tabs>
             <NavItem>
               <NavLink
-                className={ classnames({ active: this.state.activeView === 'editor' }) }
+                className={ this.state.activeView === 'editor' ? 'active' : '' }
                 style={ this.linkStyles }
                 onClick={ () => this.toggleViews('editor') }
               >Editor</NavLink>
             </NavItem>
             <NavItem>
               <NavLink
-                className={ classnames({ active: this.state.activeView === 'jadn' }) }
+                className={ this.state.activeView === 'jadn' ? 'active' : '' }
                 style={ this.linkStyles }
                 onClick={ () => this.toggleViews('jadn') }
               >JADN</NavLink>
             </NavItem>
             <NavItem>
               <NavLink
-                className={ classnames({ active: this.state.activeView === 'json' }) }
+                className={ this.state.activeView === 'json' ? 'active' : '' }
                 style={ this.linkStyles }
                 onClick={ () => this.toggleViews('json') }
               >JSON</NavLink>

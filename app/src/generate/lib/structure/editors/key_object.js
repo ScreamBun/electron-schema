@@ -17,9 +17,9 @@ import {
 
 // Key Object Editor
 const KeyObjectEditor = (props) => {
-  const removeAll = (e) => props.remove(props.id.toLowerCase())
+  const removeAll = e => props.remove(props.id.toLowerCase())
 
-  const removeIndex = (e) => {
+  const removeIndex = e => {
     if (props.value.length > 1) {
       console.log('WHOOT')
       let index = e.currentTarget.attributes.getNamedItem('data-index').value.split(',')[0]
@@ -37,7 +37,7 @@ const KeyObjectEditor = (props) => {
     props.change(tmpValue)
   }
 
-  const onChange = (e) => {
+  const onChange = e => {
     let index = e.target.attributes.getNamedItem('data-index').value.split(',')
     let value = e.target.value
 
@@ -53,7 +53,7 @@ const KeyObjectEditor = (props) => {
       <Input
         type="text"
         className="form-control"
-        data-index={ [i,0] }
+        data-index={ [i, 0] }
         placeholder={ props.placeholder }
         value={ obj[0] || '' }
         onChange={ onChange }
@@ -100,10 +100,10 @@ KeyObjectEditor.defaultProps = {
   id: 'KeyObjectEditor',
   placeholder: 'KeyObjectEditor',
   value: [],
-  change: (val) => {
+  change: val => {
     console.log(val)
   },
-  remove: (id) => {
+  remove: id => {
     console.log(id)
   }
 }

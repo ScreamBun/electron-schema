@@ -14,30 +14,30 @@ const metaDef = ({k='key',  v=''}) => {
 
 // JADN Meta Structure
 export default {
-  module: {
-    key: 'Module',
-    edit: (val) => metaDef({k: 'module', v: val}),
-    editor: ({...props}) => <KeyValueEditor id='Module' {...props} description='Unique name/version' />
-  },
-  patch: {
-    key: 'Patch',
-    edit: (val) => metaDef({k: 'patch', v: val}),
-    editor: ({...props}) => <KeyValueEditor id='Patch' {...props} />
-  },
   title: {
     key: 'Title',
-    edit: (val) => metaDef({k: 'title', v: val}),
+    edit: val => metaDef({k: 'title', v: val}),
     editor: ({...props}) => <KeyValueEditor id='Title' {...props} />
   },
   description: {
     key: 'Description',
-    edit: (val) => metaDef({k: 'description', v: val}),
+    edit: val => metaDef({k: 'description', v: val}),
     editor: ({...props}) => <KeyValueEditor id='Description' {...props} />
+  },
+  module: {
+    key: 'Module',
+    edit: val => metaDef({k: 'module', v: val}),
+    editor: ({...props}) => <KeyValueEditor id='Module' {...props} description='Unique name/version' />
+  },
+  patch: {
+    key: 'Patch',
+    edit: val => metaDef({k: 'patch', v: val}),
+    editor: ({...props}) => <KeyValueEditor id='Patch' {...props} />
   },
   imports: {
     key: 'Imports',
     edit: (val=[]) => metaDef({k: 'imports', v: val}),
-    editor: ({...props}) => <KeyObjectEditor id='Imports' {...props} />
+    editor: ({...props}) => <KeyObjectEditor id='Imports' {...props} description='Imported schema modules' />
   },
   exports: {
     key: 'Exports',

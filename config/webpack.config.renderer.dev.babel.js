@@ -2,9 +2,7 @@
 
 /**
  * Build config for development electron renderer process that uses
- * Hot-Module-Replacement
- *
- * https://webpack.js.org/concepts/hot-module-replacement/
+ * Hot-Module-Replacement - https://webpack.js.org/concepts/hot-module-replacement/
  */
 import baseConfig from './webpack.config.base'
 
@@ -12,17 +10,22 @@ import webpack from 'webpack'
 import merge from 'webpack-merge'
 import path from 'path'
 
-import fs from 'fs'
+import fs from 'fs-extra'
 import chalk from 'chalk'
 import { spawn, execSync } from 'child_process'
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv'
 
 const env = 'development'
-CheckNodeEnv(env)
+
+// When an ESLint server is running, we can't set the NODE_ENV so we'll check if it's
+// at the dev webpack config is not accidentally run in a production environment
+if (process.env.NODE_ENV === 'production') {
+  CheckNodeEnv(env)
+}
 
 const ROOT_DIR = path.join(__dirname, '..')
-const DLL_DIR = path.join(ROOT_DIR, 'dll')
 const DIST_DIR = path.join(__dirname, 'dist')
+const DLL_DIR = path.join(ROOT_DIR, 'dll')
 
 const port = process.env.PORT || 1212
 const publicPath = `http://localhost:${port}/dist`
@@ -57,6 +60,16 @@ export default merge.smart(baseConfig, {
     }
   },
   plugins: [
+    /**
+     * Create global constants which can be configured at compile time
+     * Useful for allowing different behaviour between development builds and release builds
+     * NODE_ENV should be production so that modules do not perform certain development checks
+     * By default, use 'development' as NODE_ENV. This can be overriden with
+     * 'staging', for example, by changing the ENV variables in the npm scripts
+     */
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: env
+    }),
     requiredByDLLConfig
       ? null
       : new webpack.DllReferencePlugin({
@@ -68,16 +81,6 @@ export default merge.smart(baseConfig, {
       multiStep: true
     }),
     new webpack.NoEmitOnErrorsPlugin(),
-    /**
-     * Create global constants which can be configured at compile time
-     * Useful for allowing different behaviour between development builds and release builds
-     * NODE_ENV should be production so that modules do not perform certain development checks
-     * By default, use 'development' as NODE_ENV. This can be overriden with
-     * 'staging', for example, by changing the ENV variables in the npm scripts
-     */
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: env
-    }),
     new webpack.LoaderOptionsPlugin({
       debug: true
     })
@@ -191,7 +194,6 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-
             limit: 10*1024,
             mimetype: 'image/svg+xml'
           }

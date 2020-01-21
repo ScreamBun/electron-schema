@@ -25,10 +25,6 @@ export default merge.smart(baseConfig, {
     filename: './app/main.prod.js'
   },
   plugins: [
-    new BundleAnalyzerPlugin({
-      analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
-      openAnalyzer: process.env.OPEN_ANALYZER === 'true'
-    }),
     /**
      * Create global constants which can be configured at compile time
      * Useful for allowing different behaviour between development builds and release builds
@@ -38,6 +34,10 @@ export default merge.smart(baseConfig, {
       NODE_ENV: env,
       DEBUG_PROD: false,
       START_MINIMIZED: false
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
+      openAnalyzer: process.env.OPEN_ANALYZER === 'true'
     })
   ],
   optimization: {
