@@ -6,7 +6,9 @@ import {
   Collapse,
   FormGroup,
   Input,
-  Label
+  InputGroup,
+  Label,
+  Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -17,6 +19,8 @@ import {
   faPlus,
   faPlusSquare
 } from '@fortawesome/free-solid-svg-icons'
+
+import OptionsModal from './OptionsModal'
 
 import FieldEditor, { StandardField, EnumeratedField } from './field'
 
@@ -29,6 +33,7 @@ class StructureEditor extends Component {
     this.onChange = this.onChange.bind(this)
     this.toggleFields = this.toggleFields.bind(this)
     this.addField = this.addField.bind(this)
+    this.toggleModal = this.toggleModal.bind(this)
 
     this.state = {
       fieldCollapse: false,
@@ -38,7 +43,8 @@ class StructureEditor extends Component {
         options: [],
         comment: '',
         fields: []
-      }
+      },
+      modal : false
     }
 
     this.fieldStyles = {
@@ -120,6 +126,12 @@ class StructureEditor extends Component {
     })
   }
 
+  toggleModal() {
+    this.setState({
+      modal : !this.state.modal
+    })
+  }
+
   render() {
     setTimeout(() => this.initState(), 100)
     let structureFields = (this.state.values.fields || []).map((f, i) => (
@@ -182,8 +194,12 @@ class StructureEditor extends Component {
           </FormGroup>
 
           <FormGroup className='col-md-4'>
-            <Label>Options</Label>
-            <Input type='string' placeholder='Options' value={ this.state.values.options.join(', ') } onChange={ this.onChange } />
+            <Label>&nbsp;</Label>
+            <InputGroup>
+              <Button outline color='info' onClick={ this.toggleModal }>Options</Button>
+              <OptionsModal isOpen={ this.state.modal } toggleModal={ this.toggleModal } />
+              <Input type='string' value={ this.state.values.options.join(', ') } onChange={ this.onChange } />
+            </InputGroup>
           </FormGroup>
 
           <FormGroup className='col-md-4'>

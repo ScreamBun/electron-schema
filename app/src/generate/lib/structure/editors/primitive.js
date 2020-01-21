@@ -5,7 +5,9 @@ import {
   ButtonGroup,
   FormGroup,
   Input,
-  Label
+  InputGroup,
+  Label,
+  Modal
 } from 'reactstrap'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -60,6 +62,7 @@ const PrimitiveEditor = (props) => {
 
         <FormGroup className='col-md-4'>
           <Label>Options</Label>
+          <Button outline color='info'>Options</Button>
           <Input type="string" placeholder="Options" value={ values.options.join(', ') } onChange={ onChange } />
         </FormGroup>
 
