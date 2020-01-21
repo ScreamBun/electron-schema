@@ -1,7 +1,5 @@
 /* eslint global-require: off */
 import { app, dialog, ipcMain, BrowserWindow } from 'electron'
-import { autoUpdater } from 'electron-updater'
-import log from 'electron-log'
 import fs from 'fs-extra'
 import url from 'url'
 import path from 'path'
@@ -38,14 +36,6 @@ const pyodideSetup = async () => {
 }
 
 // App Window Setup
-export default class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
-
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer')
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS
@@ -82,7 +72,8 @@ const createMainWindow = () => {
     show: false,
     webPreferences: {
       nodeIntegration: true,
-      preload: path.join(APP_DIR, 'preload.js')
+      // preload: path.join(APP_DIR, 'preload.js'),
+      // webSecurity: false
     }
   })
 
@@ -93,20 +84,10 @@ const createMainWindow = () => {
 
   // Load content
   let windowURL = url.format({
-    pathname: path.join(APP_DIR, 'app.html'),
+    pathname: `${__dirname}/app.html`,
     protocol: 'file',
     slashes: true
   })
-  /*
-  if (isDevelopment) {
-    windowURL = url.format({
-      protocol: 'http:',
-      host: 'localhost:8080',
-      pathname: 'index.html',
-      slashes: true
-    })
-  }
-  */
   mainWindow.loadURL(windowURL)
 
   // Don't show until we are ready and loaded
@@ -167,7 +148,6 @@ app.on('ready', async () => {
   }
 
   createMainWindow()
-  new AppUpdater()
 })
 
 app.on('activate', () => {

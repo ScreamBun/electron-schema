@@ -52,7 +52,7 @@ class SidebarMenu extends Component {
     })
   }
 
-  // pass reference to this down to ThemeChooser component
+  // pass reference to this down to child component
   getChildContext() {
     return {
       sidebarDocked: this.state.sidebarDocked,
@@ -68,14 +68,11 @@ class SidebarMenu extends Component {
       </Draggable>
     ))
 
-    let typesKeys = Object.keys(this.keys.types).map((k, i) => {
-      let borderClass = this.keys.types[k].type === 'structure' ? 'border-primary' : 'border-dark'
-      return (
-        <Draggable type="types" data={ k } key={ i }>
-          <ListGroupItem action>{ this.keys.types[k].key }</ListGroupItem>
-        </Draggable>
-      )
-    })
+    let typesKeys = Object.keys(this.keys.types).map((k, i) => (
+      <Draggable type="types" data={ k } key={ i }>
+        <ListGroupItem action>{ this.keys.types[k].key }</ListGroupItem>
+      </Draggable>
+    ))
 
     return (
       <div>

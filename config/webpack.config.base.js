@@ -4,32 +4,12 @@
 import webpack from 'webpack'
 import path from 'path'
 
-import fs from 'fs'
 import { dependencies as externals } from '../app/package.json'
-import { dependencies as possibleExternals } from '../package.json'
 
 const env = 'production'
 
 const ROOT_DIR = path.join(__dirname, '..')
 const APP_DIR = path.join(ROOT_DIR, 'app')
-
-// Find all the dependencies without a `main` property and add them as webpack externals
-function filterDepWithoutEntryPoints(dep: string): boolean {
-  // Return true if we want to add a dependency to externals
-  try {
-    // If the root of the dependency has an index.js, return true
-    if (fs.existsSync(path.join(__dirname, '..', `node_modules/${dep}/index.js`))) {
-      return false;
-    }
-    const pgkString = fs.readFileSync(require.resolve(`${dep}/package`)).toString();
-    const pkg = JSON.parse(pgkString);
-    const fields = ['main', 'module', 'jsnext:main', 'browser'];
-    return !fields.some(field => field in pkg);
-  } catch (e) {
-    console.log(e);
-    return true;
-  }
-}
 
 export default {
   output: {
@@ -43,8 +23,7 @@ export default {
     modules: [APP_DIR, 'node_modules']
   },
   externals: [
-    ...Object.keys(externals || {}),
-    ...Object.keys(possibleExternals || {}).filter(filterDepWithoutEntryPoints)
+    ...Object.keys(externals || {})
   ],
   plugins: [
     new webpack.EnvironmentPlugin({
@@ -62,12 +41,6 @@ export default {
           options: {
             cacheDirectory: true
           }
-        }
-      },{
-        test: /\.jadn$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'json-loader'
         }
       }
     ]

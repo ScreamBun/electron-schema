@@ -3,9 +3,6 @@ import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHome } from '@fortawesome/free-solid-svg-icons'
-
 import logo from '../../resources/images/openc2-logo.png'
 
 class Nav extends Component {

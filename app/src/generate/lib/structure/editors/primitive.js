@@ -16,8 +16,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 // Primitive Editor
-const PrimitiveEditor = (props) => {
+const PrimitiveEditor = props => {
   let values = {}
+
   if (props.value && typeof(props.value) === 'object') {
     values = {
       name: props.value[0] || '',
@@ -27,9 +28,9 @@ const PrimitiveEditor = (props) => {
     }
   }
 
-  const removeAll = (e) => props.remove(props.dataIndex)
+  const removeAll = e => props.remove(props.dataIndex)
 
-  const onChange = (e) => {
+  const onChange = e => {
     let key = e.target.placeholder.toLowerCase()
     let value = e.target.value
     if (key === 'options') {
@@ -83,7 +84,7 @@ PrimitiveEditor.defaultProps = {
   change: (vals, idx) => {
     console.log(vals, idx)
   },
-  remove: (idx) => {
+  remove: idx => {
     console.log(idx)
   }
 }

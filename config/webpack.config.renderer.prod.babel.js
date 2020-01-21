@@ -1,5 +1,5 @@
 /**
- * Build config for electron renderer process
+ * Build config for production electron renderer process
  */
 import baseConfig from './webpack.config.base'
 
@@ -8,10 +8,11 @@ import merge from 'webpack-merge'
 import path from 'path'
 
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import TerserPlugin from 'terser-webpack-plugin'
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv'
 
 const env = 'production'
@@ -42,13 +43,20 @@ export default merge.smart(baseConfig, {
     new MiniCssExtractPlugin({
       filename: 'css/styles.css'
     }),
+    new CopyWebpackPlugin([
+      { // Theme Assets
+        from: path.join(APP_DIR, 'resources', 'assets'),
+        to: path.join(DIST_DIR, 'assets'),
+        toType: 'dir'
+      }
+    ]),
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
       openAnalyzer: process.env.OPEN_ANALYZER === 'true'
     }),
     new CleanWebpackPlugin({
       dry: false
-    }),
+    })
   ],
   optimization: {
     minimizer: process.env.E2E_BUILD
@@ -103,7 +111,6 @@ export default merge.smart(baseConfig, {
               loader: 'file-loader',
               options: {
                 name: 'fonts/[name].[ext]'
-
               }
             }
           }

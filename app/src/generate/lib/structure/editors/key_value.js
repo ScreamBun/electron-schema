@@ -15,7 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 // Key Value Editor
-const KeyValueEditor = (props) => (
+const KeyValueEditor = props => (
   <FormGroup row className='border m-1 p-1'>
     <Label for={ 'editor-' + props.id } sm={ 2 } ><strong>{ props.id }</strong></Label>
     <div className="input-group col-sm-10">
@@ -43,10 +43,10 @@ KeyValueEditor.defaultProps = {
   id: 'KeyValueEditor',
   placeholder: 'KeyValueEditor',
   value: '',
-  change: (val) => {
+  change: val => {
     console.log(val)
   },
-  remove: (id) => {
+  remove: id => {
     console.log(id)
   },
   removable: true

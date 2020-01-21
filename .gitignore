@@ -162,6 +162,9 @@ fabric.properties
 # Jet brains profect workspace
 .idea
 
+# OSX
+.DS_Store
+
 # flow-typed
 flow-typed/npm/*
 !flow-typed/npm/module_vx.x.x.js
@@ -182,3 +185,4 @@ main.js.map
 # Assorted dev files
 config.dev.json
 /app/pyapi/build/
+/app/app.prod.html
