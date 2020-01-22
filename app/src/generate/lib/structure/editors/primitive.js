@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 
 import {
   Button,
@@ -17,8 +17,12 @@ import {
   faPlusSquare
 } from '@fortawesome/free-solid-svg-icons'
 
+import OptionsModal from './OptionsModal'
+
 // Primitive Editor
 const PrimitiveEditor = props => {
+
+  let [ isOpen, toggleModal ] = useState(false);
   let values = {}
 
   if (props.value && typeof(props.value) === 'object') {
@@ -62,10 +66,12 @@ const PrimitiveEditor = props => {
         </FormGroup>
 
         <FormGroup className='col-md-4'>
-          <Label>Options</Label>
-          <Button outline color='info'>Options</Button>
-          <Input type="string" placeholder="Options" value={ values.options.join(', ') } onChange={ onChange } />
-        </FormGroup>
+            <Label>&nbsp;</Label>
+            <InputGroup>
+              <Button outline color='info' onClick={ () => toggleModal(!isOpen) }>Type Options</Button>
+              <OptionsModal isOpen={ isOpen } toggleModal={ () => toggleModal(!isOpen) } />
+            </InputGroup>
+          </FormGroup>
 
         <FormGroup className='col-md-4'>
           <Label>Comment</Label>
@@ -90,6 +96,7 @@ PrimitiveEditor.defaultProps = {
   remove: idx => {
     console.log(idx)
   }
+
 }
 
 export default PrimitiveEditor

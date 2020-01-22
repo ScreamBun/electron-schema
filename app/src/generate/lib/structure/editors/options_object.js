@@ -45,8 +45,6 @@ const ConfigKeys = {
   '(optional) unique': { 
     description: 'If present, an ArrayOf instance must not contain duplicate values'
   },
-
-
 }
 
 // Key Object Editor
@@ -74,7 +72,10 @@ const KeyObjectEditor = (props) => {
     if (props.value.hasOwnProperty(key)) {
       keyProps['value'] = props.value[key]
     }
-    return <KeyValueEditor key={ idx } id={ key } { ...keyProps } />
+
+    const dropdown = (key == 'id' || key == 'enum') ? true : false;
+
+    return <KeyValueEditor dropdown={ dropdown } key={ idx } id={ key } { ...keyProps } />
   })
 
   return (
@@ -93,9 +94,9 @@ KeyObjectEditor.defaultProps = {
   id: 'Set Type Options',
   placeholder: 'Set Type Options',
   value: [],
-  change: val => {
-    console.log(val)
-  }
+  // change: val => {
+  //   console.log(val)
+  // }
 }
 
 export default KeyObjectEditor

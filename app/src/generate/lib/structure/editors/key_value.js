@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
   Button,
@@ -6,27 +6,43 @@ import {
   FormGroup,
   FormText,
   Input,
-  Label
+  Label,
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem
 } from 'reactstrap'
 
+import Select from 'react-dropdown-select'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faMinusSquare
 } from '@fortawesome/free-solid-svg-icons'
 
 // Key Value Editor
-const KeyValueEditor = props => (
-  <FormGroup row className='border m-1 p-1'>
+const KeyValueEditor = props => {
+  const [ inputValue, handleInputChange ] = useState('');
+  const [ selectValue, handleSelectChange ] = useState('')
+
+  const options = [
+    { value: '', label: '' },
+    { value: true, label: 'Yes' },
+    { value: false, label: 'No' },
+  ];
+
+  return (
+    <FormGroup row className='border m-1 p-1'>
     <Label for={ 'editor-' + props.id } sm={ 2 } ><strong>{ props.id }</strong></Label>
     <div className="input-group col-sm-10">
-      <Input
-        type="text"
-        id={ 'editor-' + props.id }
-        className="form-control"
-        placeholder={ props.placeholder }
-        value={ props.value }
-        onChange={ e => props.change(e.target.value) }
-      />
+      { props.dropdown ? 
+        <Select options={ options } onChange={ handleSelectChange }  value={ selectValue }/>
+        : 
+        <Input
+          type="text"
+          id={ 'editor-' + props.id }
+          className="form-control"
+          placeholder={ props.placeholder }
+          value={ inputValue }
+          onChange={ e => handleInputChange(e.target.value) }
+        />  
+      }
       { props.removable ? (
         <div className="input-group-append">
           <Button color='danger' onClick={ () => props.remove(props.id.toLowerCase()) }>
@@ -37,15 +53,13 @@ const KeyValueEditor = props => (
     </div>
     { props.description ? <FormText color='muted' className='ml-3'>{ props.description }</FormText> : '' }
   </FormGroup>
-)
-
+  )
+}
+  
 KeyValueEditor.defaultProps = {
   id: 'KeyValueEditor',
   placeholder: 'KeyValueEditor',
   value: '',
-  change: val => {
-    console.log(val)
-  },
   remove: id => {
     console.log(id)
   },

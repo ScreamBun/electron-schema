@@ -64,7 +64,7 @@ const KeyObjectEditor = (props) => {
   })
 
   if(!props.fieldOptions) return null;
-  
+
   return (
     <div className='border m-1 p-1'>
       <div className='border-bottom mb-2'>
@@ -81,9 +81,9 @@ KeyObjectEditor.defaultProps = {
   id: 'Set Field Options',
   placeholder: 'Set Field Options',
   value: [],
-  change: val => {
-    console.log(val)
-  }
+  // change: val => {
+  //   console.log(val)
+  // }
 }
 
 export default KeyObjectEditor
