@@ -193,9 +193,8 @@ class StructureEditor extends Component {
           <FormGroup className='col-md-4'>
             <Label>&nbsp;</Label>
             <InputGroup>
-              <Button outline color='info' onClick={ this.toggleModal }>Options</Button>
+              <Button outline color='info' onClick={ this.toggleModal }>Type Options</Button>
               <OptionsModal isOpen={ this.state.modal } toggleModal={ this.toggleModal } />
-              <Input type='string' value={ this.state.values.options.join(', ') } onChange={ this.onChange } />
             </InputGroup>
           </FormGroup>
 

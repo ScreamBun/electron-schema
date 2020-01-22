@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 
 import {
   Button,
@@ -9,6 +9,7 @@ import {
 } from 'reactstrap'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import OptionsModal from './OptionsModal'
 
 import {
   faMinusCircle,
@@ -32,6 +33,9 @@ export const EnumeratedField = {
 
 // Field Editor
 const FieldEditor = (props) => {
+  const [isOpen, toggleModal] = useState(false);
+  const [isFieldEditor] = useState(true);
+
   let values = {}
 
   if (props.value && typeof(props.value) === 'object') {
@@ -105,8 +109,8 @@ const FieldEditor = (props) => {
               </FormGroup>
 
               <FormGroup className='col-md-4 d-inline-block'>
-                <Label>Options</Label>
-                <Input type='string' placeholder='Options' value={ values.options.join(', ') } onChange={ onChange } />
+                <Button outline color='info' onClick={ () => toggleModal(!isOpen) }>Field Options</Button>
+                <OptionsModal isOpen={ isOpen } toggleModal={ () => toggleModal(!isOpen) } fieldOptions={ true } />
               </FormGroup>
             </div>
           )
@@ -124,9 +128,11 @@ FieldEditor.defaultProps = {
   enumerated: false,
   dataIndex: -1,
   values: [],
+
   change: (vals, idx) => {
     console.log(vals, idx)
   },
+
   remove: idx => {
     console.log(idx)
   }
