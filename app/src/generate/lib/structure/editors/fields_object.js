@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 
 import {
   Button,
@@ -37,6 +37,8 @@ const ConfigKeys = {
 
 // Key Object Editor
 const KeyObjectEditor = (props) => {
+  const [state, setState] = useState({});
+
   const removeAll = e => props.remove(props.id.toLowerCase())
 
   const onChange = e => {
@@ -51,6 +53,17 @@ const KeyObjectEditor = (props) => {
     props.change(tmpValue)
   }
 
+  const saveKeyValuePair = (keyVal) => {  
+    setState(prevState => ({
+      ...prevState,
+      [keyVal[0]] : keyVal[1]
+    }))
+  }
+
+  useEffect(() => {
+    props.saveModalState(state, 'field');
+  }, [state]) 
+
   const keys = Object.keys(ConfigKeys).map((key, idx) => {
     let keyProps = {
       ...ConfigKeys[key],
@@ -59,8 +72,11 @@ const KeyObjectEditor = (props) => {
     }
     if (props.value.hasOwnProperty(key)) {
       keyProps['value'] = props.value[key]
-    }
-    return <KeyValueEditor key={ idx } id={ key } { ...keyProps } />
+    } 
+
+    const isDropdown = (key == 'path') ? true : false;
+
+    return <KeyValueEditor saveKeyValuePair={ saveKeyValuePair } key={ idx } isDropdown={ isDropdown }  idx={ idx } id={ key } { ...keyProps } />
   })
 
   if(!props.fieldOptions) return null;

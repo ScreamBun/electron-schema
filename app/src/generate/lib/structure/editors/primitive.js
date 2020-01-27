@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 
 import {
   Button,
@@ -22,17 +22,36 @@ import OptionsModal from './OptionsModal'
 // Primitive Editor
 const PrimitiveEditor = props => {
 
-  let [ isOpen, toggleModal ] = useState(false);
-  let values = {}
+  const [isOpen, toggleModal] = useState(false);
+  const [values, setState] = useState({
+    name: (props.value && typeof(props.value) === 'object') ? props.value[0]: '',
+    type: (props.value && typeof(props.value) === 'object') ? props.value[1]: '',
+    options: (props.value && typeof(props.value) === 'object') ? props.value[2]: [],
+    comment: (props.value && typeof(props.value) === 'object') ? props.value[3]: ''
+  });
 
-  if (props.value && typeof(props.value) === 'object') {
-    values = {
-      name: props.value[0] || '',
-      type: props.value[1] || '',
-      options: props.value[2] || [],
-      comment: props.value[3] || ''
-    }
-  }
+  // if ((props.value && typeof(props.value) === 'object')) {
+  //   console.log('in hereerrer');
+  //   setState({
+  //     name: props.value[0],
+  //     type: props.value[1],
+  //     options: props.value[2],
+  //     comment: props.value[3]
+  //   })
+  // }
+
+  // useEffect(() => {
+  //   if ((props.value && typeof(props.value) === 'object')) {
+  //     console.log('in hereerrer');
+  //     setState({
+  //       name: props.value[0],
+  //       type: props.value[1],
+  //       options: props.value[2],
+  //       comment: props.value[3]
+  //     })
+  //   }
+  // })
+
 
   const removeAll = e => props.remove(props.dataIndex)
 
@@ -43,8 +62,24 @@ const PrimitiveEditor = props => {
       value = value.split(/,\s+?/)
     }
 
-    values[key] = value
+    setState(prevState => ({
+      ...prevState,
+      [key] : value
+    }))
+
     props.change(values, props.dataIndex)
+  }
+
+  const saveModal = (data) => {
+    toggleModal();
+
+    console.log(data, 'data in here');
+    setState(prevState => ({
+      values: {
+        ...prevState.values,
+        options: [data]
+      }
+    }))
   }
 
   return (
@@ -69,7 +104,7 @@ const PrimitiveEditor = props => {
             <Label>&nbsp;</Label>
             <InputGroup>
               <Button outline color='info' onClick={ () => toggleModal(!isOpen) }>Type Options</Button>
-              <OptionsModal isOpen={ isOpen } toggleModal={ () => toggleModal(!isOpen) } />
+              <OptionsModal isOpen={ isOpen } toggleModal={ () => toggleModal(!isOpen) } saveModal={ saveModal } />
             </InputGroup>
           </FormGroup>
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 
 import {
   Button,
@@ -9,6 +9,7 @@ import {
 } from 'reactstrap'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import {
   faMinusCircle,
   faMinusSquare,
@@ -49,6 +50,8 @@ const ConfigKeys = {
 
 // Key Object Editor
 const KeyObjectEditor = (props) => {
+  const [state, setState] = useState({});
+
   const removeAll = e => props.remove(props.id.toLowerCase())
 
   const onChange = e => {
@@ -56,12 +59,24 @@ const KeyObjectEditor = (props) => {
     let value = e.target.value
 
     let tmpValue = [ ...props.value ]
+
     if (!tmpValue[index[0]]) {
       tmpValue[index[0]] = ['', '']
     }
     tmpValue[index[0]][index[1]] = value
     props.change(tmpValue)
   }
+
+  const saveKeyValuePair = (keyVal) => {  
+    setState(prevState => ({
+      ...prevState,
+      [keyVal[0]] : keyVal[1]
+    }))
+  }
+
+  useEffect(() => {
+    props.saveModalState(state, 'type');
+  }, [state])
 
   const keys = Object.keys(ConfigKeys).map((key, idx) => {
     let keyProps = {
@@ -73,9 +88,9 @@ const KeyObjectEditor = (props) => {
       keyProps['value'] = props.value[key]
     }
 
-    const dropdown = (key == 'id' || key == 'enum') ? true : false;
+    const isDropdown = (key == 'id' || key == '(optional) unique') ? true : false;
 
-    return <KeyValueEditor dropdown={ dropdown } key={ idx } id={ key } { ...keyProps } />
+    return <KeyValueEditor saveKeyValuePair={ saveKeyValuePair } isDropdown={ isDropdown } key={ idx } idx={ idx } id={ key } { ...keyProps } />
   })
 
   return (
@@ -97,6 +112,6 @@ KeyObjectEditor.defaultProps = {
   // change: val => {
   //   console.log(val)
   // }
-}
+};
 
-export default KeyObjectEditor
+export default KeyObjectEditor;
