@@ -103,9 +103,9 @@ class StructureEditor extends Component {
     let key = e.target.placeholder.toLowerCase()
     let value = e.target.value
 
-    if (key === 'options') {
-      value = value.split(/,\s+?/)
-    }
+    // if (key === 'options') {
+    //   value = value.split(/,\s+?/)
+    // }
     
     this.setState(prevState => ({
       values: {
@@ -113,7 +113,6 @@ class StructureEditor extends Component {
         [key]: value
       }
     }), () => {
-      console.log(this.state, 'state when input changes');
       if (this.props.change) {
         this.props.change(this.state.values, this.props.dataIndex)
       }
@@ -132,12 +131,10 @@ class StructureEditor extends Component {
     });
   }
 
-  // data is a string with formatted option values
   saveModal(data) {
     this.toggleModal();
 
-    console.log(data, 'data in here');
-
+    data = data.split(/,\s+?/)
     this.setState(prevState => ({
       values: {
         ...prevState.values,
@@ -147,7 +144,7 @@ class StructureEditor extends Component {
       if (this.props.change) {
         this.props.change(this.state.values, this.props.dataIndex)
       }
-  })
+    })
   }
 
   render() {

@@ -54,7 +54,6 @@ class GenerateSchema extends Component {
     }
 
     this.keys = SchemaStructure
-    console.log(this.keys);
     this.minHeight = '50em'
 
     ipcRenderer.on('file-open', (event, store) => {
