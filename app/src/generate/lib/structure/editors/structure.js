@@ -102,10 +102,6 @@ class StructureEditor extends Component {
   onChange(e) {
     let key = e.target.placeholder.toLowerCase()
     let value = e.target.value
-
-    // if (key === 'options') {
-    //   value = value.split(/,\s+?/)
-    // }
     
     this.setState(prevState => ({
       values: {
@@ -134,11 +130,12 @@ class StructureEditor extends Component {
   saveModal(data) {
     this.toggleModal();
 
-    data = data.split(/,\s+?/)
+    data = data.split(/,\s+?/);
+
     this.setState(prevState => ({
       values: {
         ...prevState.values,
-        options: [data]
+        options: data
       }
     }), () => {
       if (this.props.change) {
