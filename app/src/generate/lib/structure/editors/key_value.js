@@ -29,16 +29,18 @@ const KeyValueEditor = props => {
   };
 
   useEffect(() => {
-    props.saveKeyValuePair(getKeyValuePair('select'));
+    if(props.saveKeyValuePair)
+      props.saveKeyValuePair(getKeyValuePair('select'));
   }, [selectValue]);
 
   useEffect(() => {
-    props.saveKeyValuePair(getKeyValuePair('input'));
+    if(props.saveKeyValuePair)
+      props.saveKeyValuePair(getKeyValuePair('input'));
   }, [inputValue]);
 
   return (
     <FormGroup row className='border m-1 p-1'>
-    <Label for={ 'editor-' + props.idx } sm={ 2 } ><strong>{ props.id }</strong></Label>
+    <Label for={ 'editor-' + props.id } sm={ 2 } ><strong>{ props.id }</strong></Label>
     <div className='input-group col-sm-10'>
       { props.isDropdown ? 
         <Select
@@ -53,7 +55,7 @@ const KeyValueEditor = props => {
           className='form-control'
           placeholder={ props.placeholder }
           value={ inputValue }
-          onChange={ e => handleInputChange(e.target.value) }
+          onChange={ e => { handleInputChange(e.target.value); props.change(e.target.value) }}
         />  
       }
       { props.removable ? (
@@ -73,7 +75,10 @@ KeyValueEditor.defaultProps = {
   id: 'KeyValueEditor',
   placeholder: 'KeyValueEditor',
   value: '',
-  remove: id => {
+  change: (val) => {
+    console.log(val)
+  },
+  remove: (id) => {
     console.log(id)
   },
   removable: true

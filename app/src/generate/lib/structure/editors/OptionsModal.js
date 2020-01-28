@@ -141,8 +141,8 @@ class OptionsModal extends Component {
         options += ']' + state_obj.field[key] + ', ';
       } else if(key == 'tfield' && state_obj.field[key]) {
         options += '&' + state_obj.field[key] + ', ';
-      } else if(key == 'path' && state_obj.type[key] && state_obj.type[key][0].value) {
-        options += '<' + state_obj.field[key] + ', ';
+      } else if(key == 'path' && state_obj.field[key] && state_obj.field[key][0].value) {
+        options += '<, ';
       } else if(key == 'default' && state_obj.field[key]) {
         options += '!' + state_obj.field[key] + ', ';
       }
