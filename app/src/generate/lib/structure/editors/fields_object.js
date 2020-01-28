@@ -76,7 +76,7 @@ const KeyObjectEditor = (props) => {
 
     const isDropdown = (key == 'path') ? true : false;
 
-    return <KeyValueEditor saveKeyValuePair={ saveKeyValuePair } key={ idx } isDropdown={ isDropdown }  idx={ idx } id={ key } { ...keyProps } />
+    return <KeyValueEditor value={ props.deserializedState[key] } saveKeyValuePair={ saveKeyValuePair } key={ idx } isDropdown={ isDropdown }  idx={ idx } id={ key } { ...keyProps } />
   })
 
   if(!props.fieldOptions) return null;

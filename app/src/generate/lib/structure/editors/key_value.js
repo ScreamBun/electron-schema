@@ -18,12 +18,11 @@ import { faMinusSquare } from '@fortawesome/free-solid-svg-icons'
 // Key Value Editor
 const KeyValueEditor = props => {
   const options = [
-    { value: '', label: 'Select...' },
     { value: true, label: 'Yes' },
     { value: false, label: 'No' },
   ];
   const [ inputValue, handleInputChange ] = useState(props.value);
-  const [ selectValue, handleSelectChange ] = props.value ? useState([props.value]) : useState([options[0]]);
+  const [ selectValue, handleSelectChange ] = props.value ? useState(props.value) : useState([options[1]]);
 
   const getKeyValuePair = (type) => {
     return type == 'select' ? [props.id, selectValue] : [props.id, inputValue];

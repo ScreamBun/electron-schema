@@ -84,13 +84,14 @@ const KeyObjectEditor = (props) => {
       placeholder: key,
       removable: false
     }
+    
     if (props.value.hasOwnProperty(key)) {
       keyProps['value'] = props.value[key]
     }
 
     const isDropdown = (key == 'id' || key == '(optional) unique') ? true : false;
 
-    return <KeyValueEditor saveKeyValuePair={ saveKeyValuePair } isDropdown={ isDropdown } key={ idx } idx={ idx } id={ key } { ...keyProps } />
+    return <KeyValueEditor value={ props.deserializedState[key] } saveKeyValuePair={ saveKeyValuePair } isDropdown={ isDropdown } key={ idx } idx={ idx } id={ key } { ...keyProps } />
   })
 
   return (
@@ -109,9 +110,9 @@ KeyObjectEditor.defaultProps = {
   id: 'Set Type Options',
   placeholder: 'Set Type Options',
   value: [],
-  // change: val => {
-  //   console.log(val)
-  // }
+  change: val => {
+    console.log(val)
+  }
 };
 
 export default KeyObjectEditor;

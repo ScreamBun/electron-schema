@@ -130,7 +130,7 @@ class PrimitiveEditor extends Component {
               <Label>&nbsp;</Label>
               <InputGroup>
                 <Button outline color='info' onClick={ this.toggleModal }>Type Options</Button>
-                <OptionsModal isOpen={ this.state.modal } toggleModal={ this.toggleModal } saveModal={ this.saveModal } />
+                <OptionsModal optionValues={ this.state.values.options } isOpen={ this.state.modal } toggleModal={ this.toggleModal } saveModal={ this.saveModal } />
               </InputGroup>
             </FormGroup>
 

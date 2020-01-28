@@ -18,25 +18,98 @@ class OptionsModal extends Component {
   constructor(props) {
     super(props);
 
+    this.deserializeOptionsData = this.deserializeOptionsData.bind(this);
     this.serializeOptionsData = this.serializeOptionsData.bind(this);
     this.saveModal = this.saveModal.bind(this);
-    this.deserializeOptionsData = this.deserializeOptionsData.bind(this);
     this.saveModalState = this.saveModalState.bind(this);
 
-    // 'rehydrate' (not using Redux for now) this state component with existing options, else create empty modal
-    this.state = this.deserializeOptionsData(this.props.values)
+    this.state = this.deserializeOptionsData(this.props.optionValues)
   }
 
   // convert array into options data state object 
-  deserializeOptionsData(options_array) {
-    return { 
+  deserializeOptionsData(options) {
+    console.log(options, 'optionss');
+    let obj = {
       type : {},
       field : {}
+    };
+
+    if(options !== undefined && options.length !== 0) {
+
+      options.forEach((item, index, array) => {
+        let key;
+        let val;
+        let optionType;
+
+        const _symbol = item.charAt(0);
+        const non_bools = ['*', '+', '#', '/', '%', '{', '}', '[', '], &', '!']
+
+        if (_symbol == '=' || _symbol == 'q' || _symbol == '<') { 
+          val = [{ value : true, label : 'Yes' }]; 
+        } else if (non_bools.includes(_symbol)){
+          val = item.substring(1);
+        } 
+
+        if(_symbol == '=') {
+          optionType = 'type';
+          key = 'id';
+        } else if(_symbol == '*') {
+          optionType = 'type';
+          key = 'vtype';
+        } else if(_symbol == '+') {
+          optionType = 'type';
+          key = 'ktype';
+        } else if(_symbol == '#') {
+          optionType = 'type';
+          key = 'enum';
+        } else if(_symbol == '/') {
+          optionType = 'type';
+          key = '(optional) format';
+        } else if(_symbol == '%') {
+          optionType = 'type';
+          key = '(optional) pattern'
+        } else if(_symbol == '{') {
+          optionType = 'type';
+          key = '(optional) minv'
+        } else if(_symbol == '}') {
+          optionType = 'type';
+          key = '(optional) maxv';
+        } else if(_symbol == 'q') {
+          optionType = 'type';
+          key = '(optional) unique';
+        } else if(_symbol == '[') {
+          optionType = 'field';
+          key = 'minc';
+        } else if(_symbol == ']') {
+          optionType = 'field';
+          key = 'maxc';
+        } else if(_symbol == '&') {
+          optionType = 'field';
+          key = 'tfield';
+        } else if(_symbol == '<') {
+          optionType = 'field';
+          key = 'path';
+        } else if(_symbol == '!') {
+          optionType = 'field';
+          key = 'default';
+        }
+        obj[optionType][key] = val;
+      });
+    }
+
+    console.log(obj, 'obj');
+    return obj;
+  }
+
+  componentDidUpdate(previousProps, previousState) {
+    if (previousProps.optionValues !== this.props.optionValues) {
+      this.setState(this.deserializeOptionsData(this.props.optionValues))
     }
   }
 
   // convert options data state object into formatted str
   serializeOptionsData(state_obj) {
+    console.log(state_obj, 'state_obj');
     let options = '';
 
     for(let key in state_obj.type) {
@@ -94,8 +167,8 @@ class OptionsModal extends Component {
       <Modal size='xl' isOpen={ this.props.isOpen }>
       <ModalHeader> { this.props.fieldOptions ? 'Field Options' : 'Type Options' }</ModalHeader>
       <ModalBody>
-        <FieldOptionsEditor deserializedState={ this.state } saveModalState={ this.saveModalState } fieldOptions={ this.props.fieldOptions }/>
-        <TypeOptionsEditor deserializedState={ this.state } saveModalState={ this.saveModalState } />
+        <FieldOptionsEditor deserializedState={ this.state.field } saveModalState={ this.saveModalState } fieldOptions={ this.props.fieldOptions }/>
+        <TypeOptionsEditor deserializedState={ this.state.type } saveModalState={ this.saveModalState } />
       </ModalBody>
       <ModalFooter>
         <Button color='success' onClick={ this.saveModal }>Set</Button>
