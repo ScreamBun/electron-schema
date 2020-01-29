@@ -91,7 +91,7 @@ const KeyObjectEditor = (props) => {
 
     const isDropdown = (key == 'id' || key == '(optional) unique') ? true : false;
 
-    return <KeyValueEditor value={ props.deserializedState[key] } saveKeyValuePair={ saveKeyValuePair } isDropdown={ isDropdown } key={ idx } idx={ idx } id={ key } { ...keyProps } />
+    return <KeyValueEditor value={ props.deserializedState[key] } saveKeyValuePair={ saveKeyValuePair } isDropdown={ isDropdown } key={ idx } id={ key } { ...keyProps } />
   })
 
   return (

@@ -57,7 +57,7 @@ const KeyObjectEditor = (props) => {
       tmpValue[index[0]] = ['', '']
     }
     tmpValue[index[0]][index[1]] = value
-    props.change(tmpValue)
+    props.change(e)
   }
 
   const keys = Object.keys(ConfigKeys).map((key, idx) => {
@@ -69,8 +69,9 @@ const KeyObjectEditor = (props) => {
     if (props.value.hasOwnProperty(key)) {
       keyProps['value'] = props.value[key]
     }
-    return <KeyValueEditor key={ idx } id={ key } { ...keyProps } />
-  })
+
+    return <KeyValueEditor change={ onChange } key={ idx } id={ key } { ...keyProps } />
+  }) 
 
   return (
     <div className='border m-1 p-1'>

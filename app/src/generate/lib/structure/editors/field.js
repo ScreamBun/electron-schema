@@ -83,23 +83,6 @@ const FieldEditor = (props) => {
     }
   }
 
-/*  saveModal(data) {
-    this.toggleModal();
-
-    data = data.split(/,\s+?/);
-
-    this.setState(prevState => ({
-      values: {
-        ...prevState.values,
-        options: data
-      }
-    }), () => {
-      if (this.props.change) {
-        this.props.change(this.state.values, this.props.dataIndex)
-      }
-    })
-  }*/
-
   return (
     <div className='col-sm-12 border m-1 p-1'>
       <ButtonGroup size='sm' className='float-right'>

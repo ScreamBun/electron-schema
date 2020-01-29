@@ -97,9 +97,9 @@ KeyObjectEditor.defaultProps = {
   id: 'Set Field Options',
   placeholder: 'Set Field Options',
   value: [],
-  // change: val => {
-  //   console.log(val)
-  // }
+  change: val => {
+    console.log(val)
+  }
 }
 
 export default KeyObjectEditor

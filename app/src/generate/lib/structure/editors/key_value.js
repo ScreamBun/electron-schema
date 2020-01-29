@@ -51,7 +51,7 @@ const KeyValueEditor = props => {
         : 
         <Input
           type='text'
-          id={ 'editor-' + props.idx }
+          id={ 'editor-' + props.id }
           className='form-control'
           placeholder={ props.placeholder }
           value={ inputValue }

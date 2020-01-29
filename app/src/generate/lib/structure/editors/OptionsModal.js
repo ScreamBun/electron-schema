@@ -28,7 +28,6 @@ class OptionsModal extends Component {
 
   // convert array into options data state object 
   deserializeOptionsData(options) {
-    console.log(options, 'optionss');
     let obj = {
       type : {},
       field : {}
@@ -97,7 +96,6 @@ class OptionsModal extends Component {
       });
     }
 
-    console.log(obj, 'obj');
     return obj;
   }
 
@@ -109,7 +107,6 @@ class OptionsModal extends Component {
 
   // convert options data state object into formatted str
   serializeOptionsData(state_obj) {
-    console.log(state_obj, 'state_obj');
     let options = '';
 
     for(let key in state_obj.type) {
