@@ -28,7 +28,8 @@ const ConfigKeys = {
     description: 'Field that specifies the type of this field'
   },
   'path': { 
-    description: 'Use FieldName as a qualifier for fields in FieldType'
+    description: 'Use FieldName as a qualifier for fields in FieldType',
+    type: 'checkbox'
   },
   'default': { 
     description: 'Reserved for default value'
@@ -53,10 +54,10 @@ const KeyObjectEditor = (props) => {
     props.change(tmpValue)
   }
 
-  const saveKeyValuePair = (keyVal) => {  
+  const saveKeyValuePair = (key, val) => {
     setState(prevState => ({
       ...prevState,
-      [keyVal[0]] : keyVal[1]
+      [key] : val
     }))
   }
 
@@ -68,15 +69,11 @@ const KeyObjectEditor = (props) => {
     let keyProps = {
       ...ConfigKeys[key],
       placeholder: key,
-      removable: false
+      removable: false,
+      change: v => saveKeyValuePair(key, v)
     }
-    if (props.value.hasOwnProperty(key)) {
-      keyProps['value'] = props.value[key]
-    } 
 
-    const isDropdown = (key == 'path') ? true : false;
-
-    return <KeyValueEditor value={ props.deserializedState[key] } saveKeyValuePair={ saveKeyValuePair } key={ idx } isDropdown={ isDropdown }  idx={ idx } id={ key } { ...keyProps } />
+    return <KeyValueEditor value={ props.deserializedState[key] } idx={ idx } id={ key } { ...keyProps } />
   })
 
   if(!props.fieldOptions) return null;

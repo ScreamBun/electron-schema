@@ -6,11 +6,7 @@ import {
   KeyValueEditor
 } from './editors'
 
-const metaDef = ({k='key',  v=''}) => {
-  return {
-    [k]: v
-  }
-}
+const metaDef = ({k='key',  v=''}) => ({ [k]: v })
 
 // JADN Meta Structure
 export default {
@@ -36,7 +32,7 @@ export default {
   },
   imports: {
     key: 'Imports',
-    edit: (val=[]) => metaDef({k: 'imports', v: val}),
+    edit: (val={}) => metaDef({k: 'imports', v: val}),
     editor: ({...props}) => <KeyObjectEditor id='Imports' {...props} description='Imported schema modules' />
   },
   exports: {
@@ -46,7 +42,7 @@ export default {
   },
   config: {
     key: 'Config',
-    edit: (val=[]) => metaDef({k: 'config', v: val}),
+    edit: (val={}) => metaDef({k: 'config', v: val}),
     editor: ({...props}) => <ConfigObjectEditor id='Config' {...props} description='Configuration values for this module' />
   }
-}
+};

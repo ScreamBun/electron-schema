@@ -4,41 +4,46 @@
  * Build config for development electron renderer process that uses
  * Hot-Module-Replacement - https://webpack.js.org/concepts/hot-module-replacement/
  */
-import baseConfig from './webpack.config.base'
+import webpack from 'webpack';
+import merge from 'webpack-merge';
+import path from 'path';
+import fs from 'fs-extra';
+import chalk from 'chalk';
+import { spawn, execSync } from 'child_process';
+import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
-import webpack from 'webpack'
-import merge from 'webpack-merge'
-import path from 'path'
+import baseConfig from './webpack.config.base';
 
-import fs from 'fs-extra'
-import chalk from 'chalk'
-import { spawn, execSync } from 'child_process'
-import CheckNodeEnv from '../internals/scripts/CheckNodeEnv'
-
-const env = 'development'
+const env = 'development';
 
 // When an ESLint server is running, we can't set the NODE_ENV so we'll check if it's
 // at the dev webpack config is not accidentally run in a production environment
 if (process.env.NODE_ENV === 'production') {
-  CheckNodeEnv(env)
+  CheckNodeEnv(env);
 }
 
-const ROOT_DIR = path.join(__dirname, '..')
-const DIST_DIR = path.join(__dirname, 'dist')
-const DLL_DIR = path.join(ROOT_DIR, 'dll')
+const ROOT_DIR = path.join(__dirname, '..');
+const DIST_DIR = path.join(__dirname, 'dist');
+const DLL_DIR = path.join(ROOT_DIR, 'dll');
 
-const port = process.env.PORT || 1212
-const publicPath = `http://localhost:${port}/dist`
-const manifest = path.resolve(DLL_DIR, 'renderer.json')
-const requiredByDLLConfig = module.parent.filename.includes('webpack.config.renderer.dev.dll')
+const port = process.env.PORT || 1212;
+const publicPath = `http://localhost:${port}/dist`;
+const manifest = path.resolve(DLL_DIR, 'renderer.json');
+const requiredByDLLConfig = module.parent.filename.includes(
+  'webpack.config.renderer.dev.dll'
+);
 
 /**
  * Warn if the DLL is not built
  */
-if (!requiredByDLLConfig && !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))) {
-  const msg = 'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"'
-  console.log(chalk.black.bgYellow.bold(msg))
-  execSync('yarn build-dll')
+if (
+  !requiredByDLLConfig &&
+  !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))
+) {
+  const msg =
+    'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"';
+  console.log(chalk.black.bgYellow.bold(msg));
+  execSync('yarn build-dll');
 }
 
 export default merge.smart(baseConfig, {
@@ -73,10 +78,10 @@ export default merge.smart(baseConfig, {
     requiredByDLLConfig
       ? null
       : new webpack.DllReferencePlugin({
-        context: DLL_DIR,
-        manifest: require(manifest),
-        sourceType: 'var'
-      }),
+          context: DLL_DIR,
+          manifest: require(manifest),
+          sourceType: 'var'
+        }),
     new webpack.HotModuleReplacementPlugin({
       multiStep: true
     }),
@@ -138,14 +143,13 @@ export default merge.smart(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              sourceMap: true,
               importLoaders: 1
             }
           },
           {
             loader: 'less-loader',
             options: {
-              strictMath: true,
+              strictMath: true
             }
           }
         ]
@@ -156,7 +160,7 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10*1024,
+            limit: 10 * 1024,
             mimetype: 'application/font-woff'
           }
         }
@@ -167,7 +171,7 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10*1024,
+            limit: 10 * 1024,
             mimetype: 'application/font-woff'
           }
         }
@@ -178,7 +182,7 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10*1024,
+            limit: 10 * 1024,
             mimetype: 'application/octet-stream'
           }
         }
@@ -194,7 +198,7 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10*1024,
+            limit: 10 * 1024,
             mimetype: 'image/svg+xml'
           }
         }
@@ -210,4 +214,4 @@ export default merge.smart(baseConfig, {
     __dirname: false,
     __filename: false
   }
-})
+});

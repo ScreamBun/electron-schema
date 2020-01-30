@@ -1,39 +1,39 @@
 // @flow
-import { app, dialog, shell, BrowserWindow, Menu } from 'electron'
-import contextMenu from 'electron-context-menu'
-import fs from 'fs-extra'
+import { app, dialog, shell, BrowserWindow, Menu } from 'electron';
+import contextMenu from 'electron-context-menu';
+import fs from 'fs-extra';
 
-import { safe_get, SchemaFormats } from './src/utils'
+import { safe_get, SchemaFormats } from './src/utils';
 
-const isDevelopment = process.env.NODE_ENV !== 'production'
-const isMac = process.platform === 'darwin'
-const isWin = ['win32', 'win64'].includes(process.platform)
+const isDevelopment = process.env.NODE_ENV !== 'production';
+const isMac = process.platform === 'darwin';
+const isWin = ['win32', 'win64'].includes(process.platform);
 
 export default class MenuBuilder {
-  mainWindow: BrowserWindow
+  mainWindow: BrowserWindow;
+
+  validInputFields: ['plainText'];
 
   constructor(mainWindow: BrowserWindow) {
-    this.mainWindow = mainWindow
+    this.mainWindow = mainWindow;
   }
 
   buildMenu() {
-    const template = this.buildTemplate()
-    const menu = Menu.buildFromTemplate(template)
+    const template = this.buildTemplate();
+    const menu = Menu.buildFromTemplate(template);
 
-    this.setupContextMenu()
-    Menu.setApplicationMenu(menu)
-    return menu
+    this.setupContextMenu();
+    Menu.setApplicationMenu(menu);
+    return menu;
   }
 
   setupContextMenu() {
-    const validInputFields = ['plainText', ]
-
     const isVisible = (params, action) => {
-      let vis = params.isEditable
-      vis = vis && safe_get(params.editFlags, `can${action}`, false)
-      vis = vis && validInputFields.includes(params.inputFieldType)
-      return vis
-    }
+      let vis = params.isEditable;
+      vis = vis && safe_get(params.editFlags, `can${action}`, false);
+      vis = vis && this.validInputFields.includes(params.inputFieldType);
+      return vis;
+    };
 
     contextMenu({
       append: (actions, params, browserWindow) => [
@@ -45,7 +45,7 @@ export default class MenuBuilder {
           visible: isVisible(params, 'Paste')
         }),
         actions.separator(),
-        actions.inspect()
+        isDevelopment ? actions.inspect() : actions.separator()
       ],
       showCopyImage: false,
       showCopyImageAddress: false,
@@ -53,8 +53,8 @@ export default class MenuBuilder {
       showLookUpSelection: false,
       showSaveImageAs: false,
       showServices: false,
-      menu: actions => []
-    })
+      menu: () => []
+    });
   }
 
   buildTemplate() {
@@ -115,7 +115,7 @@ export default class MenuBuilder {
         },
         {
           label: '&Open',
-          accelerator: isMac ? 'Command+O': 'Ctrl+O',
+          accelerator: isMac ? 'Command+O' : 'Ctrl+O',
           click: () => this.openFile()
         },
         {
@@ -129,24 +129,26 @@ export default class MenuBuilder {
           submenu: [
             {
               label: '&JADN Schema',
-              click: () => this.mainWindow.webContents.send('file-save', {format: SchemaFormats.JADN})
+              click: () => this.webContentsSave(SchemaFormats.JADN)
             },
             {
               label: '&JSON Schema',
-              click: () => this.mainWindow.webContents.send('file-save', {format: SchemaFormats.JSON})
+              click: () => this.webContentsSave(SchemaFormats.JSON)
             },
             {
               label: '&HTML',
-              click: () => this.mainWindow.webContents.send('file-save', {format: SchemaFormats.HTML})
+              click: () => this.webContentsSave(SchemaFormats.HTML)
             },
             {
               label: '&MarkDown',
-              click: () => this.mainWindow.webContents.send('file-save', {format: SchemaFormats.MD})
-            }/*,
+              click: () => this.webContentsSave(SchemaFormats.MD)
+            }
+            /*
             {
               label: '&PDF',
-              click: () => this.mainWindow.webContents.send('file-save', {format: SchemaFormats.PDF})
-            }*/
+              click: () => this.webContentsSave(SchemaFormats.PDF)
+            }
+            */
           ]
         }
       ]
@@ -160,7 +162,7 @@ export default class MenuBuilder {
           accelerator: 'Ctrl+W',
           click: () => this.mainWindow.close()
         }
-      )
+      );
     }
 
     const subMenuEdit = {
@@ -199,7 +201,6 @@ export default class MenuBuilder {
         }
       ]
     };
-
     const subMenuViewDev = {
       label: '&View',
       submenu: [
@@ -248,72 +249,69 @@ export default class MenuBuilder {
       ]
     };
 
+    const menuTemplate = [subMenuFile, subMenuEdit, subMenuView, subMenuHelp];
+
     if (isMac) {
-      return [subMenuAbout, subMenuFile, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
-    } else {
-      return [subMenuFile, subMenuEdit, subMenuView, subMenuHelp];
+      menuTemplate.splice(0, 0, subMenuAbout);
+      menuTemplate.splice(4, 0, subMenuWindow);
     }
+
+    return menuTemplate;
+  }
+
+  webContentsSave(fmt) {
+    this.mainWindow.webContents.send('file-save', { format: fmt });
   }
 
   openFile(file) {
     if (file) {
-      console.log(file)
+      console.log(file);
     } else {
-      dialog.showOpenDialog({
-        properties: ['openFile'],
-        defaultPath: app.getPath('documents'),
-        filters: [
-          { name: 'Default', extensions: ['jadn'] }
-        ]
-      }).then(result => {
-        if (!result.canceled) {
-          app.addRecentDocument(result.filePaths[0])
-          fs.readJson(result.filePaths[0], (err, packageObj) => {
-            if (err){
-              dialog.showMessageBoxSync(this.mainWindow, {
-                type: 'error',
-                title: 'Open Error',
-                detail: 'DETAILS -> TBD...'
-              })
-              console.error(err)
-            } else {
-              result.contents = packageObj
-              this.mainWindow.webContents.send('file-open', result)
-            }
-          })
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+      dialog
+        .showOpenDialog({
+          properties: ['openFile'],
+          defaultPath: app.getPath('documents'),
+          filters: [{ name: 'Default', extensions: ['jadn'] }]
+        })
+        .then(result => {
+          const rslt = { ...result };
+          if (!rslt.canceled) {
+            app.addRecentDocument(rslt.filePaths[0]);
+            fs.readJson(rslt.filePaths[0], (err, packageObj) => {
+              if (err) {
+                dialog.showMessageBoxSync(this.mainWindow, {
+                  type: 'error',
+                  title: 'Open Error',
+                  detail: 'DETAILS -> TBD...'
+                });
+                console.error(err);
+              } else {
+                rslt.contents = packageObj;
+                this.mainWindow.webContents.send('file-open', rslt);
+              }
+            });
+          }
+          return rslt;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 
   newSchema() {
-    const buttons = ['Cancel', 'Erase', 'Save']
+    const buttons = ['Cancel', 'Erase', 'Save'];
     const rslt = dialog.showMessageBoxSync(this.mainWindow, {
       type: 'question',
-      buttons: buttons,
+      buttons,
       title: 'New Schema',
       message: 'Start a new schema?'
-    })
-    if (rslt != 0) {
-      let result = {
+    });
+    if (rslt !== 0) {
+      const result = {
         action: buttons[rslt].toLowerCase()
-      }
-      this.mainWindow.webContents.send('schema-new', result)
+      };
+      this.mainWindow.webContents.send('schema-new', result);
     }
-  }
-
-  recentDocuments() {
-    if (false) {
-      // limit 10...
-      return []
-    }
-
-    return [{
-      key: 'null',
-      label: 'No Recent Schemas',
-      enabled: false
-    }]
   }
 }

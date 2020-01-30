@@ -15,8 +15,11 @@ import TypeOptionsEditor from './options_object'
 import FieldOptionsEditor from './fields_object'
 
 class OptionsModal extends Component {
-  constructor(props) {
-    super(props);
+  typeSymbols = ['=', '*', '+', '#', '/', '%', '{', '}', 'q'];
+  fieldSymbols = ['[', ']', '&', '<', '!'];
+
+  constructor(props, context) {
+    super(props, context);
 
     this.deserializeOptionsData = this.deserializeOptionsData.bind(this);
     this.serializeOptionsData = this.serializeOptionsData.bind(this);
@@ -33,7 +36,7 @@ class OptionsModal extends Component {
       field : {}
     };
 
-    if(options !== undefined && options.length !== 0) {
+    if (options !== undefined && options.length !== 0) {
 
       options.forEach((item, index, array) => {
         let key;
@@ -44,10 +47,10 @@ class OptionsModal extends Component {
         const non_bools = ['*', '+', '#', '/', '%', '{', '}', '[', '], &', '!']
 
         if (_symbol == '=' || _symbol == 'q' || _symbol == '<') { 
-          val = [{ value : true, label : 'Yes' }]; 
+          val = true;
         } else if (non_bools.includes(_symbol)){
           val = item.substring(1);
-        } 
+        }
 
         if(_symbol == '=') {
           optionType = 'type';
@@ -107,50 +110,50 @@ class OptionsModal extends Component {
 
   // convert options data state object into formatted str
   serializeOptionsData(state_obj) {
-    let options = '';
+    const options = [];
 
     for(let key in state_obj.type) {
-      if(key == 'id' && state_obj.type[key] && state_obj.type[key][0].value) {
-        options += '=, ';
+      if(key == 'id' && state_obj.type[key]) {
+        options.push('=');
       } else if(key == 'vtype' && state_obj.type[key]) {
-        options += '*' + state_obj.type[key] + ', ';
+        options.push('*' + state_obj.type[key]);
       } else if(key == 'ktype' && state_obj.type[key]) {
-        options += '+' + state_obj.type[key] + ', ';
+        options.push('+' + state_obj.type[key]);
       } else if(key == 'enum' && state_obj.type[key]) {
-        options += '#' + state_obj.type[key] + ', ';
+        options.push('#' + state_obj.type[key]);
       } else if(key == '(optional) format' && state_obj.type[key]) {
-        options += '/' + state_obj.type[key] + ', ';
+        options.push('/' + state_obj.type[key]);
       } else if(key == '(optional) pattern' && state_obj.type[key]) {
-        options += '%' + state_obj.type[key] + ', ';
+        options.push('%' + state_obj.type[key]);
       } else if(key == '(optional) minv' && state_obj.type[key]) {
-        options += '{' + state_obj.type[key] + ', ';
+        options.push('{' + state_obj.type[key]);
       } else if(key == '(optional) maxv' && state_obj.type[key]) {
-        options += '}' + state_obj.type[key] + ', ';
-      } else if(key == '(optional) unique' && state_obj.type[key] && state_obj.type[key][0].value) {
-        options += 'q, ';
+        options.push('}' + state_obj.type[key]);
+      } else if(key == '(optional) unique' && state_obj.type[key]) {
+        options.push('q');
       }
     }
 
     for(let key in state_obj.field) {
       if(key == 'minc' && state_obj.field[key]) {
-        options += '[' + state_obj.field[key] + ', ';
+        options.push('[' + state_obj.field[key]);
       } else if(key == 'maxc' && state_obj.field[key]) {
-        options += ']' + state_obj.field[key] + ', ';
+        options.push(']' + state_obj.field[key]);
       } else if(key == 'tfield' && state_obj.field[key]) {
-        options += '&' + state_obj.field[key] + ', ';
-      } else if(key == 'path' && state_obj.field[key] && state_obj.field[key][0].value) {
-        options += '<, ';
+        options.push('&' + state_obj.field[key]);
+      } else if(key == 'path' && state_obj.field[key]) {
+        options.push('<');
       } else if(key == 'default' && state_obj.field[key]) {
-        options += '!' + state_obj.field[key] + ', ';
+        options.push('!' + state_obj.field[key]);
       }
     }
 
-    return options.slice(0, -2);
+    return options.join(', ');
   }
 
   saveModalState(state, type) {
     this.setState({
-      [type] : state
+      [type]: state
     })
   }
 

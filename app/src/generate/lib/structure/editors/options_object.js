@@ -20,7 +20,8 @@ import KeyValueEditor from './key_value'
 
 const ConfigKeys = {
   'id': { 
-    description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName'
+    description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName',
+    type: 'checkbox'
   },
   'vtype': { 
     description: 'Value type for ArrayOf and MapOf'
@@ -44,7 +45,8 @@ const ConfigKeys = {
     description: 'Maximum numeric value, octet or character count, or element count'
   },
   '(optional) unique': { 
-    description: 'If present, an ArrayOf instance must not contain duplicate values'
+    description: 'If present, an ArrayOf instance must not contain duplicate values',
+    type: 'checkbox'
   },
 }
 
@@ -59,7 +61,6 @@ const KeyObjectEditor = (props) => {
     let value = e.target.value
 
     let tmpValue = [ ...props.value ]
-
     if (!tmpValue[index[0]]) {
       tmpValue[index[0]] = ['', '']
     }
@@ -67,10 +68,10 @@ const KeyObjectEditor = (props) => {
     props.change(tmpValue)
   }
 
-  const saveKeyValuePair = (keyVal) => {  
+  const saveKeyValuePair = (key, val) => {
     setState(prevState => ({
       ...prevState,
-      [keyVal[0]] : keyVal[1]
+      [key] : val
     }))
   }
 
@@ -82,16 +83,11 @@ const KeyObjectEditor = (props) => {
     let keyProps = {
       ...ConfigKeys[key],
       placeholder: key,
-      removable: false
-    }
-    
-    if (props.value.hasOwnProperty(key)) {
-      keyProps['value'] = props.value[key]
+      removable: false,
+      change: v => saveKeyValuePair(key, v)
     }
 
-    const isDropdown = (key == 'id' || key == '(optional) unique') ? true : false;
-
-    return <KeyValueEditor value={ props.deserializedState[key] } saveKeyValuePair={ saveKeyValuePair } isDropdown={ isDropdown } key={ idx } id={ key } { ...keyProps } />
+    return <KeyValueEditor value={ props.deserializedState[key] } key={ idx } id={ key } { ...keyProps } />
   })
 
   return (

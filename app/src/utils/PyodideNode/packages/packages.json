@@ -8,8 +8,7 @@
     "more-itertools": [],
     "inflect": ["importlib_metadata"],
     "pyparsing": [],
-    "setuptools": ["pyparsing"],
-    "test": []
+    "setuptools": ["pyparsing"]
   },
   "import_name_to_package_name": {
     "beautifultable": "beautifultable",

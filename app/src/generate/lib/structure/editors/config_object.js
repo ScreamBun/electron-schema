@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import {
   Button,
@@ -19,12 +20,15 @@ import KeyValueEditor from './key_value'
 
 const ConfigKeys = {
   '$MaxBinary': {  // Integer{1..*} optional,
+    type: 'number',
     description: 'Schema default maximum number of octets'
   },
   '$MaxString': {  // Integer{1..*} optional,
+    type: 'number',
     description: 'Schema default maximum number of characters'
   },
   '$MaxElements': {  // Integer{1..*} optional,
+    type: 'number',
     description: 'Schema default maximum number of items/properties'
   },
   '$FS': {  // String{1..1} optional,
@@ -45,55 +49,93 @@ const ConfigKeys = {
 }
 
 // Key Object Editor
-const KeyObjectEditor = (props) => {
-  const removeAll = e => props.remove(props.id.toLowerCase())
+class KeyObjectEditor extends Component {
+  constructor(props, context) {
+    super(props, context);
 
-  const onChange = e => {
-    let index = e.target.attributes.getNamedItem('data-index').value.split(',')
-    let value = e.target.value
+    this.removeAll = this.removeAll.bind(this)
 
-    let tmpValue = [ ...props.value ]
-    if (!tmpValue[index[0]]) {
-      tmpValue[index[0]] = ['', '']
+    this.state = {
+      ...this.props.value
     }
-    tmpValue[index[0]][index[1]] = value
-    props.change(e)
   }
 
-  const keys = Object.keys(ConfigKeys).map((key, idx) => {
-    let keyProps = {
-      ...ConfigKeys[key],
-      placeholder: key,
-      removable: false
-    }
-    if (props.value.hasOwnProperty(key)) {
-      keyProps['value'] = props.value[key]
+  shouldComponentUpdate(nextProps, nextState) {
+    let propsChange = this.props != nextProps
+    let stateChange = this.state != nextState
+
+    if (this.state !== nextState) {
+      this.props.change(nextState)
     }
 
-    return <KeyValueEditor change={ onChange } key={ idx } id={ key } { ...keyProps } />
-  }) 
+    return propsChange || stateChange
+  }
 
-  return (
-    <div className='border m-1 p-1'>
-      <Button color='danger' size='sm' className='float-right' onClick={ removeAll } >
-        <FontAwesomeIcon
-          icon={ faMinusCircle }
-        />
-      </Button>
-      <div className='border-bottom mb-2'>
-        <p className='col-sm-4 my-1'><strong>{ props.id }</strong></p>
+  toObject(val) {
+    val = val ? val :  this.state.values
+    return val.reduce((obj, row) => {
+      obj[row.key] = row.value;
+      return obj;
+    }, {});
+  }
+
+  removeAll(e) {
+    this.props.remove(this.props.id.toLowerCase())
+  }
+
+  onChange(k, v) {
+    if (v === '') {
+      delete this.state[k]
+    } else {
+      this.state[k] = v
+    }
+    this.setState(this.state)
+  }
+
+  render() {
+    const keys = Object.keys(ConfigKeys).map((key, idx) => {
+      let keyProps = {
+        ...ConfigKeys[key],
+        placeholder: key,
+        change: v => this.onChange(key, v),
+        removable: false
+      }
+      if (this.state.hasOwnProperty(key)) {
+        keyProps['value'] = this.state[key]
+      }
+      return <KeyValueEditor key={ idx } id={ key } { ...keyProps } />
+    })
+
+    return (
+      <div className='border m-1 p-1'>
+        <Button color='danger' size='sm' className='float-right' onClick={ this.removeAll } >
+          <FontAwesomeIcon
+            icon={ faMinusCircle }
+          />
+        </Button>
+        <div className='border-bottom mb-2'>
+          <p className='col-sm-4 my-1'><strong>{ this.props.id }</strong></p>
+        </div>
+        <div className='col-12 m-0'>
+          { keys }
+        </div>
       </div>
-      <div className='col-12 m-0'>
-        { keys }
-      </div>
-    </div>
-  )
+    )
+  }
+}
+
+KeyObjectEditor.propTypes = {
+  id: PropTypes.string,
+  placeholder: PropTypes.string,
+  value: PropTypes.object,
+  change: PropTypes.func,
+  remove: PropTypes.func
 }
 
 KeyObjectEditor.defaultProps = {
   id: 'ConfigObjectEditor',
   placeholder: 'ConfigObjectEditor',
-  value: [],
+  value: {},
   change: val => {
     console.log(val)
   },
