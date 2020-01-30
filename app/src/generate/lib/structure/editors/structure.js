@@ -33,6 +33,7 @@ class StructureEditor extends Component {
     this.toggleFields = this.toggleFields.bind(this)
     this.addField = this.addField.bind(this)
     this.toggleModal = this.toggleModal.bind(this)
+    this.saveModal = this.saveModal.bind(this)
 
     this.state = {
       fieldCollapse: false,
@@ -101,10 +102,7 @@ class StructureEditor extends Component {
   onChange(e) {
     let key = e.target.placeholder.toLowerCase()
     let value = e.target.value
-    if (key === 'options') {
-      value = value.split(/,\s+?/)
-    }
-
+    
     this.setState(prevState => ({
       values: {
         ...prevState.values,
@@ -126,6 +124,23 @@ class StructureEditor extends Component {
   toggleModal() {
     this.setState({
       modal : !this.state.modal
+    });
+  }
+
+  saveModal(data) {
+    this.toggleModal();
+
+    data = data.split(/,\s+?/);
+
+    this.setState(prevState => ({
+      values: {
+        ...prevState.values,
+        options: data
+      }
+    }), () => {
+      if (this.props.change) {
+        this.props.change(this.state.values, this.props.dataIndex)
+      }
     })
   }
 
@@ -193,9 +208,8 @@ class StructureEditor extends Component {
           <FormGroup className='col-md-4'>
             <Label>&nbsp;</Label>
             <InputGroup>
-              <Button outline color='info' onClick={ this.toggleModal }>Options</Button>
-              <OptionsModal isOpen={ this.state.modal } toggleModal={ this.toggleModal } />
-              <Input type='string' value={ this.state.values.options.join(', ') } onChange={ this.onChange } />
+              <Button outline color='info' onClick={ this.toggleModal }>Type Options</Button>
+              <OptionsModal optionValues={ this.state.values.options } isOpen={ this.state.modal } toggleModal={ this.toggleModal } saveModal={ this.saveModal } />
             </InputGroup>
           </FormGroup>
 

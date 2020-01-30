@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 
 import {
   Button,
@@ -18,34 +18,27 @@ import {
 import KeyValueEditor from './key_value'
 
 const ConfigKeys = {
-  '$MaxBinary': {  // Integer{1..*} optional,
-    description: 'Schema default maximum number of octets'
+  'minc': { 
+    description: 'Minimum cardinality'
   },
-  '$MaxString': {  // Integer{1..*} optional,
-    description: 'Schema default maximum number of characters'
+  'maxc': { 
+    description: 'Maximum cardinality'
   },
-  '$MaxElements': {  // Integer{1..*} optional,
-    description: 'Schema default maximum number of items/properties'
+  'tfield': { 
+    description: 'Field that specifies the type of this field'
   },
-  '$FS': {  // String{1..1} optional,
-    description: 'Field Separator character used in pathnames'
+  'path': { 
+    description: 'Use FieldName as a qualifier for fields in FieldType'
   },
-  '$Sys': {  // String{1..1} optional,
-    description: 'System character for TypeName'
+  'default': { 
+    description: 'Reserved for default value'
   },
-  '$TypeName': {  // String{1..127} optional,
-    description: 'TypeName regex'
-  },
-  '$FieldName': {  // String{1..127} optional,
-    description: 'FieldName regex'
-  },
-  '$NSID': {  // String{1..127} optional
-    description: 'Namespace Identifier regex'
-  }
 }
 
 // Key Object Editor
 const KeyObjectEditor = (props) => {
+  const [state, setState] = useState({});
+
   const removeAll = e => props.remove(props.id.toLowerCase())
 
   const onChange = e => {
@@ -57,8 +50,19 @@ const KeyObjectEditor = (props) => {
       tmpValue[index[0]] = ['', '']
     }
     tmpValue[index[0]][index[1]] = value
-    props.change(e)
+    props.change(tmpValue)
   }
+
+  const saveKeyValuePair = (keyVal) => {  
+    setState(prevState => ({
+      ...prevState,
+      [keyVal[0]] : keyVal[1]
+    }))
+  }
+
+  useEffect(() => {
+    props.saveModalState(state, 'field');
+  }, [state]) 
 
   const keys = Object.keys(ConfigKeys).map((key, idx) => {
     let keyProps = {
@@ -68,18 +72,17 @@ const KeyObjectEditor = (props) => {
     }
     if (props.value.hasOwnProperty(key)) {
       keyProps['value'] = props.value[key]
-    }
+    } 
 
-    return <KeyValueEditor change={ onChange } key={ idx } id={ key } { ...keyProps } />
-  }) 
+    const isDropdown = (key == 'path') ? true : false;
+
+    return <KeyValueEditor value={ props.deserializedState[key] } saveKeyValuePair={ saveKeyValuePair } key={ idx } isDropdown={ isDropdown }  idx={ idx } id={ key } { ...keyProps } />
+  })
+
+  if(!props.fieldOptions) return null;
 
   return (
     <div className='border m-1 p-1'>
-      <Button color='danger' size='sm' className='float-right' onClick={ removeAll } >
-        <FontAwesomeIcon
-          icon={ faMinusCircle }
-        />
-      </Button>
       <div className='border-bottom mb-2'>
         <p className='col-sm-4 my-1'><strong>{ props.id }</strong></p>
       </div>
@@ -91,14 +94,11 @@ const KeyObjectEditor = (props) => {
 }
 
 KeyObjectEditor.defaultProps = {
-  id: 'ConfigObjectEditor',
-  placeholder: 'ConfigObjectEditor',
+  id: 'Set Field Options',
+  placeholder: 'Set Field Options',
   value: [],
   change: val => {
     console.log(val)
-  },
-  remove: id => {
-    console.log(id)
   }
 }
 

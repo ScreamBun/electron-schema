@@ -40,12 +40,12 @@ const KeyObjectEditor = (props) => {
   const onChange = e => {
     let index = e.target.attributes.getNamedItem('data-index').value.split(',')
     let value = e.target.value
-
     let tmpValue = [ ...props.value ]
     if (!tmpValue[index[0]]) {
       tmpValue[index[0]] = ['', '']
     }
     tmpValue[index[0]][index[1]] = value
+    props.change(tmpValue);
   }
 
   let indices = props.value.map((obj, i) => (

@@ -1,49 +1,175 @@
 import React, { Component } from 'react'
 
-import ReactMarkdown from 'react-markdown'
-
 import {
   Button,
   Modal, 
   ModalHeader, 
   ModalBody, 
-  ModalFooter
+  ModalFooter,
+  Table
 } from 'reactstrap'
+
+import $ from 'jquery'
+
+import TypeOptionsEditor from './options_object'
+import FieldOptionsEditor from './fields_object'
 
 class OptionsModal extends Component {
   constructor(props) {
     super(props);
+
+    this.deserializeOptionsData = this.deserializeOptionsData.bind(this);
+    this.serializeOptionsData = this.serializeOptionsData.bind(this);
+    this.saveModal = this.saveModal.bind(this);
+    this.saveModalState = this.saveModalState.bind(this);
+
+    this.state = this.deserializeOptionsData(this.props.optionValues)
+  }
+
+  // convert array into options data state object 
+  deserializeOptionsData(options) {
+    let obj = {
+      type : {},
+      field : {}
+    };
+
+    if(options !== undefined && options.length !== 0) {
+
+      options.forEach((item, index, array) => {
+        let key;
+        let val;
+        let optionType;
+
+        const _symbol = item.charAt(0);
+        const non_bools = ['*', '+', '#', '/', '%', '{', '}', '[', '], &', '!']
+
+        if (_symbol == '=' || _symbol == 'q' || _symbol == '<') { 
+          val = [{ value : true, label : 'Yes' }]; 
+        } else if (non_bools.includes(_symbol)){
+          val = item.substring(1);
+        } 
+
+        if(_symbol == '=') {
+          optionType = 'type';
+          key = 'id';
+        } else if(_symbol == '*') {
+          optionType = 'type';
+          key = 'vtype';
+        } else if(_symbol == '+') {
+          optionType = 'type';
+          key = 'ktype';
+        } else if(_symbol == '#') {
+          optionType = 'type';
+          key = 'enum';
+        } else if(_symbol == '/') {
+          optionType = 'type';
+          key = '(optional) format';
+        } else if(_symbol == '%') {
+          optionType = 'type';
+          key = '(optional) pattern'
+        } else if(_symbol == '{') {
+          optionType = 'type';
+          key = '(optional) minv'
+        } else if(_symbol == '}') {
+          optionType = 'type';
+          key = '(optional) maxv';
+        } else if(_symbol == 'q') {
+          optionType = 'type';
+          key = '(optional) unique';
+        } else if(_symbol == '[') {
+          optionType = 'field';
+          key = 'minc';
+        } else if(_symbol == ']') {
+          optionType = 'field';
+          key = 'maxc';
+        } else if(_symbol == '&') {
+          optionType = 'field';
+          key = 'tfield';
+        } else if(_symbol == '<') {
+          optionType = 'field';
+          key = 'path';
+        } else if(_symbol == '!') {
+          optionType = 'field';
+          key = 'default';
+        }
+        obj[optionType][key] = val;
+      });
+    }
+
+    return obj;
+  }
+
+  componentDidUpdate(previousProps, previousState) {
+    if (previousProps.optionValues !== this.props.optionValues) {
+      this.setState(this.deserializeOptionsData(this.props.optionValues))
+    }
+  }
+
+  // convert options data state object into formatted str
+  serializeOptionsData(state_obj) {
+    let options = '';
+
+    for(let key in state_obj.type) {
+      if(key == 'id' && state_obj.type[key] && state_obj.type[key][0].value) {
+        options += '=, ';
+      } else if(key == 'vtype' && state_obj.type[key]) {
+        options += '*' + state_obj.type[key] + ', ';
+      } else if(key == 'ktype' && state_obj.type[key]) {
+        options += '+' + state_obj.type[key] + ', ';
+      } else if(key == 'enum' && state_obj.type[key]) {
+        options += '#' + state_obj.type[key] + ', ';
+      } else if(key == '(optional) format' && state_obj.type[key]) {
+        options += '/' + state_obj.type[key] + ', ';
+      } else if(key == '(optional) pattern' && state_obj.type[key]) {
+        options += '%' + state_obj.type[key] + ', ';
+      } else if(key == '(optional) minv' && state_obj.type[key]) {
+        options += '{' + state_obj.type[key] + ', ';
+      } else if(key == '(optional) maxv' && state_obj.type[key]) {
+        options += '}' + state_obj.type[key] + ', ';
+      } else if(key == '(optional) unique' && state_obj.type[key] && state_obj.type[key][0].value) {
+        options += 'q, ';
+      }
+    }
+
+    for(let key in state_obj.field) {
+      if(key == 'minc' && state_obj.field[key]) {
+        options += '[' + state_obj.field[key] + ', ';
+      } else if(key == 'maxc' && state_obj.field[key]) {
+        options += ']' + state_obj.field[key] + ', ';
+      } else if(key == 'tfield' && state_obj.field[key]) {
+        options += '&' + state_obj.field[key] + ', ';
+      } else if(key == 'path' && state_obj.field[key] && state_obj.field[key][0].value) {
+        options += '<, ';
+      } else if(key == 'default' && state_obj.field[key]) {
+        options += '!' + state_obj.field[key] + ', ';
+      }
+    }
+
+    return options.slice(0, -2);
+  }
+
+  saveModalState(state, type) {
+    this.setState({
+      [type] : state
+    })
+  }
+
+  saveModal() {
+    var data = this.serializeOptionsData(this.state);
+    this.props.saveModal(data);
   }
 
   render() {
-    const input = 
-    `| ID | Label | Value | Definition |
-    | --- | --- | --- | --- |
-    |  **Structural** | | | |
-    | 0x3d \`'='\` | id | none | If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName ([Section 3.2.1.1](#3211-field-identifiers)) |
-    | 0x2a \`'*'\` | vtype | String | Value type for ArrayOf and MapOf ([Section 3.2.1.2](#3212-value-type)) |
-    | 0x2b \`'+'\` | ktype | String | Key type for MapOf ([Section 3.2.1.3](#3213-key-type)) |
-    | 0x23 \`'#'\` | enum | String | Extension: Enumerated type derived from the specified Array, Choice, Map or Record type ([Section 3.3.3](#333-derived-enumerations)) |
-    | **Validation** | | | |
-    | 0x2f \`'/'\` | format | String | Semantic validation keyword from [Section 3.2.1.5](#3215-semantic-validation) |
-    | 0x25 \`'%'\` | pattern | String | Regular expression used to validate a String type ([Section 3.2.1.6](#3216-pattern)) |
-    | 0x7b \`'{'\` | minv | Integer | Minimum numeric value, octet or character count, or element count ([Section 3.2.1.7](#3217-size-and-value-constraints)) |
-    | 0x7d \`'}'\` | maxv | Integer | Maximum numeric value, octet or character count, or element count |
-    | 0x71 \`'q'\` | unique | none | If present, an ArrayOf instance must not contain duplicate values |
-    **Notes**
-    * TypeOptions MUST contain zero or one instance of each type option.
-    * TypeOptions MUST contain only TypeOptions allowed for BaseType as shown in Table 3-3.
-    * If BaseType is ArrayOf, TypeOptions MUST include the *vtype* option.
-    * If BaseType is MapOf, TypeOptions MUST include *ktype* and *vtype* options.`
-
     return (
       <Modal size='xl' isOpen={ this.props.isOpen }>
-      <ModalHeader>Options Dictionary</ModalHeader>
+      <ModalHeader> { this.props.fieldOptions ? 'Field Options' : 'Type Options' }</ModalHeader>
       <ModalBody>
-        <ReactMarkdown source={input} />
+        <FieldOptionsEditor deserializedState={ this.state.field } saveModalState={ this.saveModalState } fieldOptions={ this.props.fieldOptions }/>
+        <TypeOptionsEditor deserializedState={ this.state.type } saveModalState={ this.saveModalState } />
       </ModalBody>
       <ModalFooter>
-        <Button color="secondary" onClick={ this.props.toggleModal }>Close</Button>
+        <Button color='success' onClick={ this.saveModal }>Set</Button>
+        <Button color='secondary' onClick={ this.props.toggleModal }>Close</Button>
       </ModalFooter>
     </Modal>
     )

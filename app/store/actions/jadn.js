@@ -5,7 +5,6 @@ import { SchemaFormats } from '../../src/utils'
 export const CONVERT_TO_JSON_SUCCESS = 'CONVERT_TO_JSON_SUCCESS';
 export const convertToJSON = (schema) => {
   return (dispatch) => {
-    console.log('hello this works')
     ipcRenderer.invoke('convert-schema', {
       format: SchemaFormats.JSON,
       schema: schema
