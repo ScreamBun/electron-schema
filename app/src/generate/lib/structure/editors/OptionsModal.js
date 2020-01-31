@@ -9,15 +9,12 @@ import {
   Table
 } from 'reactstrap'
 
-import $ from 'jquery'
+import _ from 'underscore'
 
 import TypeOptionsEditor from './options_object'
 import FieldOptionsEditor from './fields_object'
 
 class OptionsModal extends Component {
-  typeSymbols = ['=', '*', '+', '#', '/', '%', '{', '}', 'q'];
-  fieldSymbols = ['[', ']', '&', '<', '!'];
-
   constructor(props, context) {
     super(props, context);
 
@@ -36,7 +33,7 @@ class OptionsModal extends Component {
       field : {}
     };
 
-    if (options !== undefined && options.length !== 0) {
+    if (options !== undefined && options.length !== 0 && options[0] !== '') {
 
       options.forEach((item, index, array) => {
         let key;
@@ -102,13 +99,7 @@ class OptionsModal extends Component {
     return obj;
   }
 
-  componentDidUpdate(previousProps, previousState) {
-    if (previousProps.optionValues !== this.props.optionValues) {
-      this.setState(this.deserializeOptionsData(this.props.optionValues))
-    }
-  }
-
-  // convert options data state object into formatted str
+  // convert options data state object into formatted array
   serializeOptionsData(state_obj) {
     const options = [];
 
@@ -148,7 +139,7 @@ class OptionsModal extends Component {
       }
     }
 
-    return options.join(', ');
+    return options;
   }
 
   saveModalState(state, type) {

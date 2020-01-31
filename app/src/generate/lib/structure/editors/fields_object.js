@@ -38,7 +38,7 @@ const ConfigKeys = {
 
 // Key Object Editor
 const KeyObjectEditor = (props) => {
-  const [state, setState] = useState({});
+  const [state, setState] = useState(props.deserializedState);
 
   const removeAll = e => props.remove(props.id.toLowerCase())
 
@@ -73,7 +73,7 @@ const KeyObjectEditor = (props) => {
       change: v => saveKeyValuePair(key, v)
     }
 
-    return <KeyValueEditor value={ props.deserializedState[key] } idx={ idx } id={ key } { ...keyProps } />
+    return <KeyValueEditor value={ props.deserializedState[key] } key={ idx } id={ key } { ...keyProps } />
   })
 
   if(!props.fieldOptions) return null;

@@ -52,21 +52,9 @@ const ConfigKeys = {
 
 // Key Object Editor
 const KeyObjectEditor = (props) => {
-  const [state, setState] = useState({});
+  const [state, setState] = useState(props.deserializedState);
 
   const removeAll = e => props.remove(props.id.toLowerCase())
-
-  const onChange = e => {
-    let index = e.target.attributes.getNamedItem('data-index').value.split(',')
-    let value = e.target.value
-
-    let tmpValue = [ ...props.value ]
-    if (!tmpValue[index[0]]) {
-      tmpValue[index[0]] = ['', '']
-    }
-    tmpValue[index[0]][index[1]] = value
-    props.change(tmpValue)
-  }
 
   const saveKeyValuePair = (key, val) => {
     setState(prevState => ({
@@ -81,7 +69,7 @@ const KeyObjectEditor = (props) => {
 
   const keys = Object.keys(ConfigKeys).map((key, idx) => {
     let keyProps = {
-      ...ConfigKeys[key],
+      ...ConfigKeys[key], 
       placeholder: key,
       removable: false,
       change: v => saveKeyValuePair(key, v)

@@ -123,14 +123,12 @@ class StructureEditor extends Component {
 
   toggleModal() {
     this.setState({
-      modal : !this.state.modal
+      modal: !this.state.modal
     });
   }
 
   saveModal(data) {
     this.toggleModal();
-
-    data = data.split(/,\s+?/);
 
     this.setState(prevState => ({
       values: {

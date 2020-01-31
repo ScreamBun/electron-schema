@@ -72,7 +72,6 @@ const FieldEditor = (props) => {
 
   const saveModal = (data) => {
     toggleModal(!isOpen);
-    data = data.split(/,\s+?/);
 
     values['options'] = data;
 

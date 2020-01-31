@@ -17,8 +17,10 @@ import { faMinusSquare } from '@fortawesome/free-solid-svg-icons'
 const KeyValueEditor = props => {
   const inputArgs = {
     value: props.value,
+    checked: props.type && props.value ? true : false,
     onChange: e => props.change(e.target.value)
   };
+
   if (['checkbox', 'radio'].includes(props.type)) {
     inputArgs.onChange = e => props.change(e.target.checked);
   }
