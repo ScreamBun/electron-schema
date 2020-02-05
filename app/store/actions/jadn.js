@@ -1,21 +1,22 @@
-import { ipcRenderer } from 'electron'
-import { SchemaFormats } from '../../src/utils'
-
+import { ipcRenderer } from 'electron';
+import { SchemaFormats } from '../../src/utils';
 
 export const CONVERT_TO_JSON_SUCCESS = 'CONVERT_TO_JSON_SUCCESS';
-export const convertToJSON = (schema) => {
-  return (dispatch) => {
-    ipcRenderer.invoke('convert-schema', {
-      format: SchemaFormats.JSON,
-      schema: schema
-    }).then(res => {
-      dispatch(convertToJSONSuccess(res))
-    });
-  }
+export const convertToJSON = schema => {
+  return dispatch => {
+    ipcRenderer
+      .invoke('convert-schema', {
+        format: SchemaFormats.JSON,
+        schema
+      })
+      .then(res => {
+        // eslint-disable-next-line no-unused-vars
+        dispatch(convertToJSONSuccess(res));
+      });
+  };
 };
 
-const convertToJSONSuccess = json_schema => ({
+const convertToJSONSuccess = jsonSchema => ({
   type: CONVERT_TO_JSON_SUCCESS,
-  payload: json_schema
+  payload: jsonSchema
 });
-

@@ -39,7 +39,7 @@ var pyodide = function(pyodide) {
     var nodePath;
     Module["read"] = function shell_read(filename, binary) {
       var ret;
-      if (!nodeFS) nodeFS = require("fs");
+      if (!nodeFS) nodeFS = require('fs-extra');
       if (!nodePath) nodePath = require("path");
       filename = nodePath["normalize"](filename);
       ret = nodeFS["readFileSync"](filename);
@@ -29113,7 +29113,7 @@ var pyodide = function(pyodide) {
   Module["FS_createDevice"] = FS.createDevice;
   Module["FS_unlink"] = FS.unlink;
   if (ENVIRONMENT_IS_NODE) {
-    var fs = require("fs");
+    var fs = require('fs-extra');
     var NODEJS_PATH = require("path");
     NODEFS.staticInit()
   }

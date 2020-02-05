@@ -1,111 +1,165 @@
-import React, { Component } from 'react'
-
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Button,
   ButtonGroup,
-  FormGroup,
-  Input,
-  Label
-} from 'reactstrap'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+  Input
+} from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMinusCircle,
   faMinusSquare,
   faPlusSquare
-} from '@fortawesome/free-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons';
 
 // Key Object Editor
-const KeyObjectEditor = (props) => {
-  const removeAll = e => props.remove(props.id.toLowerCase())
+class KeyObjectEditor extends Component {
+  constructor(props, context) {
+    super(props, context);
 
-  const removeIndex = e => {
-    if (props.value.length > 1) {
-      console.log('WHOOT')
-      let index = e.currentTarget.attributes.getNamedItem('data-index').value.split(',')[0]
-      let tmpValue = [ ...props.value ]
-      tmpValue.splice(index, 1)
-      props.change(tmpValue)
+    this.removeAll = this.removeAll.bind(this);
+    this.removeIndex = this.removeIndex.bind(this);
+    this.addIndex = this.addIndex.bind(this);
+    this.onChange = this.onChange.bind(this);
+
+    this.state = {
+      values: Object.keys(this.props.value).map(k => ({key: k, value: this.props.value[k]}) )
+    };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const propsChange = this.props !== nextProps;
+    const stateChange = this.state !== nextState;
+
+    if (this.state.values !== nextState.values) {
+      this.props.change(this.toObject(nextState.values));
+    }
+
+    return propsChange || stateChange;
+  }
+
+  toObject(val) {
+    val = val || this.state.values;
+    return val.reduce((obj, row) => {
+      obj[row.key] = row.value;
+      return obj;
+    }, {});
+  }
+
+  removeAll() {
+    this.props.remove(this.props.id.toLowerCase());
+  }
+
+  removeIndex(e) {
+    if (this.state.values.length > 1) {
+      let idx = parseInt(e.currentTarget.attributes.getNamedItem('data-index').value);
+
+      this.setState(prevState => ({
+        values: prevState.values.filter((row, i) => i !== idx)
+      }));
     } else {
-      console.log('cant remove')
+      console.log('cant remove');
     }
   }
 
-  const addIndex = () => {
-    let tmpValue = [ ...props.value ]
-    tmpValue.push(['', ''])
-    props.change(tmpValue)
-  }
-
-  const onChange = e => {
-    let index = e.target.attributes.getNamedItem('data-index').value.split(',')
-    let value = e.target.value
-    let tmpValue = [ ...props.value ]
-    if (!tmpValue[index[0]]) {
-      tmpValue[index[0]] = ['', '']
+  addIndex() {
+    if (this.state.values.some(v => v[0] === '')) {
+      return;
     }
-    tmpValue[index[0]][index[1]] = value
-    props.change(tmpValue);
+    console.log('Add KeyObject');
+
+    this.setState(prevState => ({
+      values: [
+        ...prevState.values,
+        {
+          key: '',
+          value: ''
+        }
+      ]
+    }));
   }
 
-  let indices = props.value.map((obj, i) => (
-    <div className="input-group col-sm-12 mb-1" key={ i }>
-      <Input
-        type="text"
-        className="form-control"
-        data-index={ [i, 0] }
-        placeholder={ props.placeholder }
-        value={ obj[0] || '' }
-        onChange={ onChange }
-      />
-      <Input
-        type="text"
-        className="form-control"
-        data-index={ [i,1] }
-        placeholder={ props.placeholder }
-        value={ obj[1] || '' }
-        onChange={ onChange }
-      />
-      <div className="input-group-append">
-        <Button color='danger' onClick={ removeIndex } data-index={ i }>
-          <FontAwesomeIcon icon={ faMinusSquare } />
-        </Button>
-      </div>
-    </div>
-  ))
+  onChange(e) {
+    const idx = parseInt(e.target.attributes.getNamedItem('data-index').value);
+    const type = e.target.attributes.getNamedItem('data-type').value;
+    const val = e.target.value;
+    console.log("Update KeyObject");
 
-  return (
-    <div className='border m-1 p-1'>
-      <ButtonGroup size='sm' className='float-right'>
-        <Button color='info' onClick={ addIndex } >
-          <FontAwesomeIcon
-            icon={ faPlusSquare }
-          />
-        </Button>
-        <Button color='danger' onClick={ removeAll } >
-          <FontAwesomeIcon icon={ faMinusCircle } />
-        </Button>
-      </ButtonGroup>
-      <div className='border-bottom mb-2'>
-        <p className='col-sm-4 my-1'><strong>{ props.id }</strong></p>
+    this.setState(prevState => {
+      const tmpValues = [ ...prevState.values ];
+      tmpValues[idx][type] = val;
+      return {
+        values: tmpValues
+      };
+    });
+  }
+
+  render() {
+    const indices = this.state.values.map((obj, i) => (
+      <div className="input-group col-sm-12 mb-1" key={ i }>
+        <Input
+          type="text"
+          className="form-control"
+          data-index={ i }
+          data-type="key"
+          placeholder={ this.props.placeholder }
+          value={ obj.key }
+          onChange={ this.onChange }
+        />
+        <Input
+          type="text"
+          className="form-control"
+          data-index={ i }
+          data-type="value"
+          placeholder={ this.props.placeholder }
+          value={ obj.value }
+          onChange={ this.onChange }
+        />
+        <div className="input-group-append">
+          <Button color="danger" onClick={ this.removeIndex } data-index={ i }>
+            <FontAwesomeIcon icon={ faMinusSquare } />
+          </Button>
+        </div>
       </div>
-      <div className='row m-0 indices'>
-        { indices }
+    ));
+
+    return (
+      <div className="border m-1 p-1">
+        <ButtonGroup size="sm" className="float-right">
+          <Button color="info" onClick={ this.addIndex } >
+            <FontAwesomeIcon
+              icon={ faPlusSquare }
+            />
+          </Button>
+          <Button color="danger" onClick={ this.removeAll } >
+            <FontAwesomeIcon icon={ faMinusCircle } />
+          </Button>
+        </ButtonGroup>
+        <div className="border-bottom mb-2">
+          <p className="col-sm-4 my-1"><strong>{ this.props.id }</strong></p>
+        </div>
+        <div className="row m-0 indices">
+          { indices }
+        </div>
       </div>
-    </div>
-  )
+    );
+  }
 }
+
+KeyObjectEditor.propTypes = {
+  id: PropTypes.string,
+  placeholder: PropTypes.string,
+  values: PropTypes.object,
+  change: PropTypes.func,
+  remove: PropTypes.func
+};
 
 KeyObjectEditor.defaultProps = {
   id: 'KeyObjectEditor',
   placeholder: 'KeyObjectEditor',
-  value: [],
-  change: val => {
-    console.log(val)
-  },
-  remove: id => {
-    console.log(id)
-  }
-}
+  values: {},
+  change: null,
+  remove: null
+};
 
-export default KeyObjectEditor
+export default KeyObjectEditor;

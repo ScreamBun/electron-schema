@@ -54,3 +54,6 @@ __snapshots__
 # Package.json
 package.json
 .travis.yml
+
+# Pyodide
+app/src/uils/Pyodide/*

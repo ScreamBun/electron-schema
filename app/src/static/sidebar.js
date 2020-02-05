@@ -1,9 +1,8 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import Sidebar from 'react-sidebar'
-
-import { Draggable } from 'react-drag-and-drop'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import Sidebar from 'react-sidebar';
+import { Draggable } from 'react-drag-and-drop';
 
 import {
   Card,
@@ -11,45 +10,24 @@ import {
   CardHeader,
   ListGroup,
   ListGroupItem
-} from 'reactstrap'
+} from 'reactstrap';
 
-import SchemaStructure from '../generate/lib/structure'
+import SchemaStructure from '../generate/lib/structure';
 
 class SidebarMenu extends Component {
   constructor(props, context) {
-    super(props, context)
-    this.mql = window.matchMedia('(min-width: 768px)')
+    super(props, context);
+    this.mql = window.matchMedia('(min-width: 768px)');
 
-    this.mediaQueryChanged = this.mediaQueryChanged.bind(this)
-    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this)
+    this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
+    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
 
     this.state = {
       sidebarDocked: this.mql.matches,
       sidebarOpen: false
-    }
+    };
 
-    this.keys = SchemaStructure
-  }
-
-  componentDidMount() {
-    this.mql.addListener(this.mediaQueryChanged)
-  }
-
-  componentWillUnmount() {
-    this.mql.removeListener(this.mediaQueryChanged)
-  }
-
-  onSetSidebarOpen(open) {
-    this.setState({
-      sidebarOpen: open
-    })
-  }
-
-  mediaQueryChanged() {
-    this.setState({
-      sidebarDocked: this.mql.matches,
-      sidebarOpen: false
-    })
+    this.keys = SchemaStructure;
   }
 
   // pass reference to this down to child component
@@ -58,21 +36,42 @@ class SidebarMenu extends Component {
       sidebarDocked: this.state.sidebarDocked,
       sidebarOpen: this.state.sidebarOpen,
       sidebarToggle: () => this.onSetSidebarOpen(!this.state.sidebarOpen)
-    }
+    };
+  }
+
+  componentDidMount() {
+    this.mql.addListener(this.mediaQueryChanged);
+  }
+
+  componentWillUnmount() {
+    this.mql.removeListener(this.mediaQueryChanged);
+  }
+
+  onSetSidebarOpen(open) {
+    this.setState({
+      sidebarOpen: open
+    });
+  }
+
+  mediaQueryChanged() {
+    this.setState({
+      sidebarDocked: this.mql.matches,
+      sidebarOpen: false
+    });
   }
 
   renderContents() {
-    let metaKeys = Object.keys(this.keys.meta).map((k, i) => (
+    const metaKeys = Object.keys(this.keys.meta).map((k, i) => (
       <Draggable type="meta" data={ k } key={ i }>
         <ListGroupItem action>{ this.keys.meta[k].key }</ListGroupItem>
       </Draggable>
-    ))
+    ));
 
-    let typesKeys = Object.keys(this.keys.types).map((k, i) => (
+    const typesKeys = Object.keys(this.keys.types).map((k, i) => (
       <Draggable type="types" data={ k } key={ i }>
         <ListGroupItem action>{ this.keys.types[k].key }</ListGroupItem>
       </Draggable>
-    ))
+    ));
 
     return (
       <div>
@@ -93,7 +92,7 @@ class SidebarMenu extends Component {
           </CardBody>
         </Card>
       </div>
-    )
+    );
   }
 
   render() {
@@ -103,23 +102,31 @@ class SidebarMenu extends Component {
         open={ this.state.sidebarOpen }
         docked={ this.state.sidebarDocked }
         onSetOpen={ this.onSetSidebarOpen }
-        sidebarClassName='navbar-dark bg-dark'
+        sidebarClassName="navbar-dark bg-dark"
         pullRight={ !this.state.sidebarDocked }
-        rootId='sidebarRoot'
-        sidebarId='sidebarContents'
-        contentId='sidebarMain'
-        overlayId='sidebarOverlay'
+        rootId="sidebarRoot"
+        sidebarId="sidebarContents"
+        contentId="sidebarMain"
+        overlayId="sidebarOverlay"
       >
         { this.props.children || <span /> }
       </Sidebar>
-    )
+    );
   }
 }
+
+SidebarMenu.propTypes = {
+  children: PropTypes.element
+};
+
+SidebarMenu.defaultProps = {
+  children: null
+};
 
 SidebarMenu.childContextTypes = {
   sidebarDocked: PropTypes.bool,
   sidebarOpen: PropTypes.bool,
   sidebarToggle: PropTypes.func
-}
+};
 
-export default connect()(SidebarMenu)
+export default connect()(SidebarMenu);

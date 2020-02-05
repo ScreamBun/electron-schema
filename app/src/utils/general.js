@@ -1,8 +1,8 @@
 // General utility functions
 
-export const safe_get = (obj, key, def) => {
-  if (obj.hasOwnProperty(key)) {
-    return obj[key]
+export const safeGet = (obj, key, def) => {
+  if (key in obj) {
+    return obj[key];
   }
-  return def || null
-}
+  return def || null;
+};

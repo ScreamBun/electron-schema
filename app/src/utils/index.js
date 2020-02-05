@@ -1,26 +1,22 @@
 import {
   mergeByProperty,
   updateArray
-} from './array'
+} from './array';
+
+import { safeGet } from './general';
+
+import { jadnFormat } from './jadn';
 
 import {
-  safe_get
-} from './general'
-
-import {
-  jadn_format
-} from './jadn'
-
-import pyodideNode from './PyodideNode/PyodideNode'
-
-import { ConverterScript, SchemaFormats } from './schemaConverter'
+  ConverterScript,
+  SchemaFormats
+} from './schemaConverter';
 
 export {
-  safe_get,
-  jadn_format,
+  safeGet,
+  jadnFormat,
   mergeByProperty,
-  pyodideNode,
   ConverterScript,
   SchemaFormats,
-  updateArray,
-}
+  updateArray
+};

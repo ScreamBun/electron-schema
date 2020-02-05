@@ -21,10 +21,7 @@ module.exports = api => {
   return {
     presets: [
       require('@babel/preset-flow'),
-      [
-        require('@babel/preset-react'),
-        { development }
-      ],
+      [require('@babel/preset-react'), { development }],
       [
         require('@babel/preset-env'),
         {

@@ -86,7 +86,7 @@ Module.expectedDataFileDownloads++;
         xhr.send(null);
       } else { // node
         function fetch_node(file) {
-          var fs = require('fs');
+          var fs = require('fs-extra');
           var fetch = require('isomorphic-fetch');
           return new Promise(function(resolve, reject) {
             if (file.indexOf('http') == -1) { // local

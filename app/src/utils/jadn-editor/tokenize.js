@@ -1,14 +1,12 @@
 import { format } from './locale'; // direct copy
 import defaultLocale from './locale/en'; // direct copy
-
 import {
   deleteCharAt,
   followedBySymbol,
   followsSymbol,
   newSpan,
   typeFollowed
-} from './utils'
-
+} from './utils';
 
 // DOM Node || OnBlue or Update
 // Helper Functions
@@ -16,12 +14,12 @@ const finalPush = (buffer, prefix = '') => {
   if (buffer.active) {
     buffer.quarks.push({
       string: buffer[buffer.active],
-      type: prefix + '-' + buffer.active
+      type: `${prefix}-${buffer.active}`
     });
     buffer[buffer.active] = '';
     buffer.active = false;
   }
-}
+};
 
 const pushAndStore = (buffer, char, type, prefix = '') => {
   switch (type) {
@@ -30,7 +28,7 @@ const pushAndStore = (buffer, char, type, prefix = '') => {
       if (buffer.active) {
         buffer.quarks.push({
           string: buffer[buffer.active],
-          type: prefix + '-' + buffer.active
+          type: `${prefix}-${buffer.active}}`
         });
       }
       buffer[buffer.active] = '';
@@ -38,11 +36,11 @@ const pushAndStore = (buffer, char, type, prefix = '') => {
       buffer[buffer.active] = char;
       break;
     default:
-      if (type !== buffer.active || ([buffer.string, char].indexOf('\n') > -1)) {
+      if (type !== buffer.active || [buffer.string, char].indexOf('\n') > -1) {
         if (buffer.active) {
           buffer.quarks.push({
             string: buffer[buffer.active],
-            type: prefix + '-' + buffer.active
+            type: `${prefix}-${buffer.active}}`
           });
         }
         buffer[buffer.active] = '';
@@ -53,10 +51,10 @@ const pushAndStore = (buffer, char, type, prefix = '') => {
       }
       break;
   }
-}
+};
 
 const quarkize = (text, prefix = '') => {
-  let buffer = {
+  const buffer = {
     active: false,
     string: '',
     number: '',
@@ -94,116 +92,116 @@ const quarkize = (text, prefix = '') => {
       case '7':
       case '8':
       case '9':
-        pushAndStore(buffer, char, buffer.active === 'string' ? 'string' : 'number', prefix);
+        const type = buffer.active === 'string' ? 'string' : 'number';
+        pushAndStore(buffer, char, type, prefix);
         break;
       case '-':
         if (i < text.length - 1 && '0123456789'.indexOf(text.charAt(i + 1)) > -1) {
           pushAndStore(buffer, char, 'number', prefix);
           break;
         }
-        case '.':
-          if (i < text.length - 1 && i > 0 && '0123456789'.indexOf(text.charAt(i + 1)) > -1 && '0123456789'.indexOf(text.charAt(i - 1)) > -1) {
-            pushAndStore(buffer, char, 'number', prefix);
-            break;
-          }
-          default:
-            pushAndStore(buffer, char, 'string', prefix);
-            break;
+      case '.':
+        if (i < text.length - 1 && i > 0 && '0123456789'.indexOf(text.charAt(i + 1)) > -1 && '0123456789'.indexOf(text.charAt(i - 1)) > -1) {
+          pushAndStore(buffer, char, 'number', prefix);
+          break;
+        }
+      default:
+        pushAndStore(buffer, char, 'string', prefix);
+        break;
     }
-  })
+  });
   finalPush(buffer, prefix);
   return buffer.quarks;
-}
+};
 
 const validToken = (string, type) => {
   const quotes = '\'"';
-  let firstChar = '',
-    lastChar = '',
-    quoteType = false;
+  let firstChar = '';
+  let lastChar = '';
+  let quoteType = false;
 
   switch (type) {
     case 'primitive':
       if (['true', 'false', 'null', 'undefined'].indexOf(string) === -1) {
-        return false
+        return false;
       }
       break;
     case 'string':
       if (string.length < 2) {
-        return false
+        return false;
       }
-      firstChar = string.charAt(0),
-        lastChar = string.charAt(string.length - 1),
-        quoteType = quotes.indexOf(firstChar);
+      firstChar = string.charAt(0);
+      lastChar = string.charAt(string.length - 1);
+      quoteType = quotes.indexOf(firstChar);
       if (quoteType === -1 || firstChar !== lastChar) {
-        return false
+        return false;
       }
-      for (var i = 0; i < string.length; i++) {
+      for (let i = 0; i < string.length; i++) {
         if (i > 0 && i < string.length - 1 && string.charAt(i) === quotes[quoteType] && string.charAt(i - 1) !== '\\') {
-          return false
+          return false;
         }
       }
       break;
     case 'key':
       if (string.length === 0) {
-        return false
+        return false;
       }
-      firstChar = string.charAt(0),
-        lastChar = string.charAt(string.length - 1),
-        quoteType = quotes.indexOf(firstChar);
+      firstChar = string.charAt(0);
+      lastChar = string.charAt(string.length - 1);
+      quoteType = quotes.indexOf(firstChar);
       if (quoteType > -1) {
         if (string.length === 1 || firstChar !== lastChar) {
-          return false
+          return false;
         }
-        for (var i = 0; i < string.length; i++) {
+        for (let i = 0; i < string.length; i++) {
           if (i > 0 && i < string.length - 1 && string.charAt(i) === quotes[quoteType] && string.charAt(i - 1) !== '\\') {
-            return false
+            return false;
           }
         }
       } else {
         const nonAlphanumeric = '\'"`.,:;{}[]&<>=~*%\\|/-+!?@^ \xa0';
-        for (var i = 0; i < nonAlphanumeric.length; i++) {
+        for (let i = 0; i < nonAlphanumeric.length; i++) {
           const nonAlpha = nonAlphanumeric.charAt(i);
           if (string.indexOf(nonAlpha) > -1) {
-            return false
+            return false;
           }
         }
       }
       break;
     case 'number':
-      for (var i = 0; i < string.length; i++) {
+      for (let i = 0; i < string.length; i++) {
         if ('0123456789'.indexOf(string.charAt(i)) === -1 && i === 0) {
-          if ('-' !== string.charAt(0)) {
-            return false
+          if (string.charAt(0) !== '-') {
+            return false;
           }
-        } else if ('.' !== string.charAt(i)) {
-          return false
+        } else if (string.charAt(i) !== '.') {
+          return false;
         }
       }
       break;
     case 'symbol':
       if (string.length > 1 || '{[:]},'.indexOf(string) === -1) {
-        return false
+        return false;
       }
       break;
     case 'colon':
-      if (string.length > 1 || ':' !== string) {
-        return false
+      if (string.length > 1 || string !== ':') {
+        return false;
       }
       break;
     default:
       return true;
-      break;
   }
   return true;
-}
+};
 
-const tokenFollowed = (buffer) => {
+const tokenFollowed = buffer => {
   const last = buffer.tokens_normalize.length - 1;
   if (last < 1) {
-    return false
+    return false;
   }
 
-  for (var i = last; i >= 0; i--) {
+  for (let i = last; i >= 0; i--) {
     const previousToken = buffer.tokens_normalize[i];
     switch (previousToken.type) {
       case 'space':
@@ -211,23 +209,22 @@ const tokenFollowed = (buffer) => {
         break;
       default:
         return previousToken;
-        break;
     }
   }
   return false;
-}
+};
 
 // Main Function
 export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
-  const containerNode = obj.cloneNode(true),
-    hasChildren = containerNode.hasChildNodes();
+  const containerNode = obj.cloneNode(true);
+  const hasChildren = containerNode.hasChildNodes();
 
   if (!hasChildren) {
-    return ''
+    return '';
   }
   const children = containerNode.childNodes;
 
-  let buffer = {
+  const buffer = {
     tokens_unknown: [],
     tokens_proto: [],
     tokens_split: [],
@@ -239,9 +236,9 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
     json: '',
     jsObject: undefined,
     markup: ''
-  }
+  };
 
-  children.forEach((child, i) => {
+  children.forEach(child => {
     switch (child.nodeName) {
       case 'SPAN':
         buffer.tokens_unknown.push({
@@ -278,12 +275,12 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
       default:
         console.error('Unrecognized node:', {
           child
-        })
+        });
         break;
     }
-  })
+  });
 
-  buffer.tokens_proto = buffer.tokens_unknown.map(token => quarkize(token.string, 'proto')).reduce((all, quarks) => all.concat(quarks))
+  buffer.tokens_proto = buffer.tokens_unknown.map(token => quarkize(token.string, 'proto')).reduce((all, quarks) => all.concat(quarks));
 
   buffer.tokens_proto.forEach(token => {
     if (token.type.indexOf('proto') === -1) {
@@ -295,16 +292,16 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
     } else {
       buffer.tokens_split.push(token);
     }
-  })
+  });
 
   buffer.tokens_fallback = buffer.tokens_split.map(token => {
-    let type = token.type,
-      fallback = [];
+    let { type } = token;
+    const fallback = [];
 
     if (type.indexOf('-') > -1) {
       type = type.slice(type.indexOf('-') + 1);
       if (type !== 'string') {
-        fallback.push('string')
+        fallback.push('string');
       }
       fallback.push('key');
       fallback.push('error');
@@ -313,19 +310,19 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
     return {
       string: token.string,
       length: token.string.length,
-      type: type,
-      fallback: fallback
-    }
-  })
+      type,
+      fallback
+    };
+  });
 
-  let buffer2 = {
+  const buffer2 = {
     brackets: [],
     isValue: false,
     stringOpen: false
   };
 
   buffer.tokens_normalize = buffer.tokens_fallback.map((token, i) => {
-    let normalToken = {
+    const normalToken = {
       type: token.type,
       string: token.string
     };
@@ -334,7 +331,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
       case 'symbol':
       case 'colon':
         if (buffer2.stringOpen) {
-          normalToken.type = buffer2.isValue ? 'string' : 'key'
+          normalToken.type = buffer2.isValue ? 'string' : 'key';
           break;
         }
         switch (normalToken.string) {
@@ -359,16 +356,16 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
         }
         break;
       case 'delimiter':
-        normalToken.type = buffer2.isValue ? 'string' : 'key'
+        normalToken.type = buffer2.isValue ? 'string' : 'key';
         if (!buffer2.stringOpen) {
           buffer2.stringOpen = normalToken.string;
           break;
         }
         if (i > 0) {
-          const previousToken = buffer.tokens_fallback[i - 1],
-            _string = previousToken.string,
-            _type = previousToken.type,
-            _char = _string.charAt(_string.length - 1);
+          const previousToken = buffer.tokens_fallback[i - 1];
+          const _string = previousToken.string;
+          const _type = previousToken.type;
+          const _char = _string.charAt(_string.length - 1);
           if (_type === 'string' && _char === '\\') break;
         }
         if (buffer2.stringOpen === normalToken.string) {
@@ -409,15 +406,13 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
           normalToken.type = buffer2.isValue ? 'string' : 'key';
         }
         break;
-      default:
-        break;
     }
-    return normalToken
-  })
+    return normalToken;
+  });
 
-  for (var i = 0; i < buffer.tokens_normalize.length; i++) {
+  for (let i = 0; i < buffer.tokens_normalize.length; i++) {
     const token = buffer.tokens_normalize[i];
-    let mergedToken = {
+    const mergedToken = {
       string: token.string,
       type: token.type,
       tokens: [i]
@@ -425,10 +420,10 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
 
     if (['symbol', 'colon'].indexOf(token.type) === -1 && i + 1 < buffer.tokens_normalize.length) {
       let count = 0;
-      for (var u = i + 1; u < buffer.tokens_normalize.length; u++) {
+      for (let u = i + 1; u < buffer.tokens_normalize.length; u++) {
         const nextToken = buffer.tokens_normalize[u];
         if (token.type !== nextToken.type) {
-          break
+          break;
         }
         mergedToken.string += nextToken.string;
         mergedToken.tokens.push(u);
@@ -439,32 +434,31 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
     buffer.tokens_merge.push(mergedToken);
   }
 
-  const quotes = '\'"',
-    alphanumeric = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$';
+  const quotes = '\'"';
+  const alphanumeric = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$';
 
-  var error = false,
-    line = buffer.tokens_merge.length > 0 ? 1 : 0;
+  let error = false;
+  let line = buffer.tokens_merge.length > 0 ? 1 : 0;
 
   const setError = (tokenID, reason, offset = 0) => {
     error = {
       token: tokenID,
-      line: line,
-      reason: reason
+      line,
+      reason
     };
     buffer.tokens_merge[tokenID + offset].type = 'error';
-  }
+  };
 
-  let bracketList = [];
+  const bracketList = [];
 
   // Break apart loop??
-  for (var i = 0; i < buffer.tokens_merge.length; i++) {
+  for (let i = 0; i < buffer.tokens_merge.length; i++) {
     if (error) {
-      break
+      break;
     }
-    let token = buffer.tokens_merge[i],
-      string = token.string,
-      type = token.type,
-      found = false;
+    const token = buffer.tokens_merge[i];
+    let found = false;
+    let { string, type } = token;
 
     switch (type) {
       case 'space':
@@ -486,15 +480,15 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
             } else if (string === '[' && i > 0) {
               if (!followsSymbol(buffer.tokens_merge, i, [':', '[', ','])) {
                 setError(i, format(locale.invalidToken.tokenSequence.permitted, {
-                  firstToken: "[",
-                  secondToken: [":", "[", ","]
+                  firstToken: '[',
+                  secondToken: [':', '[', ',']
                 }));
                 break;
               }
             } else if (string === '{') {
               if (followsSymbol(buffer.tokens_merge, i, ['{'])) {
                 setError(i, format(locale.invalidToken.double, {
-                  token: "{"
+                  token: '{'
                 }));
                 break;
               }
@@ -502,9 +496,9 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
             buffer2.brackets.push(string);
             buffer2.isValue = buffer2.brackets[buffer2.brackets.length - 1] === '[';
             bracketList.push({
-              i: i,
-              line: line,
-              string: string
+              i,
+              line,
+              string
             });
             break;
           case '}':
@@ -515,8 +509,8 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
                 break;
               } else if (followsSymbol(buffer.tokens_merge, i, [','])) {
                 setError(i, format(locale.invalidToken.tokenSequence.prohibited, {
-                  firstToken: ",",
-                  secondToken: "}"
+                  firstToken: ',',
+                  secondToken: '}'
                 }));
                 break;
               }
@@ -526,8 +520,8 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
                 break;
               } else if (followsSymbol(buffer.tokens_merge, i, [':'])) {
                 setError(i, format(locale.invalidToken.tokenSequence.prohibited, {
-                  firstToken: ":",
-                  secondToken: "]"
+                  firstToken: ':',
+                  secondToken: ']'
                 }));
                 break;
               }
@@ -535,9 +529,9 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
             buffer2.brackets.pop();
             buffer2.isValue = buffer2.brackets[buffer2.brackets.length - 1] === '[';
             bracketList.push({
-              i: i,
-              line: line,
-              string: string
+              i,
+              line,
+              string
             });
             break;
           case ',':
@@ -545,13 +539,13 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
             if (found) {
               if (followedBySymbol(buffer.tokens_merge, i, ['}'])) {
                 setError(i, format(locale.brace.curly.cannotWrap, {
-                  token: ","
+                  token: ','
                 }));
                 break;
               }
               setError(i, format(locale.invalidToken.tokenSequence.prohibited, {
-                firstToken: "{",
-                secondToken: ","
+                firstToken: '{',
+                secondToken: ','
               }));
               break;
             } else if (followedBySymbol(buffer.tokens_merge, i, ['}', ',', ']'])) {
@@ -570,18 +564,14 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
               case 'symbol':
                 if (followsSymbol(buffer.tokens_merge, i, ['{'])) {
                   setError(i, format(locale.invalidToken.tokenSequence.prohibited, {
-                    firstToken: "{",
-                    secondToken: ","
+                    firstToken: '{',
+                    secondToken: ','
                   }));
                   break;
                 }
                 break;
-              default:
-                break;
             }
             buffer2.isValue = buffer2.brackets[buffer2.brackets.length - 1] === '[';
-            break;
-          default:
             break;
         }
         buffer.json += string;
@@ -590,14 +580,14 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
         found = followsSymbol(buffer.tokens_merge, i, ['[']);
         if (found && followedBySymbol(buffer.tokens_merge, i, [']'])) {
           setError(i, format(locale.brace.square.cannotWrap, {
-            token: ":"
+            token: ':'
           }));
           break;
         }
         if (found) {
           setError(i, format(locale.invalidToken.tokenSequence.prohibited, {
-            firstToken: "[",
-            secondToken: ":"
+            firstToken: '[',
+            secondToken: ':'
           }));
           break;
         }
@@ -620,9 +610,8 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
         break;
       case 'key':
       case 'string':
-        let firstChar = string.charAt(0),
-          lastChar = string.charAt(string.length - 1),
-          quote_primary = quotes.indexOf(firstChar);
+        const firstChar = string.charAt(0);
+        const lastChar = string.charAt(string.length - 1);
         if (quotes.indexOf(firstChar) === -1 && quotes.indexOf(lastChar) !== -1) {
           setError(i, format(locale.string.missingOpen, {
             quote: firstChar
@@ -641,20 +630,20 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
           }));
           break;
         }
-        if ('string' === type && quotes.indexOf(firstChar) === -1 && quotes.indexOf(lastChar) === -1) {
+        if (type === 'string' && quotes.indexOf(firstChar) === -1 && quotes.indexOf(lastChar) === -1) {
           setError(i, format(locale.string.mustBeWrappedByQuotes));
           break;
         }
-        if ('key' === type && followedBySymbol(buffer.tokens_merge, i, ['}', ']'])) {
+        if (type === 'key' && followedBySymbol(buffer.tokens_merge, i, ['}', ']'])) {
           setError(i, format(locale.invalidToken.termSequence.permitted, {
             firstTerm: locale.types.key,
             secondTerm: locale.symbols.colon
           }));
         }
         if (quotes.indexOf(firstChar) === -1 && quotes.indexOf(lastChar) === -1) {
-          for (var h = 0; h < string.length; h++) {
+          for (let h = 0; h < string.length; h++) {
             if (error) {
-              break
+              break;
             }
             const c = string.charAt(h);
             if (alphanumeric.indexOf(c) === -1) {
@@ -666,10 +655,10 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
           }
         }
 
-        string = '"' + (firstChar === "'" ? string.slice(1, -1) : string) + '"';
-        if ('key' === type) {
-          if ('key' === typeFollowed(buffer.tokens_merge, i)) {
-            if (i > 0 && !isNaN(buffer.tokens_merge[i - 1])) {
+        string = `"${firstChar === "'" ? string.slice(1, -1) : string}"`;
+        if (type === 'key') {
+          if (typeFollowed(buffer.tokens_merge, i) === 'key') {
+            if (i > 0 && !Number.isNaN(Number(buffer.tokens_merge[i - 1]))) {
               buffer.tokens_merge[i - 1] += buffer.tokens_merge[i];
               setError(i, format(locale.key.numberAndLetterMissingQuotes));
               break;
@@ -680,7 +669,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
           if (!followsSymbol(buffer.tokens_merge, i, ['{', ','])) {
             setError(i, format(locale.invalidToken.tokenSequence.permitted, {
               firstToken: type,
-              secondToken: ["{", ","]
+              secondToken: ['{', ',']
             }));
             break;
           }
@@ -689,11 +678,11 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
             break;
           }
         }
-        if ('string' === type) {
+        if (type === 'string') {
           if (!followsSymbol(buffer.tokens_merge, i, ['[', ':', ','])) {
             setError(i, format(locale.invalidToken.tokenSequence.permitted, {
               firstToken: type,
-              secondToken: ["[", ":", ","]
+              secondToken: ['[', ':', ',']
             }));
             break;
           }
@@ -709,26 +698,26 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
         if (followsSymbol(buffer.tokens_merge, i, ['{'])) {
           buffer.tokens_merge[i].type = 'key';
           type = buffer.tokens_merge[i].type;
-          string = '"' + string + '"';
+          string = `"${string}"`;
         } else if (typeFollowed(buffer.tokens_merge, i) === 'key') {
           buffer.tokens_merge[i].type = 'key';
           type = buffer.tokens_merge[i].type;
         } else if (!followsSymbol(buffer.tokens_merge, i, ['[', ':', ','])) {
           setError(i, format(locale.invalidToken.tokenSequence.permitted, {
             firstToken: type,
-            secondToken: ["[", ":", ","]
+            secondToken: ['[', ':', ',']
           }));
           break;
         }
         if (type !== 'key' && !buffer2.isValue) {
           buffer.tokens_merge[i].type = 'key';
           type = buffer.tokens_merge[i].type;
-          string = '"' + string + '"';
+          string = `"${string}"`;
         }
         if (type === 'primitive' && string === 'undefined') {
           setError(i, format(locale.invalidToken.useInstead, {
-            badToken: "undefined",
-            goodToken: "null"
+            badToken: 'undefined',
+            goodToken: 'null'
           }));
         }
         buffer.json += string;
@@ -738,9 +727,9 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
 
   let noEscapedSingleQuote = '';
 
-  for (var i = 0; i < buffer.json.length; i++) {
-    let current = buffer.json.charAt(i),
-      next = buffer.json.charAt(i + 1) || '';
+  for (let i = 0; i < buffer.json.length; i++) {
+    const current = buffer.json.charAt(i);
+    const next = buffer.json.charAt(i + 1) || '';
 
     if (i + 1 < buffer.json.length) {
       if (current === '\\' && next === "'") {
@@ -756,20 +745,20 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
 
   if (!error) {
     const maxIterations = Math.ceil(bracketList.length / 2);
-    let round = 0,
-      delta = false;
+    let round = 0;
+    let delta = false;
 
-    const removePair = (index) => {
+    const removePair = index => {
       bracketList.splice(index + 1, 1);
       bracketList.splice(index, 1);
       if (!delta) {
         delta = true;
       }
-    }
+    };
 
     while (bracketList.length > 0) {
       delta = false;
-      for (var tokenCount = 0; tokenCount < bracketList.length - 1; tokenCount++) {
+      for (let tokenCount = 0; tokenCount < bracketList.length - 1; tokenCount++) {
         const pair = bracketList[tokenCount].string + bracketList[tokenCount + 1].string;
         if (['[]', '{}'].indexOf(pair) > -1) {
           removePair(tokenCount);
@@ -785,9 +774,9 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
     }
 
     if (bracketList.length > 0) {
-      const _tokenString = bracketList[0].string,
-        _tokenPosition = bracketList[0].i,
-        _closingBracketType = _tokenString === '[' ? ']' : '}';
+      const _tokenString = bracketList[0].string;
+      const _tokenPosition = bracketList[0].i;
+      const _closingBracketType = _tokenString === '[' ? ']' : '}';
       line = bracketList[0].line;
       setError(_tokenPosition, format(locale.brace[_closingBracketType === ']' ? 'square' : 'curly'].missingClose));
     }
@@ -796,25 +785,25 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
       try {
         buffer.jsObject = JSON.parse(buffer.json);
       } catch (err) {
-        const errorMessage = err.message,
-          subsMark = errorMessage.indexOf('position');
+        const errorMessage = err.message;
+        const subsMark = errorMessage.indexOf('position');
 
         if (subsMark === -1) {
           throw new Error('Error parsing failed');
         }
 
-        const errPositionStr = errorMessage.substring(subsMark + 9, errorMessage.length),
-          errPosition = parseInt(errPositionStr);
+        const errPositionStr = errorMessage.substring(subsMark + 9, errorMessage.length);
+        const errPosition = parseInt(errPositionStr, 10);
 
-        let charTotal = 0,
-          tokenIndex = 0,
-          token = false,
-          _line = 1,
-          exitWhile = false;
+        let charTotal = 0;
+        let tokenIndex = 0;
+        let token = false;
+        let _line = 1;
+        let exitWhile = false;
 
         while (charTotal < errPosition && !exitWhile) {
           token = buffer.tokens_merge[tokenIndex];
-          if ('linebreak' === token.type) {
+          if (token.type === 'linebreak') {
             _line++;
           }
           if (['space', 'linebreak'].indexOf(token.type) === -1) {
@@ -856,33 +845,32 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
     }
   }
 
-  let _line = 1,
-    _depth = 0;
+  let _line = 1;
+  let _depth = 0;
   const lastIndex = buffer.tokens_merge.length - 1;
   const newIndent = () => Array(_depth * 2).fill('&nbsp;').join('');
 
   const newLineBreak = (byPass = false) => {
     _line++;
     return (_depth > 0 || byPass) ? '<br>' : '';
-  }
+  };
 
   const newLineBreakAndIndent = (byPass = false) => newLineBreak(byPass) + newIndent();
 
   if (error) {
     let _line_fallback = 1;
-    const countCarrigeReturn = (string) => {
+    const countCarrigeReturn = string => {
       let count = 0;
-      for (var i = 0; i < string.length; i++) {
+      for (let i = 0; i < string.length; i++) {
         if (['\n', '\r'].indexOf(string[i]) > -1) count++;
       }
       return count;
-    }
+    };
 
     _line = 1;
-    for (var i = 0; i < buffer.tokens_merge.length; i++) {
-      const token = buffer.tokens_merge[i],
-        type = token.type,
-        string = token.string;
+    for (let i = 0; i < buffer.tokens_merge.length; i++) {
+      const token = buffer.tokens_merge[i];
+      const { type, string } = token;
       if (type === 'linebreak') {
         _line++;
       }
@@ -895,32 +883,24 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
     if (_line < _line_fallback) {
       _line = _line_fallback;
     }
-
-    const isFunction = (functionToCheck) => functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
-
-    /*
-    if ('modifyErrorText' in this.props && isFunction(this.props.modifyErrorText)) {
-    	error.reason = this.props.modifyErrorText(error.reason);
-    }
-    */
   } else {
     // FORMAT BY TOKEN!!
     // TODO: Simplify this....
-    for (var i = 0; i < buffer.tokens_merge.length; i++) {
+    for (let i = 0; i < buffer.tokens_merge.length; i++) {
       const token = buffer.tokens_merge[i];
       switch (token.type) {
         case 'string':
         case 'number':
         case 'primitive':
         case 'error':
-          //buffer.markup += followsSymbol(buffer.tokens_merge, i, [',', '[']) ? newLineBreakAndIndent() : '';
+          // buffer.markup += followsSymbol(buffer.tokens_merge, i, [',', '[']) ? newLineBreakAndIndent() : '';
           buffer.markup += newSpan(i, token, _depth, colors);
           break;
         case 'key':
           buffer.markup += (newLineBreakAndIndent() + newSpan(i, token, _depth, colors));
           break;
         case 'colon':
-          buffer.markup += (newSpan(i, token, _depth, colors) + '&nbsp;');
+          buffer.markup += `${newSpan(i, token, _depth, colors)}&nbsp;`;
           break;
         case 'symbol':
           const islastToken = i === lastIndex;
@@ -931,9 +911,10 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
               break;
             case '}':
               _depth = _depth > 0 ? _depth - 1 : _depth;
-              const _adjustment = i > 0 ? followsSymbol(buffer.tokens_merge, i, ['[', '{']) ? '' : newLineBreakAndIndent(islastToken) : '';
+              let _adjustment = '';
+              if (i > 0) _adjustment = followsSymbol(buffer.tokens_merge, i, ['[', '{']) ? '' : newLineBreakAndIndent(islastToken);
 
-              buffer.markup += (_adjustment + newSpan(i, token, _depth, colors));
+              buffer.markup += _adjustment + newSpan(i, token, _depth, colors);
               break;
             case '[':
               if (followsSymbol(buffer.tokens_merge, i, ['['])) {
@@ -943,10 +924,8 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
               buffer.markup += newSpan(i, token, _depth, colors);
               break;
             case ']':
-              let tmp_token = {
-                  ...token
-                },
-                ind_bool = false;
+              const tmp_token = { ...token };
+              let ind_bool = false;
 
               if (followsSymbol(buffer.tokens_merge, i, [']'])) {
                 if (followedBySymbol(buffer.tokens_merge, i, [']'])) {
@@ -964,7 +943,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
                 }
               }
 
-              buffer.markup += ((ind_bool ? newLineBreakAndIndent() : '') + newSpan(i, tmp_token, _depth, colors));
+              buffer.markup += (ind_bool ? newLineBreakAndIndent() : '') + newSpan(i, tmp_token, _depth, colors);
               break;
             case ',':
               buffer.markup += newSpan(i, token, _depth, colors);
@@ -981,8 +960,8 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
     }
   }
 
-  for (var i = 0; i < buffer.tokens_merge.length; i++) {
-    let token = buffer.tokens_merge[i];
+  for (let i = 0; i < buffer.tokens_merge.length; i++) {
+    const token = buffer.tokens_merge[i];
     buffer.indented += token.string;
     if (['space', 'linebreak'].indexOf(token.type) === -1) {
       buffer.tokens_plainText += token.string;
@@ -997,76 +976,74 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
     jsObject: buffer.jsObject,
     markup: buffer.markup,
     lines: _line,
-    error: error
+    error
   };
-}
-
+};
 
 // JS OBJECTS || PLACEHOLDER
 // Helper Functions
-const stringHasQuotes = (str) => str.match(/^[\'\"].*[\'\"]$/) ? true : false;
+const stringHasQuotes = str => str.match(/^['"].*['"]$/);
 
 const stringMayRemoveQuotes = (nonAlphaNumeric, text) => {
   let numberAndLetter = false;
 
-  for (var i = 0; i < text.length; i++) {
-    if (i === 0 && isNaN(text.charAt(i))) {
+  for (let i = 0; i < text.length; i++) {
+    if (i === 0 && Number.isNaN(Number(text.charAt(i)))) {
       break;
     }
-    if (isNaN(text.charAt(i))) {
+    if (Number.isNaN(Number(text.charAt(i)))) {
       numberAndLetter = true;
       break;
     }
   }
   return !(nonAlphaNumeric.length > 0 || numberAndLetter);
-}
+};
 
-const stripQuotesFromKey = (text) => {
+const stripQuotesFromKey = text => {
   if (text.length === 0) return text;
   if (['""', "''"].indexOf(text) > -1) return "''";
   let wrappedInQuotes = false;
 
-  if (text.match(/^[\"\'].*[\"\']$/)) {
+  if (text.match(/^["'].*["']$/)) {
     wrappedInQuotes = true;
   }
 
   if (wrappedInQuotes && text.length >= 2) text = text.slice(1, -1);
-  const nonAlphaNumeric = text.replace(/\w/g, ''),
-    alphaNumeric = text.replace(/\W+/g, ''),
-    mayRemoveQuotes = stringMayRemoveQuotes(nonAlphaNumeric, text),
-    hasQuotes = stringHasQuotes(nonAlphaNumeric);
+  const nonAlphaNumeric = text.replace(/\w/g, '');
+  const mayRemoveQuotes = stringMayRemoveQuotes(nonAlphaNumeric, text);
+  const hasQuotes = stringHasQuotes(nonAlphaNumeric);
 
   if (hasQuotes) {
     let newText = '';
     const charList = text.split('');
-    for (var ii = 0; ii < charList.length; ii++) {
+    for (let ii = 0; ii < charList.length; ii++) {
       let char = charList[ii];
-      if (["'", '"'].indexOf(char) > -1) char = '\\' + char;
+      if (["'", '"'].indexOf(char) > -1) char = `\${char}`;
       newText += char;
     }
     text = newText;
   }
-  return mayRemoveQuotes ? text : "'" + text + "'";
-}
+  return mayRemoveQuotes ? text : `'${text}'`;
+};
 
 const add_tokenSecondary = buffer => {
   if (buffer.tokenSecondary.length === 0) return false;
   buffer.tokens.push(buffer.tokenSecondary);
   buffer.tokenSecondary = '';
   return true;
-}
+};
 
 const add_tokenPrimary = (buffer, value) => {
   if (value.length === 0) return false;
   buffer.tokens.push(value);
   return true;
-}
+};
 
 const escape_character = buffer => {
   if (buffer.currentChar !== '\\') return false;
   buffer.inputText = deleteCharAt(buffer.inputText, buffer.position);
   return true;
-}
+};
 
 const determine_string = buffer => {
   if ('\'"'.indexOf(buffer.currentChar) === -1) return false;
@@ -1085,7 +1062,7 @@ const determine_string = buffer => {
     return true;
   }
   return false;
-}
+};
 
 const determine_value = buffer => {
   if (':,{}[]'.indexOf(buffer.currentChar) === -1 || buffer.stringOpen) return false;
@@ -1096,7 +1073,6 @@ const determine_value = buffer => {
     case ':':
       buffer.isValue = true;
       return true;
-      break;
     case '{':
     case '[':
       buffer.brackets.push(buffer.currentChar);
@@ -1108,14 +1084,14 @@ const determine_value = buffer => {
   }
 
   if (buffer.currentChar !== ':') {
-    buffer.isValue = (buffer.brackets[buffer.brackets.length - 1] === '[');
+    buffer.isValue = buffer.brackets[buffer.brackets.length - 1] === '[';
   }
   return true;
-}
+};
 
 // Main Function
 export const JSON_Placeholder = (obj, colors) => {
-  let buffer = {
+  const buffer = {
     inputText: JSON.stringify(obj),
     position: 0,
     currentChar: '',
@@ -1137,24 +1113,25 @@ export const JSON_Placeholder = (obj, colors) => {
         buffer.tokenSecondary += buffer.currentChar;
       }
     }
-  })
+  });
 
-  let buffer2 = {
+  const buffer2 = {
     brackets: [],
     isValue: false,
     tokens: []
   };
 
+  // eslint-disable-next-line array-callback-return
   buffer2.tokens = buffer.tokens.map(token => {
     switch (token) {
       case ',':
-        buffer2.isValue = (buffer2.brackets[buffer2.brackets.length - 1] === '[');
+        buffer2.isValue = buffer2.brackets[buffer2.brackets.length - 1] === '[';
         return {
           type: 'symbol',
-            string: token,
-            value: token,
-            depth: buffer2.brackets.length
-        }
+          string: token,
+          value: token,
+          depth: buffer2.brackets.length
+        };
       case ':':
         buffer2.isValue = true;
         return {
@@ -1162,63 +1139,63 @@ export const JSON_Placeholder = (obj, colors) => {
           string: token,
           value: token,
           depth: buffer2.brackets.length
-        }
+        };
       case '{':
       case '[':
         buffer2.brackets.push(token);
-        buffer2.isValue = (buffer2.brackets[buffer2.brackets.length - 1] === '[');
+        buffer2.isValue = buffer2.brackets[buffer2.brackets.length - 1] === '[';
         return {
           type: 'symbol',
           string: token,
           value: token,
           depth: buffer2.brackets.length
-        }
+        };
       case '}':
       case ']':
         buffer2.brackets.pop();
-        buffer2.isValue = (buffer2.brackets[buffer2.brackets.length - 1] === '[');
+        buffer2.isValue = buffer2.brackets[buffer2.brackets.length - 1] === '[';
         return {
           type: 'symbol',
           string: token,
           value: token,
           depth: buffer2.brackets.length
-        }
+        };
       case 'undefined':
         return {
           type: 'primitive',
           string: token,
           value: undefined,
           depth: buffer2.brackets.length
-        }
+        };
       case 'null':
         return {
           type: 'primitive',
           string: token,
           value: null,
           depth: buffer2.brackets.length
-        }
+        };
       case 'false':
         return {
           type: 'primitive',
           string: token,
           value: false,
           depth: buffer2.brackets.length
-        }
+        };
       case 'true':
         return {
           type: 'primitive',
           string: token,
           value: true,
           depth: buffer2.brackets.length
-        }
+        };
       default:
         const C = token.charAt(0);
-        let rtn = {
+        const rtn = {
           type: '',
           string: '',
           value: '',
           depth: buffer2.brackets.length
-        }
+        };
 
         if ('\'"'.indexOf(C) > -1) {
           rtn.type = buffer2.isValue ? 'string' : 'key';
@@ -1226,40 +1203,40 @@ export const JSON_Placeholder = (obj, colors) => {
           if (rtn.type === 'string') {
             rtn.string = '';
             const charList2 = token.slice(1, -1).split('');
-            for (var ii = 0; ii < charList2.length; ii++) {
+            for (let ii = 0; ii < charList2.length; ii++) {
               let char = charList2[ii];
-              if ('\'\"'.indexOf(char) > -1) char = '\\' + char;
+              if ('\'"'.indexOf(char) > -1) char = `\${char}`;
               rtn.string += char;
             }
-            rtn.string = "'" + rtn.string + "'";
+            rtn.string = `'${rtn.string}'`;
           }
           rtn.value = rtn.string;
-          return rtn
+          return rtn;
         }
 
-        if (!isNaN(token)) {
+        if (!Number.isNaN(Number(token))) {
           rtn.type = 'number';
           rtn.string = token;
           rtn.value = Number(token);
-          return rtn
+          return rtn;
         }
 
         if (rtn.token.length > 0 && !buffer2.isValue) {
           rtn.type = 'key';
           rtn.string = token;
-          if (rtn.string.indexOf(' ') > -1) rtn.string = "'" + rtn.string + "'";
-          rtn.value = string;
-          return rtn
+          if (rtn.string.indexOf(' ') > -1) rtn.string = `'${rtn.string}'`;
+          rtn.value = rtn.string;
+          return rtn;
         }
     }
   });
 
-  let clean = buffer2.tokens.map(t => t.string).join('');
+  const clean = buffer2.tokens.map(t => t.string).join('');
 
-  let _line = 1,
-    _depth = 0,
-    indentation = '',
-    markup = '';
+  let _line = 1;
+  let _depth = 0;
+  let indentation = '';
+  let markup = '';
   const lastIndex = buffer2.tokens.length - 1;
 
   const indent = (byPass = false) => ((_depth > 0 || byPass) ? '\n' : '') + Array(_depth * 2).fill(' ').join('');
@@ -1282,11 +1259,11 @@ export const JSON_Placeholder = (obj, colors) => {
         markup += indentII() + newSpan(i, token, _depth, colors);
         break;
       case 'symbol':
-        const islastToken = i === lastIndex
+        const islastToken = i === lastIndex;
         switch (token.string) {
           case '{':
-            indentation += token.string
-            markup += newSpan(i, token, _depth, colors)
+            indentation += token.string;
+            markup += newSpan(i, token, _depth, colors);
             _depth++;
             if (followedBySymbol(buffer2.tokens, i, ['}'])) {
               indentation += indent();
@@ -1295,11 +1272,15 @@ export const JSON_Placeholder = (obj, colors) => {
             break;
           case '}':
             _depth = _depth >= 1 ? _depth - 1 : _depth;
-            const _adjustment = i > 0 ? followsSymbol(buffer2.tokens, i, ['[', '{']) ? '' : indent(islastToken) : '',
-              _adjustmentII = i > 0 ? followsSymbol(buffer2.tokens, i, ['[', '{']) ? '' : indentII(islastToken) : '';
+            let _adjustment = '';
+            let _adjustmentII = '';
+            if (i > 0 && !followsSymbol(buffer2.tokens, i, ['[', '{'])) {
+              _adjustment = indent(islastToken);
+              _adjustmentII = indentII(islastToken);
+            }
 
-            indentation += (_adjustment + token.string);
-            markup += (_adjustmentII + newSpan(i, token, _depth, colors));
+            indentation += _adjustment + token.string;
+            markup += _adjustmentII + newSpan(i, token, _depth, colors);
             break;
           case '[':
             if (followsSymbol(buffer2.tokens, i, ['['])) {
@@ -1311,8 +1292,8 @@ export const JSON_Placeholder = (obj, colors) => {
             markup += newSpan(i, token, _depth, colors);
             break;
           case ']':
-            let tmp_token = { ...token },
-              ind_bool = false;
+            const tmp_token = { ...token };
+            let ind_bool = false;
 
             if (followsSymbol(buffer2.tokens, i, [']'])) {
               if (followedBySymbol(buffer2.tokens, i, [']'])) {
@@ -1330,12 +1311,12 @@ export const JSON_Placeholder = (obj, colors) => {
               }
             }
 
-            indentation += ((ind_bool ? indent() : '') + tmp_token.string);
-            markup += ((ind_bool ? indentII() : '') + newSpan(i, tmp_token, _depth, colors));
+            indentation += (ind_bool ? indent() : '') + tmp_token.string;
+            markup += (ind_bool ? indentII() : '') + newSpan(i, tmp_token, _depth, colors);
             break;
           case ':':
-            indentation += token.string + ' ';
-            markup += newSpan(i, token, _depth, colors) + '&nbsp;';
+            indentation += `${token.string} `;
+            markup += `${newSpan(i, token, _depth, colors)}&nbsp;`;
             break;
           case ',':
             indentation += token.string;
@@ -1352,7 +1333,7 @@ export const JSON_Placeholder = (obj, colors) => {
         }
         break;
     }
-  })
+  });
   _line += 1;
 
   return {
@@ -1361,7 +1342,7 @@ export const JSON_Placeholder = (obj, colors) => {
     indented: indentation,
     json: JSON.stringify(obj),
     jsObject: obj,
-    markup: markup,
+    markup,
     lines: _line
   };
-}
+};

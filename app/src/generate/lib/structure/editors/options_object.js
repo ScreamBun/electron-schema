@@ -1,118 +1,94 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-import {
-  Button,
-  ButtonGroup,
-  FormGroup,
-  Input,
-  Label
-} from 'reactstrap'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
-import {
-  faMinusCircle,
-  faMinusSquare,
-  faPlusSquare
-} from '@fortawesome/free-solid-svg-icons'
-
-import KeyValueEditor from './key_value'
+import KeyValueEditor from './key_value';
 
 const ConfigKeys = {
-  'id': { 
-    description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName'
+  id: {
+    description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName',
+    type: 'checkbox'
   },
-  'vtype': { 
+  vtype: {
     description: 'Value type for ArrayOf and MapOf'
   },
-  'ktype': { 
+  ktype: {
     description: 'Key type for MapOf'
   },
-  'enum': { 
+  enum: {
     description: 'Extension: Enumerated type derived from the specified Array, Choice, Map or Record type'
   },
-  '(optional) format': { 
+  '(optional) format': {
     description: 'Semantic validation keyword'
   },
-  '(optional) pattern': { 
+  '(optional) pattern': {
     description: 'Regular expression used to validate a String type'
   },
-  '(optional) minv': { 
+  '(optional) minv': {
     description: 'Minimum numeric value, octet or character count, or element count'
   },
-  '(optional) maxv': { 
+  '(optional) maxv': {
     description: 'Maximum numeric value, octet or character count, or element count'
   },
-  '(optional) unique': { 
-    description: 'If present, an ArrayOf instance must not contain duplicate values'
-  },
-}
+  '(optional) unique': {
+    description: 'If present, an ArrayOf instance must not contain duplicate values',
+    type: 'checkbox'
+  }
+};
 
 // Key Object Editor
-const KeyObjectEditor = (props) => {
-  const [state, setState] = useState({});
+const KeyObjectEditor = props => {
+  const [state, setState] = useState(props.deserializedState);
 
-  const removeAll = e => props.remove(props.id.toLowerCase())
-
-  const onChange = e => {
-    let index = e.target.attributes.getNamedItem('data-index').value.split(',')
-    let value = e.target.value
-
-    let tmpValue = [ ...props.value ]
-
-    if (!tmpValue[index[0]]) {
-      tmpValue[index[0]] = ['', '']
-    }
-    tmpValue[index[0]][index[1]] = value
-    props.change(tmpValue)
-  }
-
-  const saveKeyValuePair = (keyVal) => {  
+  const saveKeyValuePair = (key, val) => {
     setState(prevState => ({
       ...prevState,
-      [keyVal[0]] : keyVal[1]
-    }))
-  }
+      [key]: val
+    }));
+  };
 
   useEffect(() => {
     props.saveModalState(state, 'type');
-  }, [state])
+  }, [state]);
 
   const keys = Object.keys(ConfigKeys).map((key, idx) => {
-    let keyProps = {
+    const keyProps = {
       ...ConfigKeys[key],
       placeholder: key,
-      removable: false
-    }
-    
-    if (props.value.hasOwnProperty(key)) {
-      keyProps['value'] = props.value[key]
-    }
+      removable: false,
+      change: v => saveKeyValuePair(key, v)
+    };
 
-    const isDropdown = (key == 'id' || key == '(optional) unique') ? true : false;
-
-    return <KeyValueEditor value={ props.deserializedState[key] } saveKeyValuePair={ saveKeyValuePair } isDropdown={ isDropdown } key={ idx } id={ key } { ...keyProps } />
-  })
+    return <KeyValueEditor value={ props.deserializedState[key] } key={ idx } id={ key } { ...keyProps } />
+  });
 
   return (
-    <div className='border m-1 p-1'>
-      <div className='border-bottom mb-2'>
-        <p className='col-sm-4 my-1'><strong>{ props.id }</strong></p>
+    <div className="border m-1 p-1">
+      <div className="border-bottom mb-2">
+        <p className="col-sm-4 my-1"><strong>{ props.id }</strong></p>
       </div>
-      <div className='col-12 m-0'>
+      <div className="col-12 m-0">
         { keys }
       </div>
     </div>
-  )
-}
+  );
+};
+
+KeyObjectEditor.propTypes = {
+  id: PropTypes.string,
+  placeholder: PropTypes.string,
+  value: PropTypes.array,
+  change: PropTypes.func,
+  deserializedState: PropTypes.object,
+  saveModalState: PropTypes.func
+};
 
 KeyObjectEditor.defaultProps = {
   id: 'Set Type Options',
   placeholder: 'Set Type Options',
   value: [],
-  change: val => {
-    console.log(val)
-  }
+  change: null,
+  deserializedState: {},
+  saveModalState: null
 };
 
 export default KeyObjectEditor;

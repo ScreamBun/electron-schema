@@ -1,87 +1,95 @@
-import React, { useState, useEffect } from 'react'
-
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
-  Button, 
-  ButtonGroup,
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-  FormGroup, 
+  Button,
+  FormGroup,
   FormText,
-  Input, 
-  Label,
-} from 'reactstrap'
-
-import Select from 'react-dropdown-select'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMinusSquare } from '@fortawesome/free-solid-svg-icons'
+  Input,
+  Label
+} from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 
 // Key Value Editor
 const KeyValueEditor = props => {
-  const options = [
-    { value: true, label: 'Yes' },
-    { value: false, label: 'No' },
-  ];
-  const [ inputValue, handleInputChange ] = useState(props.value);
-  const [ selectValue, handleSelectChange ] = props.value ? useState(props.value) : useState([options[1]]);
-
-  const getKeyValuePair = (type) => {
-    return type == 'select' ? [props.id, selectValue] : [props.id, inputValue];
+  const inputArgs = {
+    value: props.value,
+    checked: props.type && props.value,
+    onChange: e => props.change(e.target.value)
   };
 
-  useEffect(() => {
-    if(props.saveKeyValuePair)
-      props.saveKeyValuePair(getKeyValuePair('select'));
-  }, [selectValue]);
-
-  useEffect(() => {
-    if(props.saveKeyValuePair)
-      props.saveKeyValuePair(getKeyValuePair('input'));
-  }, [inputValue]);
+  if (['checkbox', 'radio'].includes(props.type)) {
+    inputArgs.onChange = e => props.change(e.target.checked);
+  }
 
   return (
-    <FormGroup row className='border m-1 p-1'>
-    <Label for={ 'editor-' + props.id } sm={ 2 } ><strong>{ props.id }</strong></Label>
-    <div className='input-group col-sm-10'>
-      { props.isDropdown ? 
-        <Select
-          options={ options } 
-          onChange={ value => handleSelectChange(value) }
-          values={ selectValue }
-        />
-        : 
+    <FormGroup row className="border m-1 p-1">
+      <Label htmlFor={ `editor-${props.id}` } sm={ 2 } ><strong>{ props.id }</strong></Label>
+      <div className="input-group col-sm-10">
         <Input
-          type='text'
-          id={ 'editor-' + props.id }
-          className='form-control'
+          type={ props.type || 'text' }
+          id={ `editor-${props.id}` }
+          className="form-control"
           placeholder={ props.placeholder }
-          value={ inputValue }
-          onChange={ e => { handleInputChange(e.target.value); props.change(e.target.value) }}
-        />  
-      }
-      { props.removable ? (
-        <div className='input-group-append'>
-          <Button color='danger' onClick={ () => props.remove(props.id.toLowerCase()) }>
-            <FontAwesomeIcon icon={ faMinusSquare } />
-          </Button>
-        </div>
-      ) : '' }
-    </div>
-    { props.description ? <FormText color='muted' className='ml-3'>{ props.description }</FormText> : '' }
-  </FormGroup>
+          { ...inputArgs }
+        />
+        {props.remove ? (
+          <div className="input-group-append">
+            <Button color='danger' onClick={ () => props.remove(props.id.toLowerCase()) }>
+              <FontAwesomeIcon icon={ faMinusSquare } />
+            </Button>
+          </div>
+        ) : (
+          ''
+        )}
+      </div>
+      { props.description ? <FormText color='muted' className='ml-3'>{ props.description }</FormText> : '' }
+    </FormGroup>
   );
-}
-  
+};
+
+KeyValueEditor.propTypes = {
+  id: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.object,
+  description: PropTypes.string,
+  placeholder: PropTypes.string,
+  type: PropTypes.oneOf([
+    'checkbox',
+    'color',
+    'date',
+    'datetime-local',
+    'email',
+    'file',
+    'hidden',
+    'image',
+    'month',
+    'number',
+    'password',
+    'radio',
+    'range',
+    'search',
+    'tel',
+    'text',
+    'time',
+    'url',
+    'week'
+  ]),
+  change: PropTypes.func,
+  remove: PropTypes.func
+};
+
 KeyValueEditor.defaultProps = {
   id: 'KeyValueEditor',
-  placeholder: 'KeyValueEditor',
+  name: 'KeyValueEditor',
   value: '',
-  change: (val) => {
-    console.log(val)
+  description: null,
+  placeholder: 'KeyValueEditor',
+  type: 'text',
+  change: val => {
+    console.log(val);
   },
-  remove: (id) => {
-    console.log(id)
-  },
-  removable: true
-}
+  remove: null
+};
 
-export default KeyValueEditor;  
+export default KeyValueEditor;

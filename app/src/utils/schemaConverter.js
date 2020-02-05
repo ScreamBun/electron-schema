@@ -1,14 +1,12 @@
-/*
- Converter scripts for JADNSchema library
-*/
+// Converter scripts for JADNSchema library
 export const SchemaFormats = {
   HTML: 'html',
   JADN: 'jadn',
   // JIDL: 'jidl',
   JSON: 'json',
-  MD: 'md',
+  MD: 'md'
   // PDF: 'pdf'
-}
+};
 
 export const ConverterScript = String.raw`import json
 from jadnschema import (convert, jadn, schema as jadn_schema)

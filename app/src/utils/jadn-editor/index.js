@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import themes from './themes';
 import {
   identical,
   getType
 } from './mitsuketa';
-
 import {
   DomNode_Update,
   JSON_Placeholder
-} from './tokenize'
-
-import {
-  deleteCharAt,
-  followedBySymbol,
-  followsSymbol,
-  typeFollowed
-} from './utils'
+} from './tokenize';
 
 import err from './err'; // direct copy
 import { format } from './locale'; // direct copy
@@ -34,7 +27,6 @@ class JADNInput extends Component {
     this.scheduledUpdate = this.scheduledUpdate.bind(this);
     this.setUpdateTime = this.setUpdateTime.bind(this);
     this.renderLabels = this.renderLabels.bind(this);
-    //this.newSpan = this.newSpan.bind(this);
     this.renderErrorMessage = this.renderErrorMessage.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.showPlaceholder = this.showPlaceholder.bind(this);
@@ -51,23 +43,25 @@ class JADNInput extends Component {
     this.state = {
       prevPlaceholder: '',
       markupText: '',
-      plainText: '',
-      json: '',
+      plainText: '', // eslint-disable-line react/no-unused-state
+      json: '', // eslint-disable-line react/no-unused-state
       jsObject: undefined,
       lines: false,
       error: false
-    }
+    };
+    // eslint-disable-next-line react/destructuring-assignment
     if (!this.props.locale) {
-      console.warn("[jadn-editor - Deprecation Warning] You did not provide a 'locale' prop for your JSON input - This will be required in a future version. English has been set as a default.");
+      const msg = "[jadn-editor - Deprecation Warning] You did not provide a 'locale' prop for your JSON input - This will be required in a future version. English has been set as a default.";
+      console.warn(msg);
     }
+  }
+
+  componentDidMount() {
+    this.showPlaceholder();
   }
 
   componentDidUpdate() {
     this.updateInternalProps();
-    this.showPlaceholder();
-  }
-
-  componentDidMount() {
     this.showPlaceholder();
   }
 
@@ -87,7 +81,7 @@ class JADNInput extends Component {
     this.colors = theme;
 
     if ('colors' in this.props) {
-      let checkColor = (c) => c in this.props.colors ? this.props.colors[c] : this.colors[c];
+      const checkColor = c => c in this.props.colors ? this.props.colors[c] : this.colors[c];
       this.colors = {
         default: checkColor('default'),
         string: checkColor('string'),
@@ -99,11 +93,11 @@ class JADNInput extends Component {
         error: checkColor('error'),
         background: checkColor('background'),
         background_warning: checkColor('background_warning')
-      }
+      };
     }
 
     if ('style' in this.props) {
-      let checkStyle = (s) => s in this.props.style ? this.props.style[s] : {};
+      const checkStyle = s => s in this.props.style ? this.props.style[s] : {};
       this.style = {
         outerBox: checkStyle('outerBox'),
         warningBox: checkStyle('warningBox'),
@@ -113,7 +107,7 @@ class JADNInput extends Component {
         labelColumn: checkStyle('labelColumn'),
         labels: checkStyle('labels'),
         contentBox: checkStyle('contentBox')
-      }
+      };
     } else {
       this.style = {
         outerBox: {},
@@ -124,16 +118,16 @@ class JADNInput extends Component {
         labelColumn: {},
         labels: {},
         contentBox: {}
-      }
+      };
     }
 
     this.confirmGood = 'confirmGood' in this.props ? this.props.confirmGood : true;
-    this.totalHeight = (this.props.height || '610px');
-    this.totalWidth = (this.props.width || '479px');
+    this.totalHeight = this.props.height || '610px';
+    this.totalWidth = this.props.width || '479px';
 
-    if ((!('onKeyPressUpdate' in this.props)) || this.props.onKeyPressUpdate) {
+    if (!('onKeyPressUpdate' in this.props) || this.props.onKeyPressUpdate) {
       if (!this.timer) {
-        this.timer = setInterval(this.scheduledUpdate, 100)
+        this.timer = setInterval(this.scheduledUpdate, 100);
       }
     } else if (this.timer) {
       clearInterval(this.timer);
@@ -146,34 +140,36 @@ class JADNInput extends Component {
 
   onClick() {
     if ('viewOnly' in this.props && this.props.viewOnly) {
+      // eslint-disable-next-line no-useless-return
       return;
     }
   }
 
   onBlur() {
     if ('viewOnly' in this.props && this.props.viewOnly) {
+      // eslint-disable-next-line no-useless-return
       return;
     }
     this.update(0, false);
   }
 
   update(cursorOffset = 0, updateCursorPosition = true) {
-    const container = this.refContent,
-      data = this.tokenize(container),
-      updateData = {
-        plainText: data.indented,
-        markupText: data.markup,
-        json: data.json,
-        jsObject: data.jsObject,
-        lines: data.lines,
-        error: data.error
-      };
+    const container = this.refContent;
+    const data = this.tokenize(container);
+    const updateData = {
+      plainText: data.indented,
+      markupText: data.markup,
+      json: data.json,
+      jsObject: data.jsObject,
+      lines: data.lines,
+      error: data.error
+    };
 
     if ('onChange' in this.props) {
       this.props.onChange(updateData);
     }
 
-    let cursorPosition = this.getCursorPosition(data.error) + cursorOffset;
+    const cursorPosition = this.getCursorPosition(data.error) + cursorOffset;
     this.setState(updateData);
 
     this.updateTime = false;
@@ -191,10 +187,10 @@ class JADNInput extends Component {
       return false;
     };
 
-    let selection = window.getSelection(),
-      charCount = -1,
-      linebreakCount = 0,
-      node;
+    const selection = window.getSelection();
+    let charCount = -1;
+    let linebreakCount = 0;
+    let node;
 
     if (selection.focusNode && isChildOf(selection.focusNode)) {
       node = selection.focusNode;
@@ -236,7 +232,7 @@ class JADNInput extends Component {
             chars.count = 0;
           }
         } else {
-          for (var lp = 0; lp < node.childNodes.length; lp++) {
+          for (let lp = 0; lp < node.childNodes.length; lp++) {
             range = createRange(node.childNodes[lp], chars, range);
             if (chars.count === 0) break;
           }
@@ -247,10 +243,10 @@ class JADNInput extends Component {
 
     const setPosition = chars => {
       if (chars < 0) return;
-      let selection = window.getSelection(),
-        range = createRange(this.refContent, {
-          count: chars
-        });
+      const selection = window.getSelection();
+      const range = createRange(this.refContent, {
+        count: chars
+      });
       if (!range) return;
       range.collapse(false);
       selection.removeAllRanges();
@@ -295,7 +291,7 @@ class JADNInput extends Component {
       case 'Tab':
         this.stopEvent(event);
         if (viewOnly) break;
-        document.execCommand("insertText", false, "  ");
+        document.execCommand('insertText', false, '  ');
         this.setUpdateTime();
         break;
       case 'Backspace':
@@ -324,7 +320,7 @@ class JADNInput extends Component {
       this.stopEvent(event);
     } else {
       event.preventDefault();
-      var text = event.clipboardData.getData('text/plain');
+      const text = event.clipboardData.getData('text/plain');
       document.execCommand('insertHTML', false, text);
     }
     this.update();
@@ -338,7 +334,7 @@ class JADNInput extends Component {
 
   createMarkup(markupText) {
     return {
-      __html: markupText === undefined ? '' : '' + markupText
+      __html: markupText === undefined ? '' : `${markupText}`
     };
   }
 
@@ -358,7 +354,7 @@ class JADNInput extends Component {
     const samePlaceholderValues = identical(placeholder, prevPlaceholder);
     let componentShouldUpdate = !samePlaceholderValues;
 
-    if (!componentShouldUpdate && resetConfiguration & jsObject !== undefined) {
+    if (!componentShouldUpdate && resetConfiguration && jsObject !== undefined) {
       componentShouldUpdate = !identical(placeholder, jsObject);
     }
 
@@ -367,7 +363,7 @@ class JADNInput extends Component {
     const data = this.tokenize(placeholder);
     this.setState({
       prevPlaceholder: placeholder,
-      plainText: data.indentation,
+      plainText: data.indentation,// eslint-disable-line react/no-unused-state
       markupText: data.markup,
       lines: data.lines,
       error: data.error
@@ -375,33 +371,36 @@ class JADNInput extends Component {
   }
 
   tokenize(obj) {
-    let objType = getType(obj);
+    const objType = getType(obj);
 
     if (objType !== 'object') {
-      return console.error('tokenize() expects object type properties only. Got \'' + objType + '\' type instead.');
+      return console.error(`tokenize() expects object type properties only. Got '${objType}' type instead.`);
     }
 
     const locale = this.props.locale || defaultLocale;
 
     // DOM Node || OnBlue or Update
     if ('nodeType' in obj) {
-      return DomNode_Update(obj, locale, this.colors)
+      return DomNode_Update(obj, locale, this.colors);
     }
 
     // JS OBJECTS || PLACEHOLDER
     if (!('nodeType' in obj)) {
-      return JSON_Placeholder(obj, this.colors)
+      return JSON_Placeholder(obj, this.colors);
     }
 
-    console.log('Oops....')
+    console.log('Oops....');
   }
 
   renderErrorMessage() {
-    const error = this.state.error,
-      locale = this.props.locale || defaultLocale,
-      style = this.style;
+    const error = this.state.error;
+    const locale = this.props.locale || defaultLocale;
+    const style = this.style;
 
-    if (!error) return void(0);
+    if (!error) {
+      // eslint-disable-next-line no-void
+      return void 0;
+    }
 
     return (
       <p
@@ -424,18 +423,16 @@ class JADNInput extends Component {
       >
         { format(locale.format, error) }
       </p>
-    )
+    );
   }
 
   renderLabels() {
-    const colors = this.colors,
-      style = this.style,
-      errorLine = this.state.error ? this.state.error.line : -1,
-      lines = this.state.lines ? this.state.lines : 1;
+    const { colors, style } = this;
+    const errorLine = this.state.error ? this.state.error.line : -1;
+    const lines = this.state.lines ? this.state.lines : 1;
+    const labels = new Array(lines);
 
-    let labels = new Array(lines);
-
-    for (var i = 0; i < lines - 1; i++) labels[i] = i + 1;
+    for (let i = 0; i < lines - 1; i++) labels[i] = i + 1;
 
     return labels.map(number => {
       const color = number !== errorLine ? colors.default : 'red';
@@ -444,31 +441,26 @@ class JADNInput extends Component {
           key={ number }
           style={{
             ...style.labels,
-            color: color
+            color
           }}
         >
           { number }
         </div>
-      )
-    })
+      );
+    });
   }
 
   render() {
-    const id = this.props.id,
-      markupText = this.state.markupText,
-      error = this.state.error,
-      colors = this.colors,
-      style = this.style,
-      confirmGood = this.confirmGood,
-      totalHeight = this.totalHeight,
-      totalWidth = this.totalWidth,
-      hasError = error ? 'token' in error : false;
+    const { id } = this.props;
+    const { markupText, error } = this.state;
+    const { colors,  style,  confirmGood, totalHeight, totalWidth } = this;
+    const hasError = error ? 'token' in error : false;
     this.renderCount++;
 
     return (
       <div
-        name='outer-box'
-        id={ id && id + '-outer-box' }
+        name="outer-box"
+        id={ id ? `${id}-outer-box` : '' }
         style={{
           display: 'block',
           overflow: 'none',
@@ -480,7 +472,7 @@ class JADNInput extends Component {
           ...style.outerBox
         }}
       >
-        {confirmGood ?
+        {confirmGood ? (
           <div
             style={{
               opacity: hasError ? 0 : 1,
@@ -495,25 +487,23 @@ class JADNInput extends Component {
               transitionTimingFunction: 'cubic-bezier(0, 1, 0.5, 1)'
             }}
           >
-            <svg
-              height='30px'
-              width='30px'
-              viewBox='0 0 100 100'
-            >
+            <svg height="30px" width="30px" viewBox="0 0 100 100">
               <path
-                fillRule='evenodd'
-                clipRule='evenodd'
-                fill='green'
-                opacity='0.85'
-                d='M39.363,79L16,55.49l11.347-11.419L39.694,56.49L72.983,23L84,34.085L39.363,79z'
+                fillRule="evenodd"
+                clipRule="evenodd"
+                fill="green"
+                opacity="0.85"
+                d="M39.363,79L16,55.49l11.347-11.419L39.694,56.49L72.983,23L84,34.085L39.363,79z"
               />
             </svg>
-          </div> : ''
-        }
+          </div>
+        ) : (
+          ''
+        )}
         <div
-          name='container'
-          id={ id && id + '-container' }
-            style={{
+          name="container"
+          id={ id ? `${id}-container` : '' }
+          style={{
             display: 'block',
             height: totalHeight,
             width: totalWidth,
@@ -526,8 +516,8 @@ class JADNInput extends Component {
           onClick={ this.onClick }
         >
           <div
-            name='warning-box'
-            id={ id && id + '-warning-box' }
+            name="warning-box"
+            id={ id ? `${id}-warning-box` : '' }
             style={{
               display: 'block',
               overflow: 'hidden',
@@ -576,16 +566,12 @@ class JADNInput extends Component {
                   }}
                   onClick={ this.onClick }
                 >
-                  <svg
-                    height='25px'
-                    width='25px'
-                    viewBox='0 0 100 100'
-                  >
+                  <svg height="25px" width="25px" viewBox="0 0 100 100">
                     <path
-                      fillRule='evenodd'
-                      clipRule='evenodd'
-                      fill='red'
-                      d='M73.9,5.75c0.467-0.467,1.067-0.7,1.8-0.7c0.7,0,1.283,0.233,1.75,0.7l16.8,16.8  c0.467,0.5,0.7,1.084,0.7,1.75c0,0.733-0.233,1.334-0.7,1.801L70.35,50l23.9,23.95c0.5,0.467,0.75,1.066,0.75,1.8  c0,0.667-0.25,1.25-0.75,1.75l-16.8,16.75c-0.534,0.467-1.117,0.7-1.75,0.7s-1.233-0.233-1.8-0.7L50,70.351L26.1,94.25  c-0.567,0.467-1.167,0.7-1.8,0.7c-0.667,0-1.283-0.233-1.85-0.7L5.75,77.5C5.25,77,5,76.417,5,75.75c0-0.733,0.25-1.333,0.75-1.8  L29.65,50L5.75,26.101C5.25,25.667,5,25.066,5,24.3c0-0.666,0.25-1.25,0.75-1.75l16.8-16.8c0.467-0.467,1.05-0.7,1.75-0.7  c0.733,0,1.333,0.233,1.8,0.7L50,29.65L73.9,5.75z'
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      fill="red"
+                      d="M73.9,5.75c0.467-0.467,1.067-0.7,1.8-0.7c0.7,0,1.283,0.233,1.75,0.7l16.8,16.8  c0.467,0.5,0.7,1.084,0.7,1.75c0,0.733-0.233,1.334-0.7,1.801L70.35,50l23.9,23.95c0.5,0.467,0.75,1.066,0.75,1.8  c0,0.667-0.25,1.25-0.75,1.75l-16.8,16.75c-0.534,0.467-1.117,0.7-1.75,0.7s-1.233-0.233-1.8-0.7L50,70.351L26.1,94.25  c-0.567,0.467-1.167,0.7-1.8,0.7c-0.667,0-1.283-0.233-1.85-0.7L5.75,77.5C5.25,77,5,76.417,5,75.75c0-0.733,0.25-1.333,0.75-1.8  L29.65,50L5.75,26.101C5.25,25.667,5,25.066,5,24.3c0-0.666,0.25-1.25,0.75-1.75l16.8-16.8c0.467-0.467,1.05-0.7,1.75-0.7  c0.733,0,1.333,0.233,1.8,0.7L50,29.65L73.9,5.75z"
                     />
                   </svg>
                 </div>
@@ -608,8 +594,8 @@ class JADNInput extends Component {
             </span>
           </div>
           <div
-            name='body'
-            id={ id && id + '-body' }
+            name="body"
+            id={ id ? `${id}-body` : '' }
             style={{
               display: 'flex',
               overflow: 'none',
@@ -627,8 +613,8 @@ class JADNInput extends Component {
             onClick={ this.onClick }
           >
             <span
-              name='labels'
-              id={ id && id + '-labels' }
+              name="labels"
+              id={ id ? `${id}-labels` : '' }
               ref={ ref => this.refLabels = ref }
               style={{
                 display: 'inline-block',
@@ -649,7 +635,7 @@ class JADNInput extends Component {
             <span
               id={ id }
               ref={ ref => this.refContent = ref }
-              contentEditable={ true }
+              contentEditable
               style={{
                 display: 'inline-block',
                 boxSizing: 'border-box',
@@ -674,16 +660,68 @@ class JADNInput extends Component {
               onBlur={ this.onBlur }
               onScroll={ this.onScroll }
               onPaste={ this.onPaste }
-              autoComplete = 'off'
-              autoCorrect = 'off'
-              autoCapitalize = 'off'
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
               spellCheck={ false }
             />
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
+
+JADNInput.propTypes = {
+  locale: PropTypes.object.isRequired,
+  id: PropTypes.string,
+  placeholder: PropTypes.object,
+  reset: PropTypes.bool,
+  viewOnly: PropTypes.bool,
+  onChange: PropTypes.func,
+  confirmGood: PropTypes.bool,
+  height: PropTypes.string,
+  width: PropTypes.string,
+  onKeyPressUpdate: PropTypes.bool,
+  waitAfterKeyPress: PropTypes.number,
+  theme: PropTypes.string,
+  colors: PropTypes.shape({
+    default: PropTypes.string,
+    background: PropTypes.string,
+    background_warning: PropTypes.string,
+    string: PropTypes.string,
+    number: PropTypes.string,
+    colon: PropTypes.string,
+    keys: PropTypes.string,
+    keys_whiteSpace: PropTypes.string,
+    primitive: PropTypes.string
+  }),
+  style: PropTypes.shape({
+    outerBox: PropTypes.object,
+    container: PropTypes.object,
+    warningBox: PropTypes.object,
+    errorMessage: PropTypes.object,
+    body: PropTypes.object,
+    labelColumn: PropTypes.object,
+    labels: PropTypes.object,
+    contentBox: PropTypes.object
+  })
+};
+
+JADNInput.defaultProps = {
+  id: '',
+  placeholder: {},
+  reset: false,
+  viewOnly: false,
+  onChange: () => {},
+  confirmGood: true,
+  height: '',
+  width: '',
+  onKeyPressUpdate: true,
+  waitAfterKeyPress: 1000,
+  theme: 'light_mitsuketa_tribute',
+  colors: {},
+  style: {}
+};
 
 export default JADNInput;

@@ -1,21 +1,16 @@
-import React, { Component, useState, useEffect } from 'react'
-
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Button,
   ButtonGroup,
   FormGroup,
   Input,
   Label
-} from 'reactstrap'
+} from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import OptionsModal from './OptionsModal'
-
-import {
-  faMinusCircle,
-  faMinusSquare,
-  faPlusSquare
-} from '@fortawesome/free-solid-svg-icons'
+import OptionsModal from './OptionsModal';
 
 export const StandardField = {
   id: 1,
@@ -23,130 +18,136 @@ export const StandardField = {
   type: '',
   options: [],
   comment: ''
-}
+};
 
 export const EnumeratedField = {
   id: 1,
   value: 'value',
   comment: ''
-}
+};
 
 // Field Editor
-const FieldEditor = (props) => {
+const FieldEditor = props => {
   const [isOpen, toggleModal] = useState(false);
-  const [isFieldEditor] = useState(true);
+  const values = {};
 
-  let values = {}
-
-  if (props.value && typeof(props.value) === 'object') {
-    values.id = props.value[0] || 0
+  if (props.value && typeof props.value === 'object') {
+    values.id = props.value[0] || 0;
 
     if (props.enumerated) {
-      values.value = props.value[1] || ''
-      values.comment = props.value[2] || ''
+      values.value = props.value[1] || '';
+      values.comment = props.value[2] || '';
     } else {
-      values.name = props.value[1] || ''
-      values.type = props.value[2] || ''
-      values.options = props.value[3] || []
-      values.comment = props.value[4] || ''
+      values.name = props.value[1] || '';
+      values.type = props.value[2] || '';
+      values.options = props.value[3] || [];
+      values.comment = props.value[4] || '';
     }
   }
 
-  let removeAll = e => props.remove(props.dataIndex)
+  const removeAll = () => props.remove(props.dataIndex);
 
-  let onChange = e => {
-    let key = e.target.placeholder.toLowerCase()
-    let value = e.target.value
+  const onChange = e => {
+    const key = e.target.placeholder.toLowerCase();
+    let value = e.target.value;
     if (key === 'options') {
-      value = value.split(/,\s+?/)
+      value = value.split(/,\s+?/);
     }
 
-    values[key] = value
+    values[key] = value;
 
     if (props.change) {
-      let tmpVals = Object.values(values)
-      tmpVals[0] = Number(tmpVals[0])
-      props.change(tmpVals, props.dataIndex)
+      const tmpVals = Object.values(values);
+      tmpVals[0] = Number(tmpVals[0]);
+      props.change(tmpVals, props.dataIndex);
     }
-  }
+  };
 
-  const saveModal = (data) => {
+  const saveModal = data => {
     toggleModal(!isOpen);
-    data = data.split(/,\s+?/);
-
-    values['options'] = data;
+    values.options = data;
 
     if (props.change) {
-      let tmpVals = Object.values(values)
-      tmpVals[0] = Number(tmpVals[0])
-      props.change(tmpVals, props.dataIndex)
+      const tmpVals = Object.values(values);
+      tmpVals[0] = Number(tmpVals[0]);
+      props.change(tmpVals, props.dataIndex);
     }
-  }
+  };
 
   return (
-    <div className='col-sm-12 border m-1 p-1'>
-      <ButtonGroup size='sm' className='float-right'>
-        <Button color='danger' onClick={ removeAll } >
+    <div className="col-sm-12 border m-1 p-1">
+      <ButtonGroup size="sm" className="float-right">
+        <Button color="danger" onClick={ removeAll } >
           <FontAwesomeIcon icon={ faMinusCircle } />
         </Button>
       </ButtonGroup>
 
-      <div className='border-bottom mb-2'>
-        <p className='col-sm-4 my-1'><strong>{ props.enumerated ? values.value : values.name }</strong></p>
+      <div className="border-bottom mb-2">
+        <p className="col-sm-4 my-1"><strong>{ props.enumerated ? values.value : values.name }</strong></p>
       </div>
 
-      <div className='row m-0'>
+      <div className="row m-0">
         <FormGroup className={ props.enumerated ? 'col-md-4' : 'col-md-3' }>
           <Label>ID</Label>
-          <Input type='string' placeholder='ID' value={ values.id } onChange={ onChange } />
+          <Input type="string" placeholder="ID" value={ values.id } onChange={ onChange } />
         </FormGroup>
-        { props.enumerated ? (
-          <FormGroup className='col-md-4'>
+        {props.enumerated ? (
+          <FormGroup className="col-md-4">
             <Label>Value</Label>
-            <Input type='string' placeholder='Value' value={ values.value } onChange={ onChange } />
+            <Input type="string" placeholder="Value" value={ values.value } onChange={ onChange } />
           </FormGroup>
-          ) : (
-            <div className='col-md-9 p-0 m-0'>
-              <FormGroup className='col-md-4 d-inline-block'>
-                <Label>Name</Label>
-                <Input type='string' placeholder='Name' value={ values.name } onChange={ onChange } />
-              </FormGroup>
+        ) : (
+          <div className="col-md-9 p-0 m-0">
+            <FormGroup className="col-md-4 d-inline-block">
+              <Label>Name</Label>
+              <Input type="string" placeholder="Name" value={ values.name } onChange={ onChange } />
+            </FormGroup>
 
-              <FormGroup className='col-md-4 d-inline-block'>
-                <Label>Type</Label>
-                <Input type='string' placeholder='Type' value={ values.type } onChange={ onChange } />
-              </FormGroup>
+            <FormGroup className="col-md-4 d-inline-block">
+              <Label>Type</Label>
+              <Input type="string" placeholder="Type" value={ values.type } onChange={ onChange } />
+            </FormGroup>
 
-              <FormGroup className='col-md-4 d-inline-block'>
-                <Button outline color='info' onClick={ () => toggleModal(!isOpen) }>Field Options</Button>
-                <OptionsModal saveModal={ saveModal } isOpen={ isOpen } toggleModal={ () => toggleModal(!isOpen) } fieldOptions={ true } />
-              </FormGroup>
-            </div>
-          )
-        }
+            <FormGroup className="col-md-4 d-inline-block">
+              <Button outline color="info" onClick={ () => toggleModal(!isOpen) }>Field Options</Button>
+              <OptionsModal
+                saveModal={ saveModal }
+                isOpen={ isOpen }
+                toggleModal={ () => toggleModal(!isOpen) }
+                fieldOptions={ true }
+              />
+            </FormGroup>
+          </div>
+        )}
         <FormGroup className={ props.enumerated ? 'col-md-4' : 'col-md-12' }>
           <Label>Comment</Label>
-          <Input type='textarea' placeholder='Comment' rows={ 1 } value={ values.comment } onChange={ onChange } />
+          <Input
+            type="textarea"
+            placeholder="Comment"
+            rows={ 1 }
+            value={ values.comment }
+            onChange={ onChange }
+          />
         </FormGroup>
       </div>
     </div>
-  )
-}
+  );
+};
+
+FieldEditor.propTypes = {
+  enumerated: PropTypes.bool,
+  dataIndex: PropTypes.number,
+  value: PropTypes.array,
+  change: PropTypes.func,
+  remove: PropTypes.func
+};
 
 FieldEditor.defaultProps = {
   enumerated: false,
   dataIndex: -1,
-  values: [],
+  value: [],
+  change: null,
+  remove: null
+};
 
-  change: (vals, idx) => {
-    console.log(vals, idx)
-  },
-
-  remove: idx => {
-    console.log(idx)
-  }
-}
-
-export default FieldEditor
-
-
+export default FieldEditor;

@@ -23,6 +23,6 @@ const light_mitsuketa_tribute = {
 };
 
 export default {
-  dark_vscode_tribute: dark_vscode_tribute,
-  light_mitsuketa_tribute: light_mitsuketa_tribute
+  dark_vscode_tribute,
+  light_mitsuketa_tribute
 };

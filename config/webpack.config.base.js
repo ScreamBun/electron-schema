@@ -1,15 +1,15 @@
 /**
  * Base webpack config used across other specific configs
  */
-import webpack from 'webpack'
-import path from 'path'
+import webpack from 'webpack';
+import path from 'path';
 
-import { dependencies as externals } from '../app/package.json'
+import { dependencies as externals } from '../app/package.json';
 
-const env = 'production'
+const env = 'production';
 
-const ROOT_DIR = path.join(__dirname, '..')
-const APP_DIR = path.join(ROOT_DIR, 'app')
+const ROOT_DIR = path.join(__dirname, '..');
+const APP_DIR = path.join(ROOT_DIR, 'app');
 
 export default {
   output: {
@@ -22,9 +22,7 @@ export default {
     extensions: ['.js', '.jsx', '.json'],
     modules: [APP_DIR, 'node_modules']
   },
-  externals: [
-    ...Object.keys(externals || {})
-  ],
+  externals: [...Object.keys(externals || {})],
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: env
@@ -45,4 +43,4 @@ export default {
       }
     ]
   }
-}
+};

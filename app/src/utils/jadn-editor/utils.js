@@ -1,4 +1,6 @@
-export const deleteCharAt = (string, position) => string.slice(0, position) + string.slice(position + 1);
+export const deleteCharAt = (string, position) => {
+  return string.slice(0, position) + string.slice(position + 1);
+};
 
 export const followedBySymbol = (tokens, tokenID, options) => {
   if (tokens === undefined) console.error('tokens argument must be an array.');
@@ -6,7 +8,7 @@ export const followedBySymbol = (tokens, tokenID, options) => {
   if (options === undefined) console.error('options argument must be an array.');
   if (tokenID === tokens.length - 1) return false;
 
-  for (var i = tokenID + 1; i < tokens.length; i++) {
+  for (let i = tokenID + 1; i < tokens.length; i++) {
     const nextToken = tokens[i];
     switch (nextToken.type) {
       case 'space':
@@ -14,15 +16,13 @@ export const followedBySymbol = (tokens, tokenID, options) => {
         break;
       case 'symbol':
       case 'colon':
-        return options.indexOf(nextToken.string) > -1 ? i : false
-        break;
+        return options.indexOf(nextToken.string) > -1 ? i : false;
       default:
         return false;
-        break;
     }
   }
   return false;
-}
+};
 
 export const followsSymbol = (tokens, tokenID, options) => {
   if (tokens === undefined) console.error('tokens argument must be an array.');
@@ -30,7 +30,7 @@ export const followsSymbol = (tokens, tokenID, options) => {
   if (options === undefined) console.error('options argument must be an array.');
   if (tokenID === 0) return false;
 
-  for (var i = tokenID - 1; i >= 0; i--) {
+  for (let i = tokenID - 1; i >= 0; i--) {
     const previousToken = tokens[i];
     switch (previousToken.type) {
       case 'space':
@@ -38,22 +38,20 @@ export const followsSymbol = (tokens, tokenID, options) => {
         break;
       case 'symbol':
       case 'colon':
-        return (options.indexOf(previousToken.string) > -1);
-        break;
+        return options.indexOf(previousToken.string) > -1;
       default:
         return false;
-        break;
     }
   }
   return false;
-}
+};
 
 export const typeFollowed = (tokens, tokenID) => {
   if (tokens === undefined) console.error('tokens argument must be an array.');
   if (tokenID === undefined) console.error('tokenID argument must be an integer.');
   if (tokenID === 0) return false;
 
-  for (var i = tokenID - 1; i >= 0; i--) {
+  for (let i = tokenID - 1; i >= 0; i--) {
     const previousToken = tokens[i];
     switch (previousToken.type) {
       case 'space':
@@ -61,17 +59,17 @@ export const typeFollowed = (tokens, tokenID) => {
         break;
       default:
         return previousToken.type;
-        break;
     }
   }
   return false;
-}
+};
 
 export const newSpan = (i, token, depth, colors) => {
+  // eslint-disable-next-line no-param-reassign
   colors = colors || {};
-  let type = token.type,
-    string = token.string,
-    color = '';
+  // eslint-disable-next-line prefer-const
+  let { type, string } = token;
+  let color = '';
 
   switch (type) {
     case 'string':
@@ -81,7 +79,7 @@ export const newSpan = (i, token, depth, colors) => {
       color = colors[token.type];
       break;
     case 'key':
-      color = string === ' ' ? colors.keys_whiteSpace : colors.keys
+      color = string === ' ' ? colors.keys_whiteSpace : colors.keys;
       break;
     case 'symbol':
       color = string === ':' ? colors.colon : colors.default;
@@ -92,16 +90,8 @@ export const newSpan = (i, token, depth, colors) => {
   }
 
   if (string.length !== string.replace(/</g, '').replace(/>/g, '').length) {
-    string = '<xmp style=display:inline;>' + string + '</xmp>';
+    string = `<xmp style=display:inline;>${string}</xmp>`;
   }
 
-  return (
-    '<span' +
-    ' type="' + type + '"' +
-    ' value="' + string + '"' +
-    ' depth="' + depth + '"' +
-    ' style="color: ' + color + '"' +
-    '>' + string +
-    '</span>'
-  );
-}
+  return `<span type="${type}" value="${string}" depth="${depth}" style="color: ${color}" >${string}</span>`;
+};

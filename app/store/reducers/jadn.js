@@ -1,10 +1,10 @@
-import * as JADNActions from '../actions/jadn'
+import * as JADNActions from '../actions/jadn';
 
 const initialState = {
-  json_schema : {}
-}
+  json_schema: {}
+};
 
-export default (state = initialState, action=null) => {
+export default (state = initialState, action = null) => {
   switch (action.type) {
     case JADNActions.CONVERT_TO_JSON_SUCCESS:
       return {
@@ -14,4 +14,4 @@ export default (state = initialState, action=null) => {
     default:
       return state;
   }
-}
+};

@@ -1,134 +1,116 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import Sidebar from 'react-sidebar'
-
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { ipcRenderer } from 'electron';
+import { Droppable } from 'react-drag-and-drop';
 import {
-  Draggable,
-  Droppable
-} from 'react-drag-and-drop'
-
-import {
-  Button,
-  ButtonGroup,
-  Card,
-  CardBody,
-  CardHeader,
-  ListGroup,
-  ListGroupItem,
   Nav,
   NavItem,
   NavLink,
   TabContent,
-  TabPane,
-  Tooltip
-} from 'reactstrap'
+  TabPane
+} from 'reactstrap';
 
-import { dialog, ipcRenderer } from 'electron'
+import JSONInput from 'react-json-editor-ajrm';
+import locale from 'react-json-editor-ajrm/locale/en';
 
-import SchemaStructure from './lib/structure'
-import { jadn_format } from '../utils/'
-
-import JADNInput from '../utils/jadn-editor'
-import JSONInput from 'react-json-editor-ajrm'
-import locale from 'react-json-editor-ajrm/locale/en'
-
-import { convertToJSON } from '../../store/actions/jadn'
-
+import SchemaStructure from './lib/structure';
+import JADNInput from '../utils/jadn-editor';
+import { convertToJSON } from '../../store/actions/jadn';
 
 class GenerateSchema extends Component {
   constructor(props, context) {
-    super(props, context)
-    this.mql = window.matchMedia('(min-width: 768px)')
-
-    this.onDrop = this.onDrop.bind(this)
+    super(props, context);
+    this.mql = window.matchMedia('(min-width: 768px)');
+    this.onDrop = this.onDrop.bind(this);
 
     this.state = {
-		  activeView: 'editor',
-		  schema: {meta: {}, types: []},
-		  schemaPath: ''
-		}
-    this.props.jadn2json(this.state.schema)
+      activeView: 'editor',
+      schema: { meta: {}, types: [] },
+      schemaPath: ''
+    };
 
     this.linkStyles = {
-      'cursor': 'pointer'
-    }
+      cursor: 'pointer'
+    };
 
-    this.keys = SchemaStructure
-    this.minHeight = '50em'
+    this.keys = SchemaStructure;
+    this.minHeight = '50em';
 
     ipcRenderer.on('file-open', (event, store) => {
       this.setState({
         schema: store.contents,
-        schemaPath: store.filePaths[0]    
-      })
-    })
+        schemaPath: store.filePaths[0]
+      });
+    });
 
     ipcRenderer.on('file-save', (event, store) => {
-      store.contents = this.state.schema
-      store.filePath = this.state.schemaPath
-      ipcRenderer.send('file-save', store)
-    })
+      const { schema, schemaPath } = this.state;
+      ipcRenderer.send('file-save', {
+        ...store,
+        contents: schema,
+        filePath: schemaPath
+      });
+    });
 
     ipcRenderer.on('save-reply', (event, store) => {
-      this.setState(prevState => {
-        if (store.action == 'erase') {
-          return {
-            schema: {},
-            schemaPath: ''
-          }
+      this.setState(() => {
+        const stateUpdate = {};
+        if (store.action === 'erase') {
+          stateUpdate.schema = { meta: {}, types: [] };
+          stateUpdate.schemaPath = '';
         } else if (store.hasOwnProperty('filePath')) {
-          return {
-            schemaPath: store.filePath
-          }
+          stateUpdate.schemaPath = store.filePath;
         }
-      })
-    })
+        return stateUpdate;
+      });
+    });
 
     ipcRenderer.on('schema-new', async (event, store) => {
-      let stateUpdate = {}
-      switch(store.action) {
+      const stateUpdate = {};
+      switch (store.action) {
         case 'save':
           store = {
             action: 'erase',
             contents: this.state.schema,
             filePath: this.state.schemaPath
-          }
-          ipcRenderer.send('file-save', store)
+          };
+          ipcRenderer.send('file-save', store);
           break;
 
         case 'erase':
         default:
-          stateUpdate.schema = {}
-          stateUpdate.schemaPath = ''
+          stateUpdate.schema = { meta: {}, types: [] };
+          stateUpdate.schemaPath = '';
           break;
       }
-      this.setState(stateUpdate)
-    })
+      this.setState(stateUpdate);
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    let propsChange = this.props != nextProps
-    let stateChange = this.state != nextState
+    const propsChange = this.props !== nextProps;
+    const stateChange = this.state !== nextState;
 
-    if (this.state.schema != nextState.schema) {
-      this.props.jadn2json(nextState.schema)
+    if (this.state.schema !== nextState.schema) {
+      this.props.jadn2json(nextState.schema);
     }
 
-    return propsChange || stateChange
+    return propsChange || stateChange;
   }
 
   toggleViews(view) {
     if (this.state.activeView !== view) {
       this.setState({
         activeView: view
-      })
+      });
     }
   }
 
   onDrop(data) {
     if (data.meta) {
       if (!(data.meta in (this.state.schema.meta || {}))) {
-        this.setState((prevState) => ({
+        this.setState(prevState => ({
           schema: {
             ...prevState.schema,
             meta: {
@@ -136,37 +118,36 @@ class GenerateSchema extends Component {
               ...this.keys.meta[data.meta].edit()
             }
           }
-        }))
+        }));
       }
     } else if (data.types) {
-      this.setState((prevState) => {
-        let tmpTypes = prevState.schema.types || []
-        let tmpDef = this.keys.types[data.types].edit()
+      this.setState(prevState => {
+        const tmpTypes = prevState.schema.types || [];
+        const tmpDef = this.keys.types[data.types].edit();
         if ((tmpTypes.filter(d => d[0] === tmpDef[0]) || []).length === 0) {
-          tmpTypes.push(tmpDef)
+          tmpTypes.push(tmpDef);
         }
         return {
           schema: {
             ...prevState.schema,
             types: tmpTypes
           }
-        }
-      })
-
+        };
+      });
     } else {
-      console.log('oops...')
+      console.log('oops...');
     }
   }
 
   SchemaEditor() {
-    let metaEditors = Object.keys(this.keys.meta).map((k, i) => {
-      let editor = this.keys.meta[k].editor
+    const metaEditors = Object.keys(this.keys.meta).map((k, i) => {
+      const editor = this.keys.meta[k].editor;
       if (this.state.schema.meta.hasOwnProperty(k)) {
         return editor({
           key: i,
           value: this.state.schema.meta[k],
           placeholder: k,
-          change: (val) => this.setState((prevState) => ({
+          change: val => this.setState(prevState => ({
             schema: {
               ...prevState.schema,
               meta: {
@@ -175,76 +156,78 @@ class GenerateSchema extends Component {
               }
             }
           })),
-          remove: (id) => {
+          remove: id => {
             if (id in this.state.schema.meta) {
-              this.setState((prevState) => {
-                let tmpMeta = { ...prevState.schema.meta }
-                delete tmpMeta[id]
+              this.setState(prevState => {
+                const tmpMeta = { ...prevState.schema.meta };
+                delete tmpMeta[id];
                 return {
                   schema: {
                     ...prevState.schema,
                     meta: tmpMeta
                   }
-                }
-              })
+                };
+              });
             }
           }
-        })
+        });
       }
-    }).filter(Boolean)
+      // eslint-disable-next-line no-useless-return
+      return;
+    }).filter(Boolean);
 
-    let typesEditors = (this.state.schema.types || []).map((def, i) => {
-      let type = def[1].toLowerCase()
+    const typesEditors = (this.state.schema.types || []).map((def, i) => {
+      const type = def[1].toLowerCase();
       return this.keys.types[type].editor({
         key: i,
         value: def,
         dataIndex: i,
-        change: (val, idx) => this.setState((prevState) => {
-          let tmpTypes = [ ...prevState.schema.types ]
-          tmpTypes[idx] = this.keys.types[val.type.toLowerCase()].edit(val)
+        change: (val, idx) => this.setState(prevState => {
+          const tmpTypes = [ ...prevState.schema.types ];
+          tmpTypes[idx] = this.keys.types[val.type.toLowerCase()].edit(val);
           return {
             schema: {
               ...prevState.schema,
               types: tmpTypes
             }
-          }
+          };
         }),
-        remove: (idx) => {
+        remove: idx => {
           if (this.state.schema.types.length >= idx) {
-            this.setState((prevState) => {
-              let tmpTypes = [ ...prevState.schema.types ]
-              tmpTypes.splice(idx, 1)
+            this.setState(prevState => {
+              const tmpTypes = [ ...prevState.schema.types ];
+              tmpTypes.splice(idx, 1);
               return {
                 schema: {
                   ...prevState.schema,
                   types: tmpTypes
                 }
-              }
-            })
+              };
+            });
           }
         }
-      })
-    })
+      });
+    });
 
     return (
       <div>
-        <div className='col-12'>
+        <div className="col-12">
           <h2>Meta</h2>
           { metaEditors }
         </div>
         <hr />
-        <div className='col-12'>
+        <div className="col-12">
           <h2>Types</h2>
           { typesEditors }
         </div>
       </div>
-    )
+    );
   }
 
   render() {
     return (
-      <div className='row mx-auto'>
-        <div id='schema-view' className='col-12'>
+      <div className="row mx-auto">
+        <div id="schema-view" className="col-12">
           <Nav tabs>
             <NavItem>
               <NavLink
@@ -272,42 +255,48 @@ class GenerateSchema extends Component {
           <Droppable
             types={ ['meta', 'types'] } // <= allowed drop types
             onDrop={ this.onDrop }
-            className='col-12 p-0'
+            className="col-12 p-0"
             style={{
               minHeight: this.minHeight
             }}
           >
             <TabContent activeTab={ this.state.activeView }>
-              <TabPane tabId='editor' className='border'>
+              <TabPane tabId="editor" className="border">
                 { this.SchemaEditor() }
               </TabPane>
-              <TabPane tabId='jadn'>
-                <div className="form-control m-0 p-0 border" style={{ minHeight: this.minHeight }}>
+              <TabPane tabId="jadn">
+                <div
+                  className="form-control m-0 p-0 border"
+                  style={{ minHeight: this.minHeight }}
+                >
                   <JADNInput
-                    id='jadn_schema'
+                    id="jadn_schema"
                     placeholder={ this.state.schema }
-                    theme='light_mitsuketa_tribute'
+                    theme="light_mitsuketa_tribute"
                     locale={ locale }
-                    //reset={ true }
-                    height='100%'
-                    width='100%'
-                    viewOnly={ true }
-                    //waitAfterKeyPress={ 500 }
+                    // reset
+                    height="100%"
+                    width="100%"
+                    viewOnly
+                    // waitAfterKeyPress={ 500 }
                   />
                 </div>
               </TabPane>
-              <TabPane tabId='json'>
-                <div className="form-control m-0 p-0 border" style={{ minHeight: this.minHeight }}>
+              <TabPane tabId="json">
+                <div
+                  className="form-control m-0 p-0 border"
+                  style={{ minHeight: this.minHeight }}
+                >
                   <JSONInput
-                    id='json_schema'
+                    id="json_schema"
                     placeholder={ this.props.json_schema }
-                    theme='light_mitsuketa_tribute'
+                    theme="light_mitsuketa_tribute"
                     locale={ locale }
-                    //reset={ true }
-                    height='100%'
-                    width='100%'
-                    viewOnly={ true }
-                    //waitAfterKeyPress={ 500 }
+                    // reset
+                    height="100%"
+                    width="100%"
+                    viewOnly
+                    // waitAfterKeyPress={ 500 }
                   />
                 </div>
               </TabPane>
@@ -315,16 +304,25 @@ class GenerateSchema extends Component {
           </Droppable>
         </div>
       </div>
-    )
+    );
   }
 }
 
-const mapStateToProps = (state) => ({
+GenerateSchema.propTypes = {
+  jadn2json: PropTypes.func.isRequired,
+  json_schema: PropTypes.object
+};
+
+GenerateSchema.defaultProps = {
+  json_schema: {}
+};
+
+const mapStateToProps = state => ({
   json_schema: state.jadn2json.json_schema
-})
+});
 
-const mapDispatchToProps = (dispatch) => ({
-  jadn2json: (jadn) => dispatch(convertToJSON(jadn))
-})
+const mapDispatchToProps = dispatch => ({
+  jadn2json: jadn => dispatch(convertToJSON(jadn))
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(GenerateSchema)
+export default connect(mapStateToProps, mapDispatchToProps)(GenerateSchema);

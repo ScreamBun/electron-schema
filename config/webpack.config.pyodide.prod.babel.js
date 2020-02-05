@@ -1,11 +1,13 @@
 /**
- * Webpack config for production electron main process
+ * Build config for production electron renderer process
  */
 import webpack from 'webpack';
 import merge from 'webpack-merge';
 import path from 'path';
-import TerserPlugin from 'terser-webpack-plugin';
+import glob from 'glob';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import TerserPlugin from 'terser-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
@@ -16,15 +18,31 @@ CheckNodeEnv(env);
 
 const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
-const DIST_DIR = path.join(APP_DIR, 'dist', 'main');
+const DIST_DIR = path.join(APP_DIR, 'dist', 'pyodide');
+
+// './app/src/utils/PyodideNode/**/*.js'
+
+const entryFiles = (reg, prefix) => glob.sync(reg).reduce((prevVal, curVal, curIdx, array) => {
+  prefix = prefix ? prefix : '';
+  return typeof prevVal === 'string' ?
+    {
+      [`${prefix}${path.basename(prevVal, path.extname(prevVal))}`]: prevVal,
+      [`${prefix}${path.basename(curVal, path.extname(curVal))}`]: curVal
+    }
+    :
+    { ...prevVal, [`${prefix}${path.basename(curVal, path.extname(curVal))}`]: curVal }
+});
 
 export default merge.smart(baseConfig, {
   mode: env,
   devtool: 'cheap-source-map',
-  entry: './app/main',
+  entry: {
+    ...entryFiles('./app/src/utils/PyodideNode/*.js'),
+    ...entryFiles('./app/src/utils/PyodideNode/packages/*.js', 'packages/')
+  },
   output: {
     path: DIST_DIR,
-    filename: 'main.js'
+    filename: '[name].js',
   },
   plugins: [
     /**
@@ -33,10 +51,23 @@ export default merge.smart(baseConfig, {
      * NODE_ENV should be production so that modules do not perform certain development checks
      */
     new webpack.EnvironmentPlugin({
-      NODE_ENV: env,
-      DEBUG_PROD: false,
-      START_MINIMIZED: false
+      NODE_ENV: env
     }),
+    new CopyWebpackPlugin(
+      [
+        {
+          // Data Assets
+          from: '**/*.*',
+          to: DIST_DIR,
+        }
+      ],
+      {
+        context: './app/src/utils/PyodideNode/',
+        ignore: [
+          '*.js'
+        ]
+      }
+    ),
     new BundleAnalyzerPlugin({
       analyzerMode:
         process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
@@ -55,14 +86,5 @@ export default merge.smart(baseConfig, {
       })
     ]
   },
-  target: 'electron-main',
-  /**
-   * Disables webpack processing of __dirname and __filename.
-   * If you run the bundle in node.js it falls back to these values of node.js.
-   * https://github.com/webpack/webpack/issues/2010
-   */
-  node: {
-    __dirname: false,
-    __filename: false
-  }
+  target: 'electron-renderer'
 });

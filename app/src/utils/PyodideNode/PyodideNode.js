@@ -1,16 +1,18 @@
 // Base on https://github.com/gabrielfreire/neuralnet.js/tree/wasm-nodejs
-const path = require('path')
-const fs = require('fs')
-const fetch = require('isomorphic-fetch')
+import { app } from 'electron';
+import path from 'path';
+import fs from 'fs-extra';
+import fetch from 'isomorphic-fetch';
 
-const externalURL = 'https://iodide.io/pyodide-demo/'
+const prod = process.env.NODE_ENV === 'production';
+const ROOT_DIR = prod ? app.getAppPath() : __dirname;
+const localURL = path.join(ROOT_DIR, ...(prod ? ['assets', 'pyodide'] : []), '/');
+const localPackagesURL = path.join(localURL, 'packages', '/');
 
-const localURL = path.join(__dirname, '/')
-const localPackagesURL = path.join(localURL, '/packages/')
+const pkg_json = path.join(localPackagesURL, 'packages.json');
+const packages = fs.readJsonSync(pkg_json, { throws: false }).dependencies;
 
-const packages = require('./packages/packages.json').dependencies
-
-const loadedPackages = new Set()
+const loadedPackages = new Set();
 
 class PyodideNode {
   constructor() {
@@ -79,10 +81,8 @@ class PyodideNode {
         // let pyodideModuleInitializer = eval(buffer.toString())
         // load module
         pyodide = pyodideModuleInitializer(Module)
-      }).catch((e) => {
-        reject(e)
-      })
-    })
+      }).catch(e => reject(e));
+    });
   }
 
   _loadPackage(names) {
@@ -112,7 +112,7 @@ class PyodideNode {
         resolve('No new packages to load')
       }
 
-      process.pyodide['monitorRunDependencies'] = (n) => {
+      process.pyodide['monitorRunDependencies'] = n => {
         if (n === 0) {
           toLoad.forEach((pkg) => loadedPackages.add(pkg))
           delete process.pyodide.monitorRunDependencies
@@ -121,21 +121,18 @@ class PyodideNode {
           resolve(`Loaded ${packageList}`)
         }
       }
+
       toLoad.forEach(async (pkg) => {
         const pkgLocalURL = path.join(localPackagesURL, `/${pkg}.js`)
-        const pkgExternalURL = `${externalURL}${pkg}.js`
-        if (!fs.existsSync(pkgLocalURL)) {
-          // fetch
-          const file = await this._fetch_node(pkgExternalURL)
-          if (!file) reject(`ERROR 404, package ${pkg} was not found`)
-          const buffer = await file.buffer()
-          if (!buffer) reject()
-          fs.writeFileSync(pkgLocalURL, buffer)
-        }
         // load dependency
         try {
-          require(pkgLocalURL)
+          if (prod) {
+            eval(`require('${pkgLocalURL}');`);
+          } else {
+            require(pkgLocalURL)
+          }
         } catch (e) {
+          console.error(e)
           reject(`${pkg}.js file does not support NodeJS, please write the support by hand`)
         }
       })
@@ -164,4 +161,4 @@ class PyodideNode {
   }
 }
 
-module.exports = new PyodideNode()
+export default new PyodideNode()
