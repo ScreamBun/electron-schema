@@ -29,6 +29,7 @@ export const EnumeratedField = {
 // Field Editor
 const FieldEditor = props => {
   const [isOpen, toggleModal] = useState(false);
+  // const [isFieldEditor] = useState(true);
   const values = {};
 
   if (props.value && typeof props.value === 'object') {
@@ -65,6 +66,7 @@ const FieldEditor = props => {
 
   const saveModal = data => {
     toggleModal(!isOpen);
+    // data = data.split(/,\s+?/);
     values.options = data;
 
     if (props.change) {

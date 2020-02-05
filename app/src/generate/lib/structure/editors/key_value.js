@@ -86,9 +86,7 @@ KeyValueEditor.defaultProps = {
   description: null,
   placeholder: 'KeyValueEditor',
   type: 'text',
-  change: val => {
-    console.log(val);
-  },
+  change: null,
   remove: null
 };
 
