@@ -51,7 +51,11 @@ const KeyValueEditor = props => {
 KeyValueEditor.propTypes = {
   id: PropTypes.string,
   name: PropTypes.string,
-  value: PropTypes.object,
+  value: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.number,
+    PropTypes.string
+  ]),
   description: PropTypes.string,
   placeholder: PropTypes.string,
   type: PropTypes.oneOf([

@@ -33,17 +33,10 @@ class OptionsModal extends Component {
     if (options !== undefined && options.length !== 0 && options[0] !== '') {
       options.forEach((item, index, array) => {
         let key;
-        let val;
         let optionType;
 
         const _symbol = item.charAt(0);
-        const non_bools = ['*', '+', '#', '/', '%', '{', '}', '[', '], &', '!']
-
-        if (_symbol === '=' || _symbol === 'q' || _symbol === '<') {
-          val = true;
-        } else if (non_bools.includes(_symbol)){
-          val = item.substring(1);
-        }
+        const val = ['=', 'q', '<'].includes(_symbol) ? true : item.substring(1);
 
         if (_symbol === '=') {
           optionType = 'type';
@@ -59,19 +52,19 @@ class OptionsModal extends Component {
           key = 'enum';
         } else if (_symbol === '/') {
           optionType = 'type';
-          key = '(optional) format';
+          key = 'format';
         } else if (_symbol === '%') {
           optionType = 'type';
-          key = '(optional) pattern'
+          key = 'pattern'
         } else if (_symbol === '{') {
           optionType = 'type';
-          key = '(optional) minv'
+          key = 'minv'
         } else if (_symbol === '}') {
           optionType = 'type';
-          key = '(optional) maxv';
+          key = 'maxv';
         } else if (_symbol === 'q') {
           optionType = 'type';
-          key = '(optional) unique';
+          key = 'unique';
         } else if (_symbol === '[') {
           optionType = 'field';
           key = 'minc';
@@ -91,51 +84,51 @@ class OptionsModal extends Component {
         obj[optionType][key] = val;
       });
     }
-
     return obj;
   }
 
   // convert options data state object into formatted array
   serializeOptionsData(state_obj) {
-    const options = [];
-
-    for(let key in state_obj.type) {
-      if (key === 'id' && state_obj.type[key]) {
-        options.push('=');
-      } else if (key === 'vtype' && state_obj.type[key]) {
-        options.push('*' + state_obj.type[key]);
-      } else if (key === 'ktype' && state_obj.type[key]) {
-        options.push('+' + state_obj.type[key]);
-      } else if (key === 'enum' && state_obj.type[key]) {
-        options.push('#' + state_obj.type[key]);
-      } else if (key === '(optional) format' && state_obj.type[key]) {
-        options.push('/' + state_obj.type[key]);
-      } else if (key === '(optional) pattern' && state_obj.type[key]) {
-        options.push('%' + state_obj.type[key]);
-      } else if (key === '(optional) minv' && state_obj.type[key]) {
-        options.push('{' + state_obj.type[key]);
-      } else if (key === '(optional) maxv' && state_obj.type[key]) {
-        options.push('}' + state_obj.type[key]);
-      } else if (key === '(optional) unique' && state_obj.type[key]) {
-        options.push('q');
+  // eslint-disable-next-line array-callback-return
+    const type_opts = Object.entries(state_obj.type).map(([key, val]) => {
+      if (!val) return;
+      if (key === 'id') {
+        return '=';
+      } else if (key === 'vtype') {
+        return `*${val}`;
+      } else if (key === 'ktype') {
+        return `+${val}`;
+      } else if (key === 'enum') {
+        return `#${val}`;
+      } else if (key === 'format') {
+        return `/${val}`;
+      } else if (key === 'pattern') {
+        return `%${val}`;
+      } else if (key === 'minv') {
+        return `{${val}`;
+      } else if (key === 'maxv') {
+        return `}${val}`;
+      } else if (key === 'unique') {
+        return 'q';
       }
-    }
+    }).filter(v => v);
 
-    for(let key in state_obj.field) {
-      if (key === 'minc' && state_obj.field[key]) {
-        options.push('[' + state_obj.field[key]);
-      } else if (key === 'maxc' && state_obj.field[key]) {
-        options.push(']' + state_obj.field[key]);
-      } else if (key === 'tfield' && state_obj.field[key]) {
-        options.push('&' + state_obj.field[key]);
-      } else if (key === 'path' && state_obj.field[key]) {
-        options.push('<');
-      } else if (key === 'default' && state_obj.field[key]) {
-        options.push('!' + state_obj.field[key]);
+    // eslint-disable-next-line array-callback-return
+    const field_opts = Object.entries(state_obj.field).map(([key, val]) => {
+      if (!val) return;
+      if (key === 'minc') {
+        return `[${val}`;
+      } else if (key === 'maxc') {
+        return `]${val}`;
+      } else if (key === 'tfield') {
+        return `&${val}`;
+      } else if (key === 'path') {
+        return '<';
+      } else if (key === 'default') {
+        return `!${val}`;
       }
-    }
-
-    return options;
+    }).filter(v => v);
+    return [ ...type_opts, ...field_opts ];
   }
 
   saveModalState(state, type) {
@@ -145,7 +138,7 @@ class OptionsModal extends Component {
   }
 
   saveModal() {
-    var data = this.serializeOptionsData(this.state);
+    const data = this.serializeOptionsData(this.state);
     this.props.saveModal(data);
   }
 
@@ -154,7 +147,11 @@ class OptionsModal extends Component {
       <Modal size="xl" isOpen={ this.props.isOpen }>
       <ModalHeader> { this.props.fieldOptions ? 'Field Options' : 'Type Options' }</ModalHeader>
       <ModalBody>
-        <FieldOptionsEditor deserializedState={ this.state.field } saveModalState={ this.saveModalState } fieldOptions={ this.props.fieldOptions }/>
+        <FieldOptionsEditor
+          deserializedState={ this.state.field }
+          saveModalState={ this.saveModalState }
+          fieldOptions={ this.props.fieldOptions }
+        />
         <TypeOptionsEditor deserializedState={ this.state.type } saveModalState={ this.saveModalState } />
       </ModalBody>
       <ModalFooter>
@@ -163,10 +160,13 @@ class OptionsModal extends Component {
       </ModalFooter>
     </Modal>
     );
-  } 
+  }
 }
 
 OptionsModal.propTypes = {
+  toggleModal: PropTypes.func.isRequired,
+  saveModal: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired
 };
 
 OptionsModal.defaultProps = {

@@ -44,7 +44,7 @@ export default class MenuBuilder {
     };
 
     contextMenu({
-      append: (actions, params, browserWindow) => [
+      append: (actions, params) => [
         actions.separator(),
         actions.copy({
           visible: isVisible(params, 'Copy')

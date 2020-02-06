@@ -33,7 +33,7 @@ class StructureEditor extends Component {
 
     this.state = {
       fieldCollapse: false,
-      values: {
+      value: {
         name: '',
         type: '',
         options: [],
@@ -55,18 +55,18 @@ class StructureEditor extends Component {
 
   initState() {
     if (this.props.value && typeof(this.props.value) === 'object') {
-      const updateValues = {};
-      if (this.props.value[0] !== this.state.values.name) updateValues.name = this.props.value[0];
-      if (this.props.value[1] !== this.state.values.type) updateValues.type = this.props.value[1];
-      if (this.props.value[2] !== this.state.values.options) updateValues.options = this.props.value[2];
-      if (this.props.value[3] !== this.state.values.comment) updateValues.comment = this.props.value[3];
-      if (this.props.value[4] !== this.state.values.fields) updateValues.fields = this.props.value[4];
+      const updatevalue = {};
+      if (this.props.value[0] !== this.state.value.name) updatevalue.name = this.props.value[0];
+      if (this.props.value[1] !== this.state.value.type) updatevalue.type = this.props.value[1];
+      if (this.props.value[2] !== this.state.value.options) updatevalue.options = this.props.value[2];
+      if (this.props.value[3] !== this.state.value.comment) updatevalue.comment = this.props.value[3];
+      if (this.props.value[4] !== this.state.value.fields) updatevalue.fields = this.props.value[4];
 
-      if (Object.keys(updateValues).length > 0) {
+      if (Object.keys(updatevalue).length > 0) {
         this.setState(prevState => ({
-          values: {
-            ...prevState.values,
-            ...updateValues
+          value: {
+            ...prevState.value,
+            ...updatevalue
           }
         }));
       }
@@ -78,102 +78,102 @@ class StructureEditor extends Component {
   }
 
   addField() {
-    let field = Object.values(((this.state.values.type.toLowerCase() === 'enumerated') ? EnumeratedField : StandardField));
-    field[0] = this.state.values.fields.length + 1;
+    const field = Object.value(((this.state.value.type.toLowerCase() === 'enumerated') ? EnumeratedField : StandardField));
+    field[0] = this.state.value.fields.length + 1;
 
     this.setState(prevState => {
-      const tmpFields = [ ...prevState.values.fields, field ];
+      const tmpFields = [ ...prevState.value.fields, field ];
       return {
         fieldCollapse: true,
-        values: {
-          ...prevState.values,
+        value: {
+          ...prevState.value,
           fields: tmpFields
         }
       }
     }, () => {
-      this.props.change(this.state.values, this.props.dataIndex);
+      this.props.change(this.state.value, this.props.dataIndex);
     });
   }
 
   onChange(e) {
     const key = e.target.placeholder.toLowerCase();
     const value = e.target.value;
-    
+
     this.setState(prevState => ({
-      values: {
-        ...prevState.values,
+      value: {
+        ...prevState.value,
         [key]: value
       }
     }), () => {
       if (this.props.change) {
-        this.props.change(this.state.values, this.props.dataIndex)
+        this.props.change(this.state.value, this.props.dataIndex)
       }
     });
   }
 
   toggleFields() {
-    this.setState({
-      fieldCollapse: !this.state.fieldCollapse
-    });
+    this.setState(prevState => ({
+      fieldCollapse: !prevState.fieldCollapse
+    }));
   }
 
   toggleModal() {
-    this.setState({
-      modal: !this.state.modal
-    });
+    this.setState(prevState => ({
+      modal: !prevState.modal
+    }));
   }
 
   saveModal(data) {
     this.toggleModal();
 
     this.setState(prevState => ({
-      values: {
-        ...prevState.values,
+      value: {
+        ...prevState.value,
         options: data
       }
     }), () => {
       if (this.props.change) {
-        this.props.change(this.state.values, this.props.dataIndex)
+        this.props.change(this.state.value, this.props.dataIndex)
       }
     });
   }
 
   render() {
     setTimeout(() => this.initState(), 100);
-    const structureFields = (this.state.values.fields || []).map((f, i) => (
+    const structureFields = (this.state.value.fields || []).map((f, i) => (
       <FieldEditor
         key={ i }
         dataIndex={ i }
-        enumerated={ this.state.values.type.toLowerCase() === 'enumerated' }
+        enumerated={ this.state.value.type.toLowerCase() === 'enumerated' }
         value={ f }
         change={ (val, idx) => this.setState((prevState) => {
-          let tmpFields = [ ...prevState.values.fields ]
+          const tmpFields = [ ...prevState.value.fields ]
           tmpFields[idx] = val
           return {
-            values: {
-              ...prevState.values,
+            value: {
+              ...prevState.value,
               fields: tmpFields
             }
           }
         }, () => {
           if (this.props.change) {
-            this.props.change(this.state.values, this.props.dataIndex)
+            this.props.change(this.state.value, this.props.dataIndex)
           }
         })}
         remove={ idx => {
-          if (this.state.values.fields.length >= idx) {
+          if (this.state.value.fields.length >= idx) {
             this.setState((prevState) => {
-              const tmpFields = [ ...prevState.values.fields ];
+              const tmpFields = [ ...prevState.value.fields ];
               tmpFields.splice(idx, 1);
               return {
-                values: {
-                  ...prevState.values,
+                value: {
+                  ...prevState.value,
                   fields: tmpFields
                 }
               };
             }, () => {
               if (this.props.change) {
-                this.props.change(this.state.values, this.props.dataIndex);
+                this.props.change(this.state.value, this.props.dataIndex);
               }
             })
           }
@@ -190,26 +190,31 @@ class StructureEditor extends Component {
         </ButtonGroup>
 
         <div className="border-bottom mb-2">
-          <h3 className="col-sm-10 my-1">{ `${this.state.values.name}(${this.state.values.type})` }</h3>
+          <h3 className="col-sm-10 my-1">{ `${this.state.value.name}(${this.state.value.type})` }</h3>
         </div>
 
         <div className="row m-0">
           <FormGroup className="col-md-4">
             <Label>Name</Label>
-            <Input type="string" placeholder="Name" value={ this.state.values.name } onChange={ this.onChange } />
+            <Input type="string" placeholder="Name" value={ this.state.value.name } onChange={ this.onChange } />
           </FormGroup>
 
           <FormGroup className="col-md-4">
             <Label>&nbsp;</Label>
             <InputGroup>
               <Button outline color="info" onClick={ this.toggleModal }>Type Options</Button>
-              <OptionsModal optionValues={ this.state.values.options } isOpen={ this.state.modal } toggleModal={ this.toggleModal } saveModal={ this.saveModal } />
+              <OptionsModal
+                optionvalue={ this.state.value.options }
+                isOpen={ this.state.modal }
+                toggleModal={ this.toggleModal }
+                saveModal={ this.saveModal }
+              />
             </InputGroup>
           </FormGroup>
 
           <FormGroup className="col-md-4">
             <Label>Comment</Label>
-            <Input type="textarea" placeholder="Comment" rows={ 1 } value={ this.state.values.comment } onChange={ this.onChange } />
+            <Input type="textarea" placeholder="Comment" rows={ 1 } value={ this.state.value.comment } onChange={ this.onChange } />
           </FormGroup>
 
           <FormGroup tag="fieldset" className="col-12 border">
@@ -217,7 +222,8 @@ class StructureEditor extends Component {
               Fields
               <ButtonGroup className="float-right">
                 <Button color={ this.state.fieldCollapse ? 'warning' : 'success' } onClick={ this.toggleFields } >
-                  <FontAwesomeIcon icon={ this.state.fieldCollapse ? faMinusCircle : faPlusCircle } /> { this.state.fieldCollapse ? ' Hide' : ' Show' }
+                  <FontAwesomeIcon icon={ this.state.fieldCollapse ? faMinusCircle : faPlusCircle } />&nbsp;
+                  { this.state.fieldCollapse ? ' Hide' : ' Show' }
                 </Button>
                 <Button color="primary" onClick={ this.addField } >
                   <FontAwesomeIcon icon={ faPlusSquare } /> Add
@@ -240,7 +246,7 @@ class StructureEditor extends Component {
 
 StructureEditor.propTypes = {
   dataIndex: PropTypes.number,
-  values: PropTypes.shape({
+  value: PropTypes.shape({
     name: PropTypes.string,
     type: PropTypes.string,
     options: PropTypes.array,
@@ -253,9 +259,9 @@ StructureEditor.propTypes = {
 
 StructureEditor.defaultProps = {
   dataIndex: -1,
-  values: {
-    name: '',
-    type: '',
+  value: {
+    name: 'StructureEditor',
+    type: 'struct',
     options: [],
     comment: '',
     fields: []

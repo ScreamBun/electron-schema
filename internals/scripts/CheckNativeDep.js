@@ -18,9 +18,7 @@ import { dependencies } from '../../package.json';
       execSync(`npm ls ${nativeDeps.join(' ')} --json`).toString()
     );
     const rootDependencies = Object.keys(dependenciesObject);
-    const filteredRootDependencies = rootDependencies.filter(rootDependency =>
-      dependenciesKeys.includes(rootDependency)
-    );
+    const filteredRootDependencies = rootDependencies.filter(rootDependency => dependenciesKeys.includes(rootDependency));
     if (filteredRootDependencies.length > 0) {
       const plural = filteredRootDependencies.length > 1;
       console.log(`

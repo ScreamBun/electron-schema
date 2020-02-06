@@ -1,4 +1,5 @@
 /* eslint global-require: off */
+import 'v8-compile-cache';
 import {
   app,
   dialog,
@@ -18,7 +19,6 @@ import pyodideNode from './src/utils/PyodideNode/PyodideNode';
 
 // Config
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const isMac = process.platform === 'darwin';
 const isWin = ['win32', 'win64'].includes(process.platform);
 
 // Python Setup
@@ -122,7 +122,8 @@ const createMainWindow = () => {
   // New Window
   mainWindow.webContents.on(
     'new-window',
-    (event, url, frameName, disposition, options, additionalFeatures) => {
+    // eslint-disable-next-line no-shadow
+    (event, url, frameName, disposition, options) => {
       if (frameName === 'modal') {
         // open window as modal
         event.preventDefault();
@@ -186,6 +187,16 @@ app.on('open-file', (event, filePath) => {
 });
 
 // Renderer event actions
+const convertSchema = args => {
+  const schema = args.schema ? args.schema : {};
+  const format = args.format ? args.format : 'NULL';
+
+  if (Object.values(SchemaFormats).includes(format)) {
+    return schemaConverters[format](schema);
+  }
+  return null;
+};
+
 ipcMain.on('file-save', (event, args) => {
   const kargs = { ...args };
   let ext = kargs.format || null;
@@ -241,15 +252,5 @@ ipcMain.on('file-save', (event, args) => {
       console.log(err);
     });
 });
-
-const convertSchema = args => {
-  const schema = args.schema ? args.schema : {};
-  const format = args.format ? args.format : 'NULL';
-
-  if (Object.values(SchemaFormats).includes(format)) {
-    return schemaConverters[format](schema);
-  }
-  return null;
-};
 
 ipcMain.handle('convert-schema', (event, args) => convertSchema(args));

@@ -116,7 +116,7 @@ const FieldEditor = props => {
                 saveModal={ saveModal }
                 isOpen={ isOpen }
                 toggleModal={ () => toggleModal(!isOpen) }
-                fieldOptions={ true }
+                fieldOptions
               />
             </FormGroup>
           </div>

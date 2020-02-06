@@ -103,7 +103,6 @@ class SidebarMenu extends Component {
         docked={ this.state.sidebarDocked }
         onSetOpen={ this.onSetSidebarOpen }
         sidebarClassName="navbar-dark bg-dark"
-        pullRight={ !this.state.sidebarDocked }
         rootId="sidebarRoot"
         sidebarId="sidebarContents"
         contentId="sidebarMain"

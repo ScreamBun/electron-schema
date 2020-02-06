@@ -59,7 +59,7 @@ class GenerateSchema extends Component {
         if (store.action === 'erase') {
           stateUpdate.schema = { meta: {}, types: [] };
           stateUpdate.schemaPath = '';
-        } else if (store.hasOwnProperty('filePath')) {
+        } else if ('filePath' in store) {
           stateUpdate.schemaPath = store.filePath;
         }
         return stateUpdate;
@@ -141,8 +141,8 @@ class GenerateSchema extends Component {
 
   SchemaEditor() {
     const metaEditors = Object.keys(this.keys.meta).map((k, i) => {
-      const editor = this.keys.meta[k].editor;
-      if (this.state.schema.meta.hasOwnProperty(k)) {
+      const { editor } = this.keys.meta[k];
+      if (k in this.state.schema.meta) {
         return editor({
           key: i,
           value: this.state.schema.meta[k],

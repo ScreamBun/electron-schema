@@ -22,15 +22,16 @@ const DIST_DIR = path.join(APP_DIR, 'dist', 'pyodide');
 
 // './app/src/utils/PyodideNode/**/*.js'
 
-const entryFiles = (reg, prefix) => glob.sync(reg).reduce((prevVal, curVal, curIdx, array) => {
+// eslint-disable-next-line no-unused-vars
+const entryFiles = (reg, prefix) => glob.sync(reg).reduce((prevVal, curVal, curIdx) => {
   prefix = prefix ? prefix : '';
-  return typeof prevVal === 'string' ?
-    {
-      [`${prefix}${path.basename(prevVal, path.extname(prevVal))}`]: prevVal,
-      [`${prefix}${path.basename(curVal, path.extname(curVal))}`]: curVal
-    }
-    :
-    { ...prevVal, [`${prefix}${path.basename(curVal, path.extname(curVal))}`]: curVal }
+  return typeof prevVal === 'string' ? {
+    [`${prefix}${path.basename(prevVal, path.extname(prevVal))}`]: prevVal,
+    [`${prefix}${path.basename(curVal, path.extname(curVal))}`]: curVal
+  } : {
+    ...prevVal,
+    [`${prefix}${path.basename(curVal, path.extname(curVal))}`]: curVal
+  }
 });
 
 export default merge.smart(baseConfig, {
@@ -42,7 +43,7 @@ export default merge.smart(baseConfig, {
   },
   output: {
     path: DIST_DIR,
-    filename: '[name].js',
+    filename: '[name].js'
   },
   plugins: [
     /**
@@ -58,7 +59,7 @@ export default merge.smart(baseConfig, {
         {
           // Data Assets
           from: '**/*.*',
-          to: DIST_DIR,
+          to: DIST_DIR
         }
       ],
       {

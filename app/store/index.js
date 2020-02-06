@@ -9,7 +9,10 @@ import createRootReducer from './reducers';
 import asyncDispatchMiddleware from './asyncDispatchMiddleware';
 
 export default history => {
-  const persistedFilter = createFilter('Auth', ['access']);
+  const persistedFilter = createFilter(
+    'Auth',
+    [ 'access' ]
+  );
 
   const reducer = persistReducer(
     {
@@ -22,10 +25,15 @@ export default history => {
     createRootReducer(history)
   );
 
-  const middleware = [apiMiddleware, thunk, asyncDispatchMiddleware];
+  const middleware = [
+    apiMiddleware,
+    thunk,
+    asyncDispatchMiddleware
+  ];
 
   // Logger
   if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line global-require
     const { createLogger } = require('redux-logger');
     const logger = createLogger({
       diff: false,
@@ -35,9 +43,17 @@ export default history => {
     middleware.push(logger);
   }
 
-  const enhancers = compose(applyMiddleware(...middleware));
+  const enhancers = compose(
+    applyMiddleware(
+      ...middleware
+    )
+  );
 
-  const store = createStore(reducer, {}, enhancers);
+  const store = createStore(
+    reducer,
+    {},
+    enhancers
+  );
 
   persistStore(store);
   return store;

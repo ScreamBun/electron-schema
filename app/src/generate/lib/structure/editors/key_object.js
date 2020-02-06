@@ -23,7 +23,7 @@ class KeyObjectEditor extends Component {
     this.onChange = this.onChange.bind(this);
 
     this.state = {
-      values: Object.keys(this.props.value).map(k => ({key: k, value: this.props.value[k]}) )
+      value: Object.keys(this.props.value).map(k => ({key: k, value: this.props.value[k]}) )
     };
   }
 
@@ -31,15 +31,15 @@ class KeyObjectEditor extends Component {
     const propsChange = this.props !== nextProps;
     const stateChange = this.state !== nextState;
 
-    if (this.state.values !== nextState.values) {
-      this.props.change(this.toObject(nextState.values));
+    if (this.state.value !== nextState.value) {
+      this.props.change(this.toObject(nextState.value));
     }
 
     return propsChange || stateChange;
   }
 
   toObject(val) {
-    val = val || this.state.values;
+    val = val || this.state.value;
     return val.reduce((obj, row) => {
       obj[row.key] = row.value;
       return obj;
@@ -51,11 +51,11 @@ class KeyObjectEditor extends Component {
   }
 
   removeIndex(e) {
-    if (this.state.values.length > 1) {
-      let idx = parseInt(e.currentTarget.attributes.getNamedItem('data-index').value);
+    if (this.state.value.length > 1) {
+      const idx = parseInt(e.currentTarget.attributes.getNamedItem('data-index').value, 10);
 
       this.setState(prevState => ({
-        values: prevState.values.filter((row, i) => i !== idx)
+        value: prevState.value.filter((row, i) => i !== idx)
       }));
     } else {
       console.log('cant remove');
@@ -63,14 +63,14 @@ class KeyObjectEditor extends Component {
   }
 
   addIndex() {
-    if (this.state.values.some(v => v[0] === '')) {
+    if (this.state.value.some(v => v[0] === '')) {
       return;
     }
     console.log('Add KeyObject');
 
     this.setState(prevState => ({
-      values: [
-        ...prevState.values,
+      value: [
+        ...prevState.value,
         {
           key: '',
           value: ''
@@ -80,22 +80,22 @@ class KeyObjectEditor extends Component {
   }
 
   onChange(e) {
-    const idx = parseInt(e.target.attributes.getNamedItem('data-index').value);
+    const idx = parseInt(e.target.attributes.getNamedItem('data-index').value, 10);
     const type = e.target.attributes.getNamedItem('data-type').value;
     const val = e.target.value;
-    console.log("Update KeyObject");
+    console.log('Update KeyObject');
 
     this.setState(prevState => {
-      const tmpValues = [ ...prevState.values ];
-      tmpValues[idx][type] = val;
+      const tmpvalue = [ ...prevState.value ];
+      tmpvalue[idx][type] = val;
       return {
-        values: tmpValues
+        value: tmpvalue
       };
     });
   }
 
   render() {
-    const indices = this.state.values.map((obj, i) => (
+    const indices = this.state.value.map((obj, i) => (
       <div className="input-group col-sm-12 mb-1" key={ i }>
         <Input
           type="text"
@@ -149,7 +149,7 @@ class KeyObjectEditor extends Component {
 KeyObjectEditor.propTypes = {
   id: PropTypes.string,
   placeholder: PropTypes.string,
-  values: PropTypes.object,
+  value: PropTypes.object,
   change: PropTypes.func,
   remove: PropTypes.func
 };
@@ -157,7 +157,7 @@ KeyObjectEditor.propTypes = {
 KeyObjectEditor.defaultProps = {
   id: 'KeyObjectEditor',
   placeholder: 'KeyObjectEditor',
-  values: {},
+  value: {},
   change: null,
   remove: null
 };

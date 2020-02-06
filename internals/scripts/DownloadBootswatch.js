@@ -11,12 +11,8 @@ const THEME_API = 'https://bootswatch.com/api/4.json';
 const THEME_FONT_DIR = '/assets/';
 const THEME_FONT_URL = '../assets/';
 
-const CSS_URL_IMPORT = new NamedRegExp(
-  /^@import url\(["'](:<url>.*?)["']\);\s*?$/
-);
-const FILE_URL_IMPORT = new NamedRegExp(
-  /\s*?src:( local\(.*?\),)? local\(['"](:<name>.*?)['"]\), url\(['"]?(:<url>.*?)['"]?\) format\(['"](:<format>.*?)['"]\);/
-);
+const CSS_URL_IMPORT = new NamedRegExp(/^@import url\(["'](:<url>.*?)["']\);\s*?$/);
+const FILE_URL_IMPORT = new NamedRegExp(/\s*?src:( local\(.*?\),)? local\(['"](:<name>.*?)['"]\), url\(['"]?(:<url>.*?)['"]?\) format\(['"](:<format>.*?)['"]\);/);
 const URL_REPLACE = new NamedRegExp(/url\([""]?(:<url>.*?)[""]?\)/);
 
 CHECK_DIRS.each(d => {
@@ -53,10 +49,7 @@ BootswatchThemes.themes.each(theme => {
   // set imports to local & download files
   const postProcessCss = preProcessCss.map(line => {
     let processedLine = line;
-    if (
-      line.match(/\s*?src:.*url\(["']?https?:\/\/.*/) &&
-      !line.startsWith('/*')
-    ) {
+    if (line.match(/\s*?src:.*url\(["']?https?:\/\/.*/) && !line.startsWith('/*')) {
       const src = FILE_URL_IMPORT.exec(line).groups;
       const ext = path.extname(src.url);
       const fileName = `fonts/${src.name}${ext}`;
@@ -71,10 +64,7 @@ BootswatchThemes.themes.each(theme => {
           console.log(`Downloaded reference: ${opts.filename}`);
         });
       }
-      processedLine = processedLine.replace(
-        URL_REPLACE,
-        `url('${THEME_FONT_URL}${fileName}')`
-      );
+      processedLine = processedLine.replace(URL_REPLACE, `url('${THEME_FONT_URL}${fileName}')`);
     }
 
     processedLine = processedLine.replace(/\\[^\\]/g, '\\\\');

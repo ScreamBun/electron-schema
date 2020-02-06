@@ -80,12 +80,14 @@ class KeyObjectEditor extends Component {
   }
 
   onChange(k, v) {
-    if (v === '') {
-      delete this.state[k];
-    } else {
-      this.state[k] = v;
-    }
-    this.setState(this.state);
+    this.setState(prevState => {
+      if (v === '') {
+        delete prevState[k];
+      } else {
+        prevState[k] = v;
+      }
+      return prevState
+    })
   }
 
   render() {
@@ -96,7 +98,7 @@ class KeyObjectEditor extends Component {
         change: v => this.onChange(key, v),
         removable: false
       };
-      if (this.state.hasOwnProperty(key)) {
+      if (key in this.state) {
         keyProps.value = this.state[key];
       }
       return <KeyValueEditor key={ idx } id={ key } { ...keyProps } />;

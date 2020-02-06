@@ -17,20 +17,20 @@ const ConfigKeys = {
   enum: {
     description: 'Extension: Enumerated type derived from the specified Array, Choice, Map or Record type'
   },
-  '(optional) format': {
-    description: 'Semantic validation keyword'
+  format: {
+    description: '(optional) Semantic validation keyword'
   },
-  '(optional) pattern': {
-    description: 'Regular expression used to validate a String type'
+  pattern: {
+    description: '(optional) Regular expression used to validate a String type'
   },
-  '(optional) minv': {
-    description: 'Minimum numeric value, octet or character count, or element count'
+  minv: {
+    description: '(optional) Minimum numeric value, octet or character count, or element count'
   },
-  '(optional) maxv': {
-    description: 'Maximum numeric value, octet or character count, or element count'
+  maxv: {
+    description: '(optional) Maximum numeric value, octet or character count, or element count'
   },
-  '(optional) unique': {
-    description: 'If present, an ArrayOf instance must not contain duplicate values',
+  unique: {
+    description: '(optional) If present, an ArrayOf instance must not contain duplicate values',
     type: 'checkbox'
   }
 };

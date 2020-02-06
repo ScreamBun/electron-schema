@@ -1,3 +1,5 @@
+ /* eslint-disable jsx-a11y/click-events-have-key-events */
+ /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import themes from './themes';
@@ -200,7 +202,7 @@ class JADNInput extends Component {
         if (node.previousSibling) {
           node = node.previousSibling;
           if (countBR && node.nodeName === 'BR') {
-            linebreakCount++;
+            linebreakCount+=1;;
           }
           charCount += node.textContent.length;
         } else {
@@ -339,7 +341,7 @@ class JADNInput extends Component {
   }
 
   showPlaceholder() {
-    if (!'placeholder' in this.props) return;
+    if (!('placeholder' in this.props)) return;
     const { placeholder } = this.props;
 
     if ([undefined, null].indexOf(placeholder) > -1) return;
@@ -363,7 +365,8 @@ class JADNInput extends Component {
     const data = this.tokenize(placeholder);
     this.setState({
       prevPlaceholder: placeholder,
-      plainText: data.indentation,// eslint-disable-line react/no-unused-state
+      // eslint-disable-next-line react/no-unused-state
+      plainText: data.indentation,
       markupText: data.markup,
       lines: data.lines,
       error: data.error
@@ -455,7 +458,7 @@ class JADNInput extends Component {
     const { markupText, error } = this.state;
     const { colors,  style,  confirmGood, totalHeight, totalWidth } = this;
     const hasError = error ? 'token' in error : false;
-    this.renderCount++;
+    this.renderCount+=1;
 
     return (
       <div
@@ -615,6 +618,7 @@ class JADNInput extends Component {
             <span
               name="labels"
               id={ id ? `${id}-labels` : '' }
+              // eslint-disable-next-line no-return-assign
               ref={ ref => this.refLabels = ref }
               style={{
                 display: 'inline-block',
@@ -634,6 +638,7 @@ class JADNInput extends Component {
             </span>
             <span
               id={ id }
+              // eslint-disable-next-line no-return-assign
               ref={ ref => this.refContent = ref }
               contentEditable
               style={{

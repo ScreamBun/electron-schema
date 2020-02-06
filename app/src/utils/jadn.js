@@ -18,7 +18,10 @@ const jadnDump = ({ schema, indent = 2, level = 0 }) => {
         }
         return `[${lines.join(', ')}]`;
       }
-      const lines = Object.keys(schema).map(k => `${indNor}"${k}": ${jadnDump({schema: schema[k], indent, level: level + 1})}`);
+      const lines = Object.keys(schema).map(k => {
+        const v = jadnDump({schema: schema[k], indent, level: level + 1});
+        return `${indNor}"${k}": ${v}`;
+      });
       return `{\n${lines.join(',\n')}\n${indNes}}`;
     case 'number':
     case 'string':

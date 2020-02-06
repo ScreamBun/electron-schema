@@ -36,12 +36,8 @@ const requiredByDLLConfig = module.parent.filename.includes(
 /**
  * Warn if the DLL is not built
  */
-if (
-  !requiredByDLLConfig &&
-  !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))
-) {
-  const msg =
-    'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"';
+if (!requiredByDLLConfig && !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))) {
+  const msg = 'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"';
   console.log(chalk.black.bgYellow.bold(msg));
   execSync('yarn build-dll');
 }
@@ -75,13 +71,11 @@ export default merge.smart(baseConfig, {
     new webpack.EnvironmentPlugin({
       NODE_ENV: env
     }),
-    requiredByDLLConfig
-      ? null
-      : new webpack.DllReferencePlugin({
-          context: DLL_DIR,
-          manifest: require(manifest),
-          sourceType: 'var'
-        }),
+    requiredByDLLConfig ? null : new webpack.DllReferencePlugin({
+      context: DLL_DIR,
+      manifest: require(manifest),
+      sourceType: 'var'
+    }),
     new webpack.HotModuleReplacementPlugin({
       multiStep: true
     }),

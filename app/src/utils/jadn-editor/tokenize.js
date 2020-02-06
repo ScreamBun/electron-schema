@@ -353,6 +353,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
             normalToken.type = 'colon';
             buffer2.isValue = true;
             break;
+          // skip default
         }
         break;
       case 'delimiter':
@@ -406,6 +407,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
           normalToken.type = buffer2.isValue ? 'string' : 'key';
         }
         break;
+      // skip default
     }
     return normalToken;
   });
@@ -427,7 +429,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
         }
         mergedToken.string += nextToken.string;
         mergedToken.tokens.push(u);
-        count++;
+        count+=1;
       }
       i += count;
     }
@@ -464,7 +466,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
       case 'space':
         break;
       case 'linebreak':
-        line++;
+        line+=1;
         break;
       case 'symbol':
         switch (string) {
@@ -570,9 +572,11 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
                   break;
                 }
                 break;
+              // skip default
             }
             buffer2.isValue = buffer2.brackets[buffer2.brackets.length - 1] === '[';
             break;
+          // skip default
         }
         buffer.json += string;
         break;
@@ -620,13 +624,13 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
         }
         if (quotes.indexOf(lastChar) === -1 && quotes.indexOf(firstChar) !== -1) {
           setError(i, format(locale.string.missingClose, {
-            quote: firstChar,
+            quote: firstChar
           }));
           break;
         }
         if (quotes.indexOf(firstChar) > -1 && firstChar !== lastChar) {
           setError(i, format(locale.string.missingClose, {
-            quote: firstChar,
+            quote: firstChar
           }));
           break;
         }
@@ -648,7 +652,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
             const c = string.charAt(h);
             if (alphanumeric.indexOf(c) === -1) {
               setError(i, format(locale.string.nonAlphanumeric, {
-                token: c,
+                token: c
               }));
               break;
             }
@@ -722,6 +726,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
         }
         buffer.json += string;
         break;
+      // skip default
     }
   }
 
@@ -734,7 +739,8 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
     if (i + 1 < buffer.json.length) {
       if (current === '\\' && next === "'") {
         noEscapedSingleQuote += next;
-        i++;
+        i+=1;
+        // eslint-disable-next-line no-continue
         continue;
       }
     }
@@ -764,7 +770,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
           removePair(tokenCount);
         }
       }
-      round++;
+      round+=1;
       if (!delta) {
         break;
       }
@@ -804,7 +810,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
         while (charTotal < errPosition && !exitWhile) {
           token = buffer.tokens_merge[tokenIndex];
           if (token.type === 'linebreak') {
-            _line++;
+            _line+=1;
           }
           if (['space', 'linebreak'].indexOf(token.type) === -1) {
             charTotal += token.string.length;
@@ -812,7 +818,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
           if (charTotal >= errPosition) {
             break;
           }
-          tokenIndex++;
+          tokenIndex+=1;
           if (!buffer.tokens_merge[tokenIndex + 1]) {
             exitWhile = true;
           }
@@ -851,7 +857,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
   const newIndent = () => Array(_depth * 2).fill('&nbsp;').join('');
 
   const newLineBreak = (byPass = false) => {
-    _line++;
+    _line+=1;
     return (_depth > 0 || byPass) ? '<br>' : '';
   };
 
@@ -862,7 +868,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
     const countCarrigeReturn = string => {
       let count = 0;
       for (let i = 0; i < string.length; i++) {
-        if (['\n', '\r'].indexOf(string[i]) > -1) count++;
+        if (['\n', '\r'].indexOf(string[i]) > -1) count+=1;
       }
       return count;
     };
@@ -872,14 +878,14 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
       const token = buffer.tokens_merge[i];
       const { type, string } = token;
       if (type === 'linebreak') {
-        _line++;
+        _line+=1;
       }
 
       buffer.markup += newSpan(i, token, _depth, colors);
       _line_fallback += countCarrigeReturn(string);
     }
-    _line++;
-    _line_fallback++;
+    _line+=1;
+    _line_fallback+=1;
     if (_line < _line_fallback) {
       _line = _line_fallback;
     }
@@ -907,7 +913,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
           switch (token.string) {
             case '{':
               buffer.markup += newSpan(i, token, _depth, colors);
-              _depth++;
+              _depth+=1;
               break;
             case '}':
               _depth = _depth > 0 ? _depth - 1 : _depth;
@@ -918,7 +924,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
               break;
             case '[':
               if (followsSymbol(buffer.tokens_merge, i, ['['])) {
-                _depth++;
+                _depth+=1;
                 buffer.markup += newLineBreakAndIndent();
               }
               buffer.markup += newSpan(i, token, _depth, colors);
@@ -932,7 +938,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
                   if (followedBySymbol(buffer.tokens_merge, i + 1, [','])) {
                     _depth = _depth >= 1 ? _depth - 1 : _depth;
                     ind_bool = true;
-                    i++;
+                    i+=1;
                   } else if (followedBySymbol(buffer.tokens_merge, i + 1, [']'])) {
                     _depth = _depth >= 1 ? _depth - 1 : _depth;
                     ind_bool = true;
@@ -956,6 +962,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
               break;
           }
           break;
+        // skip default
       }
     }
   }
@@ -1081,6 +1088,7 @@ const determine_value = buffer => {
     case ']':
       buffer.brackets.pop();
       break;
+    // skip default
   }
 
   if (buffer.currentChar !== ':') {
@@ -1242,7 +1250,7 @@ export const JSON_Placeholder = (obj, colors) => {
   const indent = (byPass = false) => ((_depth > 0 || byPass) ? '\n' : '') + Array(_depth * 2).fill(' ').join('');
 
   const indentII = (byPass = false) => {
-    if (_depth > 0) _line++;
+    if (_depth > 0) _line+=1;
     return ((_depth > 0 || byPass) ? '<br>' : '') + Array(_depth * 2).fill('&nbsp;').join('');
   };
 
@@ -1264,7 +1272,7 @@ export const JSON_Placeholder = (obj, colors) => {
           case '{':
             indentation += token.string;
             markup += newSpan(i, token, _depth, colors);
-            _depth++;
+            _depth+=1;
             if (followedBySymbol(buffer2.tokens, i, ['}'])) {
               indentation += indent();
               markup += indentII();
@@ -1284,7 +1292,7 @@ export const JSON_Placeholder = (obj, colors) => {
             break;
           case '[':
             if (followsSymbol(buffer2.tokens, i, ['['])) {
-              _depth++;
+              _depth+=1;
               indentation += indent();
               markup += indentII();
             }
@@ -1300,7 +1308,7 @@ export const JSON_Placeholder = (obj, colors) => {
                 if (followedBySymbol(buffer2.tokens, i + 1, [','])) {
                   _depth = _depth >= 1 ? _depth - 1 : _depth;
                   ind_bool = true;
-                  i++;
+                  i+=1;
                 } else if (followedBySymbol(buffer2.tokens, i + 1, [']'])) {
                   _depth = _depth >= 1 ? _depth - 1 : _depth;
                   ind_bool = true;
@@ -1332,6 +1340,7 @@ export const JSON_Placeholder = (obj, colors) => {
             break;
         }
         break;
+      // skip default
     }
   });
   _line += 1;

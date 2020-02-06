@@ -9,7 +9,7 @@ const stringify = arg => {
 // Replaces a string with the values of an object. Google "format unicorn" on an explanation of how to use.
 const format = (str, args) => {
   if (args) {
-    return Object.keys(args).reduce((str, arg) => str.replace(new RegExp(`\\{${arg}\\}`, 'gi'), stringify(args[arg])), str);
+    return Object.keys(args).reduce((s, a) => s.replace(new RegExp(`\\{${a}\\}`, 'gi'), stringify(args[a])), str);
   }
   return str;
 };
