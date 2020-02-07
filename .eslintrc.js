@@ -91,7 +91,7 @@ module.exports = {
 
     // SORT
     "implicit-arrow-linebreak": [2, "beside"],
-    "multiline-ternary": [2, "never"],
+    
     "no-useless-concat": 2,
     "operator-linebreak": [2, "none"]
   }

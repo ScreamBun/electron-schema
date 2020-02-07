@@ -12,26 +12,15 @@ import TypeOptionsEditor from './options_object';
 import FieldOptionsEditor from './fields_object';
 
 class OptionsModal extends Component {
-  constructor(props, context) {
-    super(props, context);
-
-    this.deserializeOptionsData = this.deserializeOptionsData.bind(this);
-    this.serializeOptionsData = this.serializeOptionsData.bind(this);
-    this.saveModal = this.saveModal.bind(this);
-    this.saveModalState = this.saveModalState.bind(this);
-
-    this.state = this.deserializeOptionsData(this.props.optionValues);
-  }
-
   // convert array into options data state object
-  deserializeOptionsData(options) {
+  static deserializeOptionsData(options) {
     const obj = {
       type: {},
       field: {}
     };
 
     if (options !== undefined && options.length !== 0 && options[0] !== '') {
-      options.forEach((item, index, array) => {
+      options.forEach(item => {
         let key;
         let optionType;
 
@@ -88,7 +77,7 @@ class OptionsModal extends Component {
   }
 
   // convert options data state object into formatted array
-  serializeOptionsData(state_obj) {
+  static serializeOptionsData(state_obj) {
   // eslint-disable-next-line array-callback-return
     const type_opts = Object.entries(state_obj.type).map(([key, val]) => {
       if (!val) return;
@@ -131,6 +120,17 @@ class OptionsModal extends Component {
     return [ ...type_opts, ...field_opts ];
   }
 
+  constructor(props, context) {
+    super(props, context);
+
+    // this.deserializeOptionsData = this.deserializeOptionsData.bind(this);
+    // this.serializeOptionsData = this.serializeOptionsData.bind(this);
+    this.saveModal = this.saveModal.bind(this);
+    this.saveModalState = this.saveModalState.bind(this);
+
+    this.state = OptionsModal.deserializeOptionsData(this.props.optionValues);
+  }
+
   saveModalState(state, type) {
     this.setState({
       [type]: state
@@ -138,7 +138,7 @@ class OptionsModal extends Component {
   }
 
   saveModal() {
-    const data = this.serializeOptionsData(this.state);
+    const data = OptionsModal.serializeOptionsData(this.state);
     this.props.saveModal(data);
   }
 
@@ -166,10 +166,14 @@ class OptionsModal extends Component {
 OptionsModal.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   saveModal: PropTypes.func.isRequired,
-  isOpen: PropTypes.bool.isRequired
+  isOpen: PropTypes.bool.isRequired,
+  optionValues: PropTypes.array,
+  fieldOptions: PropTypes.bool
 };
 
 OptionsModal.defaultProps = {
+  optionValues: [],
+  fieldOptions: false
 };
 
 export default OptionsModal;

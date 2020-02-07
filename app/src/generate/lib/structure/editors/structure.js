@@ -78,7 +78,7 @@ class StructureEditor extends Component {
   }
 
   addField() {
-    const field = Object.value(((this.state.value.type.toLowerCase() === 'enumerated') ? EnumeratedField : StandardField));
+    const field = Object.values(((this.state.value.type.toLowerCase() === 'enumerated') ? EnumeratedField : StandardField));
     field[0] = this.state.value.fields.length + 1;
 
     this.setState(prevState => {

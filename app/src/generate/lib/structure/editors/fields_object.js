@@ -67,7 +67,8 @@ KeyObjectEditor.propTypes = {
   value: PropTypes.array,
   change: PropTypes.func,
   deserializedState: PropTypes.object,
-  saveModalState: PropTypes.func
+  saveModalState: PropTypes.func,
+  fieldOptions: PropTypes.bool.isRequired
 };
 
 KeyObjectEditor.defaultProps = {

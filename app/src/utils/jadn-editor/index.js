@@ -17,10 +17,22 @@ import { format } from './locale'; // direct copy
 import defaultLocale from './locale/en'; // direct copy
 
 class JADNInput extends Component {
+
+  static createMarkup(markupText) {
+    return {
+      __html: markupText === undefined ? '' : `${markupText}`
+    };
+  }
+
+  static stopEvent(event) {
+    if (!event) return;
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   constructor(props, context) {
     super(props, context);
     this.updateInternalProps = this.updateInternalProps.bind(this);
-    this.createMarkup = this.createMarkup.bind(this);
     this.onClick = this.onClick.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.update = this.update.bind(this);
@@ -36,7 +48,6 @@ class JADNInput extends Component {
     this.onKeyPress = this.onKeyPress.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onPaste = this.onPaste.bind(this);
-    this.stopEvent = this.stopEvent.bind(this);
     this.refContent = null;
     this.refLabels = null;
     this.updateInternalProps();
@@ -281,7 +292,7 @@ class JADNInput extends Component {
 
   onKeyPress(event) {
     const ctrlOrMetaIsPressed = event.ctrlKey || event.metaKey;
-    if (this.props.viewOnly && !ctrlOrMetaIsPressed) this.stopEvent(event);
+    if (this.props.viewOnly && !ctrlOrMetaIsPressed) JADNInput.stopEvent(event);
     if (!ctrlOrMetaIsPressed) this.setUpdateTime();
   }
 
@@ -291,14 +302,14 @@ class JADNInput extends Component {
 
     switch (event.key) {
       case 'Tab':
-        this.stopEvent(event);
+        JADNInput.stopEvent(event);
         if (viewOnly) break;
         document.execCommand('insertText', false, '  ');
         this.setUpdateTime();
         break;
       case 'Backspace':
       case 'Delete':
-        if (viewOnly) this.stopEvent(event);
+        if (viewOnly) JADNInput.stopEvent(event);
         this.setUpdateTime();
         break;
       case 'ArrowLeft':
@@ -309,35 +320,23 @@ class JADNInput extends Component {
         break;
       case 'a':
       case 'c':
-        if (viewOnly && !ctrlOrMetaIsPressed) this.stopEvent(event);
+        if (viewOnly && !ctrlOrMetaIsPressed) JADNInput.stopEvent(event);
         break;
       default:
-        if (viewOnly) this.stopEvent(event);
+        if (viewOnly) JADNInput.stopEvent(event);
         break;
     }
   }
 
   onPaste(event) {
     if (this.props.viewOnly) {
-      this.stopEvent(event);
+      JADNInput.stopEvent(event);
     } else {
       event.preventDefault();
       const text = event.clipboardData.getData('text/plain');
       document.execCommand('insertHTML', false, text);
     }
     this.update();
-  }
-
-  stopEvent(event) {
-    if (!event) return;
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  createMarkup(markupText) {
-    return {
-      __html: markupText === undefined ? '' : `${markupText}`
-    };
   }
 
   showPlaceholder() {
@@ -658,7 +657,7 @@ class JADNInput extends Component {
                 outline: 'none',
                 ...style.contentBox
               }}
-              dangerouslySetInnerHTML={ this.createMarkup(markupText) }
+              dangerouslySetInnerHTML={ JADNInput.createMarkup(markupText) }
               onKeyPress={ this.onKeyPress }
               onKeyDown={ this.onKeyDown }
               onClick={ this.onClick }
