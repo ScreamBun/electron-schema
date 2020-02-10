@@ -61,14 +61,14 @@ class SidebarMenu extends Component {
   }
 
   renderContents() {
-    const metaKeys = Object.keys(this.keys.meta).map((k, i) => (
-      <Draggable type="meta" data={ k } key={ i }>
+    const metaKeys = Object.keys(this.keys.meta).map(k => (
+      <Draggable type="meta" data={ k } key={ k } >
         <ListGroupItem action>{ this.keys.meta[k].key }</ListGroupItem>
       </Draggable>
     ));
 
-    const typesKeys = Object.keys(this.keys.types).map((k, i) => (
-      <Draggable type="types" data={ k } key={ i }>
+    const typesKeys = Object.keys(this.keys.types).map(k => (
+      <Draggable type="types" data={ k } key={ k } >
         <ListGroupItem action>{ this.keys.types[k].key }</ListGroupItem>
       </Draggable>
     ));

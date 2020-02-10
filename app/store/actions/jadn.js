@@ -20,5 +20,3 @@ export const convertToJSON = schema => {
       dispatch(convertToJSONSuccess(res));
     });
 };
-
-

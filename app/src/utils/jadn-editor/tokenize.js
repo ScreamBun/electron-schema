@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign, no-underscore-dangle */
 import { format } from './locale'; // direct copy
 import defaultLocale from './locale/en'; // direct copy
 import {
@@ -215,6 +216,7 @@ const tokenFollowed = buffer => {
 };
 
 // Main Function
+// eslint-disable-next-line camelcase
 export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
   const containerNode = obj.cloneNode(true);
   const hasChildren = containerNode.hasChildNodes();
@@ -353,7 +355,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
             normalToken.type = 'colon';
             buffer2.isValue = true;
             break;
-          // skip default
+          // no default
         }
         break;
       case 'delimiter':
@@ -407,7 +409,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
           normalToken.type = buffer2.isValue ? 'string' : 'key';
         }
         break;
-      // skip default
+      // no default
     }
     return normalToken;
   });
@@ -572,11 +574,11 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
                   break;
                 }
                 break;
-              // skip default
+              // no default
             }
             buffer2.isValue = buffer2.brackets[buffer2.brackets.length - 1] === '[';
             break;
-          // skip default
+          // no default
         }
         buffer.json += string;
         break;
@@ -726,7 +728,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
         }
         buffer.json += string;
         break;
-      // skip default
+      // no default
     }
   }
 
@@ -864,7 +866,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
   const newLineBreakAndIndent = (byPass = false) => newLineBreak(byPass) + newIndent();
 
   if (error) {
-    let _line_fallback = 1;
+    let _lineFallback = 1;
     const countCarrigeReturn = string => {
       let count = 0;
       for (let i = 0; i < string.length; i++) {
@@ -882,12 +884,12 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
       }
 
       buffer.markup += newSpan(i, token, _depth, colors);
-      _line_fallback += countCarrigeReturn(string);
+      _lineFallback += countCarrigeReturn(string);
     }
     _line+=1;
-    _line_fallback+=1;
-    if (_line < _line_fallback) {
-      _line = _line_fallback;
+    _lineFallback+=1;
+    if (_line < _lineFallback) {
+      _line = _lineFallback;
     }
   } else {
     // FORMAT BY TOKEN!!
@@ -930,26 +932,26 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
               buffer.markup += newSpan(i, token, _depth, colors);
               break;
             case ']':
-              const tmp_token = { ...token };
-              let ind_bool = false;
+              const tmpToken = { ...token };
+              let indBool = false;
 
               if (followsSymbol(buffer.tokens_merge, i, [']'])) {
                 if (followedBySymbol(buffer.tokens_merge, i, [']'])) {
                   if (followedBySymbol(buffer.tokens_merge, i + 1, [','])) {
                     _depth = _depth >= 1 ? _depth - 1 : _depth;
-                    ind_bool = true;
+                    indBool = true;
                     i+=1;
                   } else if (followedBySymbol(buffer.tokens_merge, i + 1, [']'])) {
                     _depth = _depth >= 1 ? _depth - 1 : _depth;
-                    ind_bool = true;
+                    indBool = true;
                   }
                 } else if (followedBySymbol(buffer.tokens_merge, i, ['}'])) {
                   _depth = _depth >= 1 ? _depth - 1 : _depth;
-                  ind_bool = true;
+                  indBool = true;
                 }
               }
 
-              buffer.markup += (ind_bool ? newLineBreakAndIndent() : '') + newSpan(i, tmp_token, _depth, colors);
+              buffer.markup += (indBool ? newLineBreakAndIndent() : '') + newSpan(i, tmpToken, _depth, colors);
               break;
             case ',':
               buffer.markup += newSpan(i, token, _depth, colors);
@@ -962,7 +964,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
               break;
           }
           break;
-        // skip default
+        // no default
       }
     }
   }
@@ -989,7 +991,7 @@ export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
 
 // JS OBJECTS || PLACEHOLDER
 // Helper Functions
-const stringHasQuotes = str => str.match(/^['"].*['"]$/);
+const stringHasQuotes = s => s.match(/^['"].*["']$/);
 
 const stringMayRemoveQuotes = (nonAlphaNumeric, text) => {
   let numberAndLetter = false;
@@ -1011,7 +1013,7 @@ const stripQuotesFromKey = text => {
   if (['""', "''"].indexOf(text) > -1) return "''";
   let wrappedInQuotes = false;
 
-  if (text.match(/^["'].*["']$/)) {
+  if (text.match(/^['"].*["']$/)) {
     wrappedInQuotes = true;
   }
 
@@ -1033,48 +1035,48 @@ const stripQuotesFromKey = text => {
   return mayRemoveQuotes ? text : `'${text}'`;
 };
 
-const add_tokenSecondary = buffer => {
+const addTokenSecondary = buffer => {
   if (buffer.tokenSecondary.length === 0) return false;
   buffer.tokens.push(buffer.tokenSecondary);
   buffer.tokenSecondary = '';
   return true;
 };
 
-const add_tokenPrimary = (buffer, value) => {
+const addTokenPrimary = (buffer, value) => {
   if (value.length === 0) return false;
   buffer.tokens.push(value);
   return true;
 };
 
-const escape_character = buffer => {
+const escapeCharacter = buffer => {
   if (buffer.currentChar !== '\\') return false;
   buffer.inputText = deleteCharAt(buffer.inputText, buffer.position);
   return true;
 };
 
-const determine_string = buffer => {
+const determineString = buffer => {
   if ('\'"'.indexOf(buffer.currentChar) === -1) return false;
   if (!buffer.stringOpen) {
-    add_tokenSecondary(buffer);
+    addTokenSecondary(buffer);
     buffer.stringStart = buffer.position;
     buffer.stringOpen = buffer.currentChar;
     return true;
   }
 
   if (buffer.stringOpen === buffer.currentChar) {
-    add_tokenSecondary(buffer);
+    addTokenSecondary(buffer);
     const stringToken = buffer.inputText.substring(buffer.stringStart, buffer.position + 1);
-    add_tokenPrimary(buffer, stringToken);
+    addTokenPrimary(buffer, stringToken);
     buffer.stringOpen = false;
     return true;
   }
   return false;
 };
 
-const determine_value = buffer => {
+const determineValue = buffer => {
   if (':,{}[]'.indexOf(buffer.currentChar) === -1 || buffer.stringOpen) return false;
-  add_tokenSecondary(buffer);
-  add_tokenPrimary(buffer, buffer.currentChar);
+  addTokenSecondary(buffer);
+  addTokenPrimary(buffer, buffer.currentChar);
 
   switch (buffer.currentChar) {
     case ':':
@@ -1088,7 +1090,7 @@ const determine_value = buffer => {
     case ']':
       buffer.brackets.pop();
       break;
-    // skip default
+    // no default
   }
 
   if (buffer.currentChar !== ':') {
@@ -1098,6 +1100,7 @@ const determine_value = buffer => {
 };
 
 // Main Function
+// eslint-disable-next-line camelcase
 export const JSON_Placeholder = (obj, colors) => {
   const buffer = {
     inputText: JSON.stringify(obj),
@@ -1116,7 +1119,7 @@ export const JSON_Placeholder = (obj, colors) => {
     buffer.position = i;
     buffer.currentChar = char;
 
-    if (!determine_value(buffer) && !determine_string(buffer) && !escape_character(buffer)) {
+    if (!determineValue(buffer) && !determineString(buffer) && !escapeCharacter(buffer)) {
       if (!buffer.stringOpen) {
         buffer.tokenSecondary += buffer.currentChar;
       }
@@ -1300,27 +1303,27 @@ export const JSON_Placeholder = (obj, colors) => {
             markup += newSpan(i, token, _depth, colors);
             break;
           case ']':
-            const tmp_token = { ...token };
-            let ind_bool = false;
+            const tmpToken = { ...token };
+            let indBool = false;
 
             if (followsSymbol(buffer2.tokens, i, [']'])) {
               if (followedBySymbol(buffer2.tokens, i, [']'])) {
                 if (followedBySymbol(buffer2.tokens, i + 1, [','])) {
                   _depth = _depth >= 1 ? _depth - 1 : _depth;
-                  ind_bool = true;
+                  indBool = true;
                   i+=1;
                 } else if (followedBySymbol(buffer2.tokens, i + 1, [']'])) {
                   _depth = _depth >= 1 ? _depth - 1 : _depth;
-                  ind_bool = true;
+                  indBool = true;
                 }
               } else if (followedBySymbol(buffer2.tokens, i, ['}'])) {
                 _depth = _depth >= 1 ? _depth - 1 : _depth;
-                ind_bool = true;
+                indBool = true;
               }
             }
 
-            indentation += (ind_bool ? indent() : '') + tmp_token.string;
-            markup += (ind_bool ? indentII() : '') + newSpan(i, tmp_token, _depth, colors);
+            indentation += (indBool ? indent() : '') + tmpToken.string;
+            markup += (indBool ? indentII() : '') + newSpan(i, tmpToken, _depth, colors);
             break;
           case ':':
             indentation += `${token.string} `;
@@ -1340,7 +1343,7 @@ export const JSON_Placeholder = (obj, colors) => {
             break;
         }
         break;
-      // skip default
+      // no default
     }
   });
   _line += 1;

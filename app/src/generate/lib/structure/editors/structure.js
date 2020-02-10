@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -89,7 +89,7 @@ class StructureEditor extends Component {
           ...prevState.value,
           fields: tmpFields
         }
-      }
+      };
     }, () => {
       this.props.change(this.state.value, this.props.dataIndex);
     });
@@ -106,7 +106,7 @@ class StructureEditor extends Component {
       }
     }), () => {
       if (this.props.change) {
-        this.props.change(this.state.value, this.props.dataIndex)
+        this.props.change(this.state.value, this.props.dataIndex);
       }
     });
   }
@@ -133,7 +133,7 @@ class StructureEditor extends Component {
       }
     }), () => {
       if (this.props.change) {
-        this.props.change(this.state.value, this.props.dataIndex)
+        this.props.change(this.state.value, this.props.dataIndex);
       }
     });
   }
@@ -147,17 +147,17 @@ class StructureEditor extends Component {
         enumerated={ this.state.value.type.toLowerCase() === 'enumerated' }
         value={ f }
         change={ (val, idx) => this.setState((prevState) => {
-          const tmpFields = [ ...prevState.value.fields ]
-          tmpFields[idx] = val
+          const tmpFields = [ ...prevState.value.fields ];
+          tmpFields[idx] = val;
           return {
             value: {
               ...prevState.value,
               fields: tmpFields
             }
-          }
+          };
         }, () => {
           if (this.props.change) {
-            this.props.change(this.state.value, this.props.dataIndex)
+            this.props.change(this.state.value, this.props.dataIndex);
           }
         })}
         remove={ idx => {
@@ -175,7 +175,7 @@ class StructureEditor extends Component {
               if (this.props.change) {
                 this.props.change(this.state.value, this.props.dataIndex);
               }
-            })
+            });
           }
         }}
       />
@@ -246,26 +246,14 @@ class StructureEditor extends Component {
 
 StructureEditor.propTypes = {
   dataIndex: PropTypes.number,
-  value: PropTypes.shape({
-    name: PropTypes.string,
-    type: PropTypes.string,
-    options: PropTypes.array,
-    comment: PropTypes.string,
-    fields: PropTypes.array
-  }),
+  value: PropTypes.array,
   change: PropTypes.func,
   remove: PropTypes.func
 };
 
 StructureEditor.defaultProps = {
   dataIndex: -1,
-  value: {
-    name: 'StructureEditor',
-    type: 'struct',
-    options: [],
-    comment: '',
-    fields: []
-  },
+  value: [],
   change: null,
   remove: null
 };

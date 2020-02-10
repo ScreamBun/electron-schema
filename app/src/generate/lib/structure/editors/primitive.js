@@ -68,7 +68,7 @@ class PrimitiveEditor extends Component {
       }
     }), () => {
       if (this.props.change) {
-        this.props.change(this.state.value, this.props.dataIndex)
+        this.props.change(this.state.value, this.props.dataIndex);
       }
     });
   }
@@ -93,7 +93,7 @@ class PrimitiveEditor extends Component {
       }
     }), () => {
       if (this.props.change) {
-        this.props.change(this.state.value, this.props.dataIndex)
+        this.props.change(this.state.value, this.props.dataIndex);
       }
     });
   }
@@ -148,24 +148,14 @@ class PrimitiveEditor extends Component {
 
 PrimitiveEditor.propTypes = {
   dataIndex: PropTypes.number,
-  value: PropTypes.shape({
-    name: PropTypes.string,
-    type: PropTypes.string,
-    options: PropTypes.array,
-    comment: PropTypes.string
-  }),
+  value: PropTypes.array,
   change: PropTypes.func,
   remove: PropTypes.func
 };
 
 PrimitiveEditor.defaultProps = {
   dataIndex: -1,
-  value: {
-    name: 'PrimitiveEditor',
-    type: 'type',
-    options: [],
-    comment: ''
-  },
+  value: [],
   change: null,
   remove: null
 };

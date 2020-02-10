@@ -20,6 +20,7 @@ import pyodideNode from './src/utils/PyodideNode/PyodideNode';
 // Config
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const isWin = ['win32', 'win64'].includes(process.platform);
+app.allowRendererProcessReuse = true;
 
 // Python Setup
 let schemaConverters = {};
@@ -118,25 +119,6 @@ const createMainWindow = () => {
       mainWindow.focus();
     });
   });
-
-  // New Window
-  mainWindow.webContents.on(
-    'new-window',
-    // eslint-disable-next-line no-shadow
-    (event, url, frameName, disposition, options) => {
-      if (frameName === 'modal') {
-        // open window as modal
-        event.preventDefault();
-        Object.assign(options, {
-          modal: true,
-          parent: mainWindow,
-          width: 300,
-          height: 300
-        });
-        event.newGuest = new BrowserWindow(options);
-      }
-    }
-  );
 
   // Build and add app menu
   const menuBuilder = new MenuBuilder(mainWindow);
