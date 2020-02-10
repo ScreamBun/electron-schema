@@ -49,6 +49,8 @@ package.json
 
 # Non-packaged files
 config
+dll
+flow-typed
 internals
 resources
 

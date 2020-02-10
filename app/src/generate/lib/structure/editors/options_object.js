@@ -58,7 +58,7 @@ const KeyObjectEditor = props => {
       change: v => saveKeyValuePair(key, v)
     };
 
-    return <KeyValueEditor value={ props.deserializedState[key] } key={ idx } id={ key } { ...keyProps } />
+    return <KeyValueEditor value={ props.deserializedState[key] } key={ idx } id={ key } { ...keyProps } />;
   });
 
   return (

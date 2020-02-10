@@ -23,7 +23,7 @@ class KeyObjectEditor extends Component {
     this.onChange = this.onChange.bind(this);
 
     this.state = {
-      value: Object.keys(this.props.value).map(k => ({key: k, value: this.props.value[k]}) )
+      value: Object.keys(this.props.value).map(k => ({key: k, value: this.props.value[k]}))
     };
   }
 
@@ -40,10 +40,10 @@ class KeyObjectEditor extends Component {
 
   toObject(val) {
     val = val || this.state.value;
-    return val.reduce((obj, row) => {
-      obj[row.key] = row.value;
-      return obj;
-    }, {});
+    return val.reduce((obj, row) => ({
+      ...obj,
+      [row.key]: row.value
+    }), {});
   }
 
   removeAll() {

@@ -25,7 +25,7 @@ const KeyArrayEditor = props => {
     }
   };
 
-  const addIndex= () => props.change([ ...props.value, '' ]);
+  const addIndex = () => props.change([ ...props.value, '' ]);
 
   const onChange = e => {
     const index = e.target.attributes.getNamedItem('data-index').value;

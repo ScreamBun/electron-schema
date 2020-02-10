@@ -86,8 +86,8 @@ class KeyObjectEditor extends Component {
       } else {
         prevState[k] = v;
       }
-      return prevState
-    })
+      return prevState;
+    });
   }
 
   render() {

@@ -1,16 +1,10 @@
- /* eslint-disable jsx-a11y/click-events-have-key-events */
- /* eslint-disable jsx-a11y/no-static-element-interactions */
+ /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import themes from './themes';
-import {
-  identical,
-  getType
-} from './mitsuketa';
-import {
-  DomNode_Update,
-  JSON_Placeholder
-} from './tokenize';
+import { identical, getType } from './mitsuketa';
+// eslint-disable-next-line camelcase
+import { DomNode_Update, JSON_Placeholder } from './tokenize';
 
 import err from './err'; // direct copy
 import { format } from './locale'; // direct copy
@@ -213,7 +207,7 @@ class JADNInput extends Component {
         if (node.previousSibling) {
           node = node.previousSibling;
           if (countBR && node.nodeName === 'BR') {
-            linebreakCount+=1;;
+            linebreakCount+=1;
           }
           charCount += node.textContent.length;
         } else {
@@ -339,6 +333,20 @@ class JADNInput extends Component {
     this.update();
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  stopEvent(event) {
+    if (!event) return;
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  createMarkup(markupText) {
+    return {
+      __html: markupText === undefined ? '' : `${markupText}`
+    };
+  }
+
   showPlaceholder() {
     if (!('placeholder' in this.props)) return;
     const { placeholder } = this.props;
@@ -392,6 +400,7 @@ class JADNInput extends Component {
     }
 
     console.log('Oops....');
+    return null;
   }
 
   renderErrorMessage() {

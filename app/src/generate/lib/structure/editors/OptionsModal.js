@@ -44,10 +44,10 @@ class OptionsModal extends Component {
           key = 'format';
         } else if (_symbol === '%') {
           optionType = 'type';
-          key = 'pattern'
+          key = 'pattern';
         } else if (_symbol === '{') {
           optionType = 'type';
-          key = 'minv'
+          key = 'minv';
         } else if (_symbol === '}') {
           optionType = 'type';
           key = 'maxv';
@@ -81,41 +81,25 @@ class OptionsModal extends Component {
   // eslint-disable-next-line array-callback-return
     const type_opts = Object.entries(state_obj.type).map(([key, val]) => {
       if (!val) return;
-      if (key === 'id') {
-        return '=';
-      } else if (key === 'vtype') {
-        return `*${val}`;
-      } else if (key === 'ktype') {
-        return `+${val}`;
-      } else if (key === 'enum') {
-        return `#${val}`;
-      } else if (key === 'format') {
-        return `/${val}`;
-      } else if (key === 'pattern') {
-        return `%${val}`;
-      } else if (key === 'minv') {
-        return `{${val}`;
-      } else if (key === 'maxv') {
-        return `}${val}`;
-      } else if (key === 'unique') {
-        return 'q';
-      }
+      if (key === 'id') return '=';
+      if (key === 'vtype') return `*${val}`;
+      if (key === 'ktype') return `+${val}`;
+      if (key === 'enum') return `#${val}`;
+      if (key === 'format') return `/${val}`;
+      if (key === 'pattern') return `%${val}`;
+      if (key === 'minv') return `{${val}`;
+      if (key === 'maxv') return `}${val}`;
+      if (key === 'unique') return 'q';
     }).filter(v => v);
 
     // eslint-disable-next-line array-callback-return
     const field_opts = Object.entries(state_obj.field).map(([key, val]) => {
       if (!val) return;
-      if (key === 'minc') {
-        return `[${val}`;
-      } else if (key === 'maxc') {
-        return `]${val}`;
-      } else if (key === 'tfield') {
-        return `&${val}`;
-      } else if (key === 'path') {
-        return '<';
-      } else if (key === 'default') {
-        return `!${val}`;
-      }
+      if (key === 'minc') return `[${val}`;
+      if (key === 'maxc') return `]${val}`;
+      if (key === 'tfield') return `&${val}`;
+      if (key === 'path') return '<';
+      if (key === 'default')  return `!${val}`;
     }).filter(v => v);
     return [ ...type_opts, ...field_opts ];
   }
