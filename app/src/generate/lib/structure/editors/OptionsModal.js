@@ -101,17 +101,14 @@ class OptionsModal extends Component {
       if (key === 'path') return '<';
       if (key === 'default')  return `!${val}`;
     }).filter(v => v);
+    
     return [ ...type_opts, ...field_opts ];
   }
 
   constructor(props, context) {
     super(props, context);
-
-    // this.deserializeOptionsData = this.deserializeOptionsData.bind(this);
-    // this.serializeOptionsData = this.serializeOptionsData.bind(this);
     this.saveModal = this.saveModal.bind(this);
     this.saveModalState = this.saveModalState.bind(this);
-
     this.state = OptionsModal.deserializeOptionsData(this.props.optionValues);
   }
 
