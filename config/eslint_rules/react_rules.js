@@ -96,7 +96,7 @@ module.exports = {
     ignore: []
   }],
   'react/jsx-props-no-multi-spaces': 0,
-  'react/jsx-props-no-spreading': [1, {
+  'react/jsx-props-no-spreading': [0, {
     custom: 'enforce',
     exceptions: [],
     html: 'enforce'
@@ -132,7 +132,7 @@ module.exports = {
     return: 'parens-new-line'
   }],
   'react/no-access-state-in-setstate': 2,
-  'react/no-array-index-key': 1,
+  'react/no-array-index-key': 0,
   'react/no-children-prop': 2,
   'react/no-danger': 1,
   'react/no-danger-with-children': 2,

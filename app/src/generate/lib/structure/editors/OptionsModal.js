@@ -24,49 +24,49 @@ class OptionsModal extends Component {
         let key;
         let optionType;
 
-        const _symbol = item.charAt(0);
-        const val = ['=', 'q', '<'].includes(_symbol) ? true : item.substring(1);
+        const symbol = item.charAt(0);
+        const val = ['=', 'q', '<'].includes(symbol) ? true : item.substring(1);
 
-        if (_symbol === '=') {
+        if (symbol === '=') {
           optionType = 'type';
           key = 'id';
-        } else if (_symbol === '*') {
+        } else if (symbol === '*') {
           optionType = 'type';
           key = 'vtype';
-        } else if (_symbol === '+') {
+        } else if (symbol === '+') {
           optionType = 'type';
           key = 'ktype';
-        } else if (_symbol === '#') {
+        } else if (symbol === '#') {
           optionType = 'type';
           key = 'enum';
-        } else if (_symbol === '/') {
+        } else if (symbol === '/') {
           optionType = 'type';
           key = 'format';
-        } else if (_symbol === '%') {
+        } else if (symbol === '%') {
           optionType = 'type';
           key = 'pattern';
-        } else if (_symbol === '{') {
+        } else if (symbol === '{') {
           optionType = 'type';
           key = 'minv';
-        } else if (_symbol === '}') {
+        } else if (symbol === '}') {
           optionType = 'type';
           key = 'maxv';
-        } else if (_symbol === 'q') {
+        } else if (symbol === 'q') {
           optionType = 'type';
           key = 'unique';
-        } else if (_symbol === '[') {
+        } else if (symbol === '[') {
           optionType = 'field';
           key = 'minc';
-        } else if (_symbol === ']') {
+        } else if (symbol === ']') {
           optionType = 'field';
           key = 'maxc';
-        } else if (_symbol === '&') {
+        } else if (symbol === '&') {
           optionType = 'field';
           key = 'tfield';
-        } else if (_symbol === '<') {
+        } else if (symbol === '<') {
           optionType = 'field';
           key = 'path';
-        } else if (_symbol === '!') {
+        } else if (symbol === '!') {
           optionType = 'field';
           key = 'default';
         }
@@ -77,9 +77,9 @@ class OptionsModal extends Component {
   }
 
   // convert options data state object into formatted array
-  static serializeOptionsData(state_obj) {
+  static serializeOptionsData(stateObject) {
   // eslint-disable-next-line array-callback-return
-    const type_opts = Object.entries(state_obj.type).map(([key, val]) => {
+    const typeOptions = Object.entries(stateObject.type).map(([key, val]) => {
       if (!val) return;
       if (key === 'id') return '=';
       if (key === 'vtype') return `*${val}`;
@@ -93,7 +93,7 @@ class OptionsModal extends Component {
     }).filter(v => v);
 
     // eslint-disable-next-line array-callback-return
-    const field_opts = Object.entries(state_obj.field).map(([key, val]) => {
+    const fieldOptions = Object.entries(stateObject.field).map(([key, val]) => {
       if (!val) return;
       if (key === 'minc') return `[${val}`;
       if (key === 'maxc') return `]${val}`;
@@ -101,8 +101,8 @@ class OptionsModal extends Component {
       if (key === 'path') return '<';
       if (key === 'default')  return `!${val}`;
     }).filter(v => v);
-    
-    return [ ...type_opts, ...field_opts ];
+
+    return [ ...typeOptions, ...fieldOptions ];
   }
 
   constructor(props, context) {

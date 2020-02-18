@@ -222,7 +222,7 @@ module.exports = {
     max: 1
   }],
   'multiline-comment-style': [0, 'starred-block'],
-  'multiline-ternary': [1, 'never'],
+  'multiline-ternary': [0, 'never'],
   'new-cap': [2, {
     newIsCap: true,
     newIsCapExceptions: [],
@@ -364,7 +364,7 @@ module.exports = {
   'no-obj-calls': 2,
   'no-octal': 2,
   'no-octal-escape': 2,
-  'no-param-reassign': [1, {
+  'no-param-reassign': [0, {
     props: true,
     ignorePropertyModificationsFor: [
       'acc',
