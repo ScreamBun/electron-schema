@@ -16,7 +16,7 @@ export default history => {
 
   const reducer = persistReducer(
     {
-      key: 'orc_gui',
+      key: 'schema_gui',
       storage,
       whitelist: ['Auth'],
       blacklist: ['Router'],

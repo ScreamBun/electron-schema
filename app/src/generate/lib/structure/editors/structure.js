@@ -142,11 +142,11 @@ class StructureEditor extends Component {
     setTimeout(() => this.initState(), 100);
     const structureFields = (this.state.value.fields || []).map((f, i) => (
       <FieldEditor
-        key={ i }
+        key={ f }
         dataIndex={ i }
         enumerated={ this.state.value.type.toLowerCase() === 'enumerated' }
         value={ f }
-        change={ (val, idx) => this.setState((prevState) => {
+        change={ (val, idx) => this.setState(prevState => {
           const tmpFields = [ ...prevState.value.fields ];
           tmpFields[idx] = val;
           return {

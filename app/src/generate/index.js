@@ -70,12 +70,14 @@ class GenerateSchema extends Component {
       const stateUpdate = {};
       switch (store.action) {
         case 'save':
-          store = {
-            action: 'erase',
-            contents: this.state.schema,
-            filePath: this.state.schemaPath
-          };
-          ipcRenderer.send('file-save', store);
+          ipcRenderer.send(
+            'file-save',
+            {
+              action: 'erase',
+              contents: this.state.schema,
+              filePath: this.state.schemaPath
+            }
+          );
           break;
 
         case 'erase':

@@ -63,7 +63,6 @@ class KeyObjectEditor extends Component {
     if (this.state !== nextState) {
       this.props.change(nextState);
     }
-
     return propsChange || stateChange;
   }
 
@@ -91,17 +90,17 @@ class KeyObjectEditor extends Component {
   }
 
   render() {
-    const keys = Object.keys(ConfigKeys).map((key, idx) => {
+    const keys = Object.keys(ConfigKeys).map(k => {
       const keyProps = {
-        ...ConfigKeys[key],
-        placeholder: key,
-        change: v => this.onChange(key, v),
+        ...ConfigKeys[k],
+        placeholder: k,
+        change: v => this.onChange(k, v),
         removable: false
       };
-      if (key in this.state) {
-        keyProps.value = this.state[key];
+      if (k in this.state) {
+        keyProps.value = this.state[k];
       }
-      return <KeyValueEditor key={ idx } id={ key } { ...keyProps } />;
+      return <KeyValueEditor key={ k } id={ k } { ...keyProps } />;
     });
 
     return (

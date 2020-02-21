@@ -50,8 +50,7 @@ export default merge.smart(baseConfig, {
       }
     ]),
     new BundleAnalyzerPlugin({
-      analyzerMode:
-        process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
+      analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
       openAnalyzer: process.env.OPEN_ANALYZER === 'true'
     }),
     new CleanWebpackPlugin({
@@ -61,17 +60,27 @@ export default merge.smart(baseConfig, {
   optimization: {
     minimizer: [
       new TerserPlugin({
+        cache: true,
         parallel: true,
         sourceMap: false,
-        cache: true
-      }),
-      new OptimizeCSSAssetsPlugin({
-        cssProcessorOptions: {
-          map: {
-            inline: false,
-            annotation: true
+        terserOptions: {
+          output: {
+            comments: false
           }
         }
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorPluginOptions: {
+          preset: [
+            'default',
+            {
+              discardComments: {
+                removeAll: true
+              }
+            }
+          ]
+        },
+        canPrint: true
       })
     ]
   },

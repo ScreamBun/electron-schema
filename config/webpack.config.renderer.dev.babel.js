@@ -29,9 +29,7 @@ const DLL_DIR = path.join(ROOT_DIR, 'dll');
 const port = process.env.PORT || 1212;
 const publicPath = `http://localhost:${port}/dist`;
 const manifest = path.resolve(DLL_DIR, 'renderer.json');
-const requiredByDLLConfig = module.parent.filename.includes(
-  'webpack.config.renderer.dev.dll'
-);
+const requiredByDLLConfig = module.parent.filename.includes('webpack.config.renderer.dev.dll');
 
 /**
  * Warn if the DLL is not built

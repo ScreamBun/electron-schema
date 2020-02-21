@@ -267,7 +267,7 @@ module.exports = {
   'no-duplicate-case': 2,
   'no-duplicate-imports': 0,
   'no-else-return': [2, {
-    allowElseIf: false
+    allowElseIf: true
   }],
   'no-empty': 2,
   'no-empty-character-class': 2,

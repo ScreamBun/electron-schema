@@ -36,15 +36,15 @@ const KeyObjectEditor = props => {
     props.saveModalState(state, 'field');
   }, [state]);
 
-  const keys = Object.keys(ConfigKeys).map((key, idx) => {
+  const keys = Object.keys(ConfigKeys).map(k => {
     const keyProps = {
-      ...ConfigKeys[key],
-      placeholder: key,
+      ...ConfigKeys[k],
+      placeholder: k,
       removable: false,
-      change: v => saveKeyValuePair(key, v)
+      change: v => saveKeyValuePair(k, v)
     };
 
-    return <KeyValueEditor value={ props.deserializedState[key] } key={ idx } id={ key } { ...keyProps } />;
+    return <KeyValueEditor value={ props.deserializedState[k] } key={ k } id={ k } { ...keyProps } />;
   });
 
   if (!props.fieldOptions) return null;

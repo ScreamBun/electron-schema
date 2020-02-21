@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign, no-underscore-dangle */
-import { format } from './locale'; // direct copy
-import defaultLocale from './locale/en'; // direct copy
+import { format } from 'react-json-editor-ajrm/locale';
+import defaultLocale from 'react-json-editor-ajrm/locale/en';
 import {
   deleteCharAt,
   followedBySymbol,
