@@ -41,6 +41,7 @@ Module.expectedDataFileDownloads++;
     function handleError(error) {
       console.error("package error:", error)
     }
+
     var fetchedCallback = null;
     var fetched = Module["getPreloadedPackage"] ? Module["getPreloadedPackage"](REMOTE_PACKAGE_NAME, REMOTE_PACKAGE_SIZE) : null;
     if (!fetched) fetchRemotePackage(REMOTE_PACKAGE_NAME, REMOTE_PACKAGE_SIZE, function(data) {
@@ -59,7 +60,7 @@ Module.expectedDataFileDownloads++;
       Module["FS_createPath"]("/", "lib", true, true);
       Module["FS_createPath"]("/lib", "python3.7", true, true);
       Module["FS_createPath"]("/lib/python3.7", "site-packages", true, true);
-      Module["FS_createPath"]("/lib/python3.7/site-packages", "jadnschema-0.1.dev11+g245a886-py3.7.egg-info", true, true);
+      Module["FS_createPath"]("/lib/python3.7/site-packages", "jadnschema-0.1.dev12+g4830ccb-py3.7.egg-info", true, true);
       Module["FS_createPath"]("/lib/python3.7/site-packages", "jadnschema", true, true);
       Module["FS_createPath"]("/lib/python3.7/site-packages/jadnschema", "convert", true, true);
       Module["FS_createPath"]("/lib/python3.7/site-packages/jadnschema/convert", "schema", true, true);
@@ -70,6 +71,7 @@ Module.expectedDataFileDownloads++;
       Module["FS_createPath"]("/lib/python3.7/site-packages/jadnschema/convert/message", "serializations", true, true);
       Module["FS_createPath"]("/lib/python3.7/site-packages/jadnschema", "schema", true, true);
       Module["FS_createPath"]("/lib/python3.7/site-packages/jadnschema/schema", "formats", true, true);
+      Module["FS_createPath"]("/lib/python3.7/site-packages/jadnschema/schema", "definitions", true, true);
       Module["FS_createPath"]("/", "bin", true, true);
 
       function DataRequest(start, end, audio) {
@@ -113,12 +115,12 @@ Module.expectedDataFileDownloads++;
         var curr;
         var compressedData = {
           data: null,
-          cachedOffset: 99897,
+          cachedOffset: 101198,
           cachedIndexes: [-1, -1],
           cachedChunks: [null, null],
-          offsets: [0, 973, 2143, 3366, 4344, 5475, 6482, 7577, 8723, 9753, 10574, 11534, 12594, 13772, 15032, 16177, 17259, 18282, 19468, 20485, 21395, 22334, 23369, 24597, 25581, 26781, 28025, 29260, 30282, 31211, 32020, 32982, 34184, 35358, 36159, 37001, 38005, 39184, 40347, 41518, 42346, 43275, 44322, 45380, 46576, 47790, 48867, 49996, 51094, 52345, 53471, 54393, 55541, 56717, 57865, 58815, 59741, 60638, 61612, 62727, 64003, 65170, 66234, 67425, 68543, 69643, 70806, 71953, 72936, 74150, 75255, 76413, 77490, 78541, 79784, 80846, 81883, 82941, 83913, 84951, 86146, 87327, 88365, 89507, 90626, 91876, 92775, 93671, 94426, 95308, 96473, 97567, 98604, 99602],
-          sizes: [973, 1170, 1223, 978, 1131, 1007, 1095, 1146, 1030, 821, 960, 1060, 1178, 1260, 1145, 1082, 1023, 1186, 1017, 910, 939, 1035, 1228, 984, 1200, 1244, 1235, 1022, 929, 809, 962, 1202, 1174, 801, 842, 1004, 1179, 1163, 1171, 828, 929, 1047, 1058, 1196, 1214, 1077, 1129, 1098, 1251, 1126, 922, 1148, 1176, 1148, 950, 926, 897, 974, 1115, 1276, 1167, 1064, 1191, 1118, 1100, 1163, 1147, 983, 1214, 1105, 1158, 1077, 1051, 1243, 1062, 1037, 1058, 972, 1038, 1195, 1181, 1038, 1142, 1119, 1250, 899, 896, 755, 882, 1165, 1094, 1037, 998, 295],
-          successes: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+          offsets: [0, 981, 2038, 3272, 4271, 5368, 6386, 7477, 8594, 9705, 10474, 11436, 12470, 13657, 14894, 16048, 17151, 18179, 19344, 20391, 21313, 22225, 23246, 24476, 25463, 26664, 27881, 29144, 30165, 31058, 31862, 32798, 34013, 35166, 35974, 36866, 37874, 39045, 40237, 41399, 42332, 43239, 44061, 45092, 46369, 47520, 48619, 49842, 50993, 52234, 53413, 54292, 55444, 56616, 57740, 58686, 59605, 60551, 61548, 62711, 63953, 65117, 66286, 67376, 68480, 69436, 70684, 71848, 72907, 74162, 75264, 76551, 77659, 78662, 79915, 80827, 81747, 82541, 83297, 84402, 85608, 86581, 87367, 88655, 89872, 91048, 92223, 93233, 94293, 95131, 96380, 97586, 98784, 99906, 101039],
+          sizes: [981, 1057, 1234, 999, 1097, 1018, 1091, 1117, 1111, 769, 962, 1034, 1187, 1237, 1154, 1103, 1028, 1165, 1047, 922, 912, 1021, 1230, 987, 1201, 1217, 1263, 1021, 893, 804, 936, 1215, 1153, 808, 892, 1008, 1171, 1192, 1162, 933, 907, 822, 1031, 1277, 1151, 1099, 1223, 1151, 1241, 1179, 879, 1152, 1172, 1124, 946, 919, 946, 997, 1163, 1242, 1164, 1169, 1090, 1104, 956, 1248, 1164, 1059, 1255, 1102, 1287, 1108, 1003, 1253, 912, 920, 794, 756, 1105, 1206, 973, 786, 1288, 1217, 1176, 1175, 1010, 1060, 838, 1249, 1206, 1198, 1122, 1133, 159],
+          successes: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         };
         compressedData.data = byteArray;
         assert(typeof Module.LZ4 === "object", "LZ4 not present - was your app build with  -s LZ4=1  ?");
@@ -149,232 +151,272 @@ Module.expectedDataFileDownloads++;
   };
   loadPackage({
     files: [{
-      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev11+g245a886-py3.7.egg-info/top_level.txt",
+      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev12+g4830ccb-py3.7.egg-info/top_level.txt",
       start: 0,
       end: 11,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev11+g245a886-py3.7.egg-info/entry_points.txt",
+      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev12+g4830ccb-py3.7.egg-info/entry_points.txt",
       start: 11,
       end: 63,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev11+g245a886-py3.7.egg-info/PKG-INFO",
+      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev12+g4830ccb-py3.7.egg-info/PKG-INFO",
       start: 63,
       end: 698,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev11+g245a886-py3.7.egg-info/SOURCES.txt",
+      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev12+g4830ccb-py3.7.egg-info/SOURCES.txt",
       start: 698,
-      end: 2653,
+      end: 2998,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev11+g245a886-py3.7.egg-info/dependency_links.txt",
-      start: 2653,
-      end: 2654,
+      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev12+g4830ccb-py3.7.egg-info/dependency_links.txt",
+      start: 2998,
+      end: 2999,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev11+g245a886-py3.7.egg-info/requires.txt",
-      start: 2654,
-      end: 2811,
+      filename: "/lib/python3.7/site-packages/jadnschema-0.1.dev12+g4830ccb-py3.7.egg-info/requires.txt",
+      start: 2999,
+      end: 3156,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/__init__.py",
-      start: 2811,
-      end: 3148,
+      start: 3156,
+      end: 3493,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/utils.py",
-      start: 3148,
-      end: 9790,
+      start: 3493,
+      end: 9959,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/jadn.py",
-      start: 9790,
-      end: 12514,
+      start: 9959,
+      end: 12693,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/exceptions.py",
-      start: 12514,
-      end: 13046,
+      start: 12693,
+      end: 13194,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/base.py",
-      start: 13046,
-      end: 14684,
+      start: 13194,
+      end: 14578,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/cli.py",
-      start: 14684,
-      end: 17394,
+      start: 14578,
+      end: 17310,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/__init__.py",
-      start: 17394,
-      end: 18246,
+      start: 17310,
+      end: 18162,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/__init__.py",
-      start: 18246,
-      end: 23904,
+      start: 18162,
+      end: 23822,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/enums.py",
-      start: 23904,
-      end: 24263,
+      start: 23822,
+      end: 24181,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/base.py",
-      start: 24263,
-      end: 30926,
+      start: 24181,
+      end: 30955,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/readers/__init__.py",
-      start: 30926,
-      end: 30939,
+      start: 30955,
+      end: 30968,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/writers/__init__.py",
-      start: 30939,
-      end: 31197,
+      start: 30968,
+      end: 31226,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/writers/json_schema.py",
-      start: 31197,
-      end: 51925,
+      start: 31226,
+      end: 51899,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/writers/jadn.py",
-      start: 51925,
-      end: 53013,
+      start: 51899,
+      end: 53032,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/writers/jadn_idl.py",
-      start: 53013,
-      end: 64841,
+      start: 53032,
+      end: 65004,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/writers/markdown.py",
-      start: 64841,
-      end: 75641,
+      start: 65004,
+      end: 75827,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/writers/html/__init__.py",
-      start: 75641,
-      end: 91357,
+      start: 75827,
+      end: 91892,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/writers/html/theme.less",
-      start: 91357,
-      end: 92825,
+      start: 91892,
+      end: 93360,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/schema/writers/html/theme.css",
-      start: 92825,
-      end: 94283,
+      start: 93360,
+      end: 94818,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/message/__init__.py",
-      start: 94283,
-      end: 94379,
+      start: 94818,
+      end: 94914,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/message/message.py",
-      start: 94379,
-      end: 96263,
+      start: 94914,
+      end: 96790,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/message/serializations/__init__.py",
-      start: 96263,
-      end: 98838,
+      start: 96790,
+      end: 99287,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/convert/message/serializations/xml.py",
-      start: 98838,
-      end: 100311,
+      start: 99287,
+      end: 100752,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/__init__.py",
-      start: 100311,
-      end: 100551,
-      audio: 0
-    }, {
-      filename: "/lib/python3.7/site-packages/jadnschema/schema/exceptions.py",
-      start: 100551,
-      end: 101051,
+      start: 100752,
+      end: 100992,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/schema.py",
-      start: 101051,
-      end: 126523,
+      start: 100992,
+      end: 126189,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/base.py",
-      start: 126523,
-      end: 133943,
+      start: 126189,
+      end: 133621,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/options.py",
-      start: 133943,
-      end: 145645,
+      start: 133621,
+      end: 144869,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/fields.py",
-      start: 145645,
-      end: 150522,
-      audio: 0
-    }, {
-      filename: "/lib/python3.7/site-packages/jadnschema/schema/definitions.py",
-      start: 150522,
-      end: 172322,
+      start: 144869,
+      end: 149728,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/formats/__init__.py",
-      start: 172322,
-      end: 172775,
+      start: 149728,
+      end: 150181,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/formats/network.py",
-      start: 172775,
-      end: 177817,
+      start: 150181,
+      end: 155153,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/formats/rfc_3339.py",
-      start: 177817,
-      end: 179457,
+      start: 155153,
+      end: 157015,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/formats/rfc_3987.py",
-      start: 179457,
-      end: 180653,
+      start: 157015,
+      end: 158343,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/formats/constants.py",
-      start: 180653,
-      end: 180744,
+      start: 158343,
+      end: 158434,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/formats/rfc_3986.py",
-      start: 180744,
-      end: 181927,
+      start: 158434,
+      end: 159749,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/formats/jadn_idna.py",
-      start: 181927,
-      end: 183773,
+      start: 159749,
+      end: 161590,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/jadnschema/schema/formats/general.py",
-      start: 183773,
-      end: 190396,
+      start: 161590,
+      end: 168521,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/jadnschema/schema/definitions/record.py",
+      start: 168521,
+      end: 170074,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/jadnschema/schema/definitions/__init__.py",
+      start: 170074,
+      end: 171254,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/jadnschema/schema/definitions/arrayOf.py",
+      start: 171254,
+      end: 173489,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/jadnschema/schema/definitions/base.py",
+      start: 173489,
+      end: 182961,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/jadnschema/schema/definitions/map.py",
+      start: 182961,
+      end: 184452,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/jadnschema/schema/definitions/enumerated.py",
+      start: 184452,
+      end: 185370,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/jadnschema/schema/definitions/mapOf.py",
+      start: 185370,
+      end: 187049,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/jadnschema/schema/definitions/choice.py",
+      start: 187049,
+      end: 188269,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/jadnschema/schema/definitions/array.py",
+      start: 188269,
+      end: 189680,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/jadnschema/schema/definitions/custom.py",
+      start: 189680,
+      end: 192201,
       audio: 0
     }, {
       filename: "/bin/jadnschema",
-      start: 190396,
-      end: 190883,
+      start: 192201,
+      end: 192688,
       audio: 0
     }],
-    remote_package_size: 103993,
-    package_uuid: "c28be64c-dd46-4bda-8b19-abdeaef69e84"
+    remote_package_size: 105294,
+    package_uuid: "79f83982-4255-44f4-89d5-6aab8562822f"
   })
 })();

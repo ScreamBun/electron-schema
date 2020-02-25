@@ -59,8 +59,8 @@ Module.expectedDataFileDownloads++;
       Module["FS_createPath"]("/", "lib", true, true);
       Module["FS_createPath"]("/lib", "python3.7", true, true);
       Module["FS_createPath"]("/lib/python3.7", "site-packages", true, true);
-      Module["FS_createPath"]("/lib/python3.7/site-packages", "typeguard-2.7.0-py3.7.egg-info", true, true);
       Module["FS_createPath"]("/lib/python3.7/site-packages", "typeguard", true, true);
+      Module["FS_createPath"]("/lib/python3.7/site-packages", "typeguard-2.7.1-py3.7.egg-info", true, true);
 
       function DataRequest(start, end, audio) {
         this.start = start;
@@ -103,11 +103,11 @@ Module.expectedDataFileDownloads++;
         var curr;
         var compressedData = {
           data: null,
-          cachedOffset: 28820,
+          cachedOffset: 28836,
           cachedIndexes: [-1, -1],
           cachedChunks: [null, null],
-          offsets: [0, 1259, 2573, 3778, 5080, 6001, 7342, 8509, 9436, 10196, 11155, 12260, 13112, 13980, 15071, 16244, 17441, 18281, 19596, 20753, 22081, 23367, 24531, 25648, 26718, 27994],
-          sizes: [1259, 1314, 1205, 1302, 921, 1341, 1167, 927, 760, 959, 1105, 852, 868, 1091, 1173, 1197, 840, 1315, 1157, 1328, 1286, 1164, 1117, 1070, 1276, 826],
+          offsets: [0, 1204, 2405, 3396, 4634, 5661, 6689, 7364, 8326, 9421, 10187, 11085, 12148, 13389, 14661, 15630, 16930, 18186, 19519, 20744, 21922, 23150, 24225, 25550, 26847, 28186],
+          sizes: [1204, 1201, 991, 1238, 1027, 1028, 675, 962, 1095, 766, 898, 1063, 1241, 1272, 969, 1300, 1256, 1333, 1225, 1178, 1228, 1075, 1325, 1297, 1339, 650],
           successes: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         };
         compressedData.data = byteArray;
@@ -139,62 +139,62 @@ Module.expectedDataFileDownloads++;
   };
   loadPackage({
     files: [{
-      filename: "/lib/python3.7/site-packages/typeguard-2.7.0-py3.7.egg-info/top_level.txt",
-      start: 0,
-      end: 10,
-      audio: 0
-    }, {
-      filename: "/lib/python3.7/site-packages/typeguard-2.7.0-py3.7.egg-info/entry_points.txt",
-      start: 10,
-      end: 58,
-      audio: 0
-    }, {
-      filename: "/lib/python3.7/site-packages/typeguard-2.7.0-py3.7.egg-info/PKG-INFO",
-      start: 58,
-      end: 3593,
-      audio: 0
-    }, {
-      filename: "/lib/python3.7/site-packages/typeguard-2.7.0-py3.7.egg-info/SOURCES.txt",
-      start: 3593,
-      end: 4256,
-      audio: 0
-    }, {
-      filename: "/lib/python3.7/site-packages/typeguard-2.7.0-py3.7.egg-info/not-zip-safe",
-      start: 4256,
-      end: 4257,
-      audio: 0
-    }, {
-      filename: "/lib/python3.7/site-packages/typeguard-2.7.0-py3.7.egg-info/dependency_links.txt",
-      start: 4257,
-      end: 4258,
-      audio: 0
-    }, {
-      filename: "/lib/python3.7/site-packages/typeguard-2.7.0-py3.7.egg-info/requires.txt",
-      start: 4258,
-      end: 4358,
-      audio: 0
-    }, {
       filename: "/lib/python3.7/site-packages/typeguard/__init__.py",
-      start: 4358,
-      end: 46204,
+      start: 0,
+      end: 41823,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/typeguard/py.typed",
-      start: 46204,
-      end: 46204,
+      start: 41823,
+      end: 41823,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/typeguard/pytest_plugin.py",
-      start: 46204,
-      end: 46762,
+      start: 41823,
+      end: 42381,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/typeguard/importhook.py",
-      start: 46762,
-      end: 52383,
+      start: 42381,
+      end: 48002,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/typeguard-2.7.1-py3.7.egg-info/top_level.txt",
+      start: 48002,
+      end: 48012,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/typeguard-2.7.1-py3.7.egg-info/entry_points.txt",
+      start: 48012,
+      end: 48060,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/typeguard-2.7.1-py3.7.egg-info/PKG-INFO",
+      start: 48060,
+      end: 51595,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/typeguard-2.7.1-py3.7.egg-info/SOURCES.txt",
+      start: 51595,
+      end: 52258,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/typeguard-2.7.1-py3.7.egg-info/not-zip-safe",
+      start: 52258,
+      end: 52259,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/typeguard-2.7.1-py3.7.egg-info/dependency_links.txt",
+      start: 52259,
+      end: 52260,
+      audio: 0
+    }, {
+      filename: "/lib/python3.7/site-packages/typeguard-2.7.1-py3.7.egg-info/requires.txt",
+      start: 52260,
+      end: 52360,
       audio: 0
     }],
-    remote_package_size: 32916,
-    package_uuid: "dacc2f32-4815-47eb-8179-5c37f6dc7277"
+    remote_package_size: 32932,
+    package_uuid: "9074341f-ba5d-4836-b82a-9a3716ae590c"
   })
 })();

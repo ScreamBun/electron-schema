@@ -36,119 +36,12 @@ Module.expectedDataFileDownloads++;
     var REMOTE_PACKAGE_NAME = Module["locateFile"] ? Module["locateFile"](REMOTE_PACKAGE_BASE, "") : REMOTE_PACKAGE_BASE;
     var REMOTE_PACKAGE_SIZE = metadata.remote_package_size;
     var PACKAGE_UUID = metadata.package_uuid;
-
-    function fetchRemotePackage(packageName, packageSize, callback, errback) {
-      if (typeof XMLHttpRequest !== 'undefined') { // BROWSER
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', packageName, true);
-        xhr.responseType = 'arraybuffer';
-        xhr.onprogress = function(event) {
-          var url = packageName;
-          var size = packageSize;
-          if (event.total) size = event.total;
-          if (event.loaded) {
-            if (!xhr.addedTotal) {
-              xhr.addedTotal = true;
-              if (!Module.dataFileDownloads) Module.dataFileDownloads = {};
-              Module.dataFileDownloads[url] = {
-                loaded: event.loaded,
-                total: size
-              };
-            } else {
-              Module.dataFileDownloads[url].loaded = event.loaded;
-            }
-            var total = 0;
-            var loaded = 0;
-            var num = 0;
-            for (var download in Module.dataFileDownloads) {
-              var data = Module.dataFileDownloads[download];
-              total += data.total;
-              loaded += data.loaded;
-              num++;
-            }
-            total = Math.ceil(total * Module.expectedDataFileDownloads / num);
-            if (Module['setStatus']) Module['setStatus']('Downloading data... (' + loaded + '/' + total + ')');
-          } else if (!Module.dataFileDownloads) {
-            if (Module['setStatus']) Module['setStatus']('Downloading data...');
-          }
-        };
-        xhr.onerror = function(event) {
-          throw new Error("NetworkError for: " + packageName);
-        }
-        xhr.onload = function(event) {
-          if (xhr.status == 200 || xhr.status == 304 || xhr.status == 206 || (xhr.status == 0 && xhr.response)) { // file URLs can return 0
-            var packageData = xhr.response;
-            callback(packageData);
-          } else {
-            throw new Error(xhr.statusText + " : " + xhr.responseURL);
-          }
-        };
-        xhr.send(null);
-      } else { // node
-        function fetch_node(file) {
-          var fs = require('fs-extra');
-          var fetch = require('isomorphic-fetch');
-          return new Promise(function(resolve, reject) {
-            if (file.indexOf('http') == -1) { // local
-              fs.readFile(file, function(err, data) {
-                if (err) {
-                  reject(err);
-                } else {
-                  resolve({
-                    buffer: function() {
-                      return data;
-                    }
-                  });
-                }
-              });
-            } else { // remote
-              fetch(file).then(function(buff) {
-                resolve({
-                  buffer: function() {
-                    return buff.buffer()
-                  }
-                })
-              });
-            }
-          });
-        }
-        fetch_node(packageName).then(function(buffer) {
-          return buffer.buffer()
-        }).then(function(packageData) {
-          if (!Module.dataFileDownloads) {
-            if (Module['setStatus']) Module['setStatus']('Downloading data...');
-            console.log('Downloading ' + packageName + ' data...');
-          } else {
-            Module.dataFileDownloads[packageName] = {
-              loaded: packageSize,
-              total: packageSize
-            }
-            var total = 0;
-            var loaded = 0;
-            var num = 0;
-            for (var download in Module.dataFileDownloads) {
-              var data = Module.dataFileDownloads[download];
-              total += data.total;
-              loaded += data.loaded;
-              num++
-            }
-            total = Math.ceil(total * Module.expectedDataFileDownloads / num);
-            if (Module['setStatus']) {
-              Module['setStatus']('Downloading data... (' + loaded + '/' + total + ')');
-              console.log('Downloaded ' + packageName + ' data... (' + loaded + '/' + total + ')');
-            }
-          }
-          callback(packageData);
-        }).catch(function(err) {
-          console.error('Something wrong happened ' + err);
-          throw new Error('Something wrong happened ' + err);
-        });
-      }
-    }
+    const fetchRemotePackage = require('./packages/utils').fetchRemotePackage;
 
     function handleError(error) {
       console.error("package error:", error)
     }
+
     var fetchedCallback = null;
     var fetched = Module["getPreloadedPackage"] ? Module["getPreloadedPackage"](REMOTE_PACKAGE_NAME, REMOTE_PACKAGE_SIZE) : null;
     if (!fetched) fetchRemotePackage(REMOTE_PACKAGE_NAME, REMOTE_PACKAGE_SIZE, function(data) {
@@ -9017,6 +8910,6 @@ Module.expectedDataFileDownloads++;
       audio: 0
     }],
     remote_package_size: 8355832,
-    package_uuid: "0ad06d3c-7620-4f86-941b-b160702dcab5"
+    package_uuid: "29ac48ef-4062-4e17-896a-c68f8b69f32d"
   })
 })();

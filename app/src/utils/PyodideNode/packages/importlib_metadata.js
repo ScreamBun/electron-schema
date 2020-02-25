@@ -41,6 +41,7 @@ Module.expectedDataFileDownloads++;
     function handleError(error) {
       console.error("package error:", error)
     }
+
     var fetchedCallback = null;
     var fetched = Module["getPreloadedPackage"] ? Module["getPreloadedPackage"](REMOTE_PACKAGE_NAME, REMOTE_PACKAGE_SIZE) : null;
     if (!fetched) fetchRemotePackage(REMOTE_PACKAGE_NAME, REMOTE_PACKAGE_SIZE, function(data) {
@@ -63,7 +64,7 @@ Module.expectedDataFileDownloads++;
       Module["FS_createPath"]("/lib/python3.7/site-packages/importlib_metadata", "tests", true, true);
       Module["FS_createPath"]("/lib/python3.7/site-packages/importlib_metadata/tests", "data", true, true);
       Module["FS_createPath"]("/lib/python3.7/site-packages/importlib_metadata", "docs", true, true);
-      Module["FS_createPath"]("/lib/python3.7/site-packages", "importlib_metadata-1.3.0-py3.7.egg-info", true, true);
+      Module["FS_createPath"]("/lib/python3.7/site-packages", "importlib_metadata-1.5.0-py3.7.egg-info", true, true);
 
       function DataRequest(start, end, audio) {
         this.start = start;
@@ -106,12 +107,12 @@ Module.expectedDataFileDownloads++;
         var curr;
         var compressedData = {
           data: null,
-          cachedOffset: 44983,
+          cachedOffset: 46119,
           cachedIndexes: [-1, -1],
           cachedChunks: [null, null],
-          offsets: [0, 1336, 2626, 3742, 4989, 6216, 7459, 8637, 9664, 10740, 12125, 13384, 14495, 15609, 16721, 17967, 19151, 20008, 21110, 22296, 23185, 24640, 25947, 27424, 28766, 30200, 31568, 32970, 34399, 35766, 37153, 38364, 39898, 41434, 42852, 44090],
-          sizes: [1336, 1290, 1116, 1247, 1227, 1243, 1178, 1027, 1076, 1385, 1259, 1111, 1114, 1112, 1246, 1184, 857, 1102, 1186, 889, 1455, 1307, 1477, 1342, 1434, 1368, 1402, 1429, 1367, 1387, 1211, 1534, 1536, 1418, 1238, 893],
-          successes: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+          offsets: [0, 1329, 2617, 3732, 4980, 6209, 7457, 8634, 9868, 10927, 12105, 13500, 14543, 15552, 16754, 17893, 19100, 20128, 21013, 22076, 23213, 24088, 25496, 26915, 28350, 29671, 31136, 32452, 33960, 35417, 36658, 38052, 39394, 40905, 42422, 43869, 45128, 46050],
+          sizes: [1329, 1288, 1115, 1248, 1229, 1248, 1177, 1234, 1059, 1178, 1395, 1043, 1009, 1202, 1139, 1207, 1028, 885, 1063, 1137, 875, 1408, 1419, 1435, 1321, 1465, 1316, 1508, 1457, 1241, 1394, 1342, 1511, 1517, 1447, 1259, 922, 69],
+          successes: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
         };
         compressedData.data = byteArray;
         assert(typeof Module.LZ4 === "object", "LZ4 not present - was your app build with  -s LZ4=1  ?");
@@ -144,110 +145,110 @@ Module.expectedDataFileDownloads++;
     files: [{
       filename: "/lib/python3.7/site-packages/importlib_metadata/__init__.py",
       start: 0,
-      end: 17358,
+      end: 18117,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/_compat.py",
-      start: 17358,
-      end: 21390,
+      start: 18117,
+      end: 22001,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/tests/__init__.py",
-      start: 21390,
-      end: 21390,
+      start: 22001,
+      end: 22001,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/tests/test_api.py",
-      start: 21390,
-      end: 26934,
+      start: 22001,
+      end: 27545,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/tests/test_zip.py",
-      start: 26934,
-      end: 29306,
+      start: 27545,
+      end: 29917,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/tests/test_integration.py",
-      start: 29306,
-      end: 29992,
+      start: 29917,
+      end: 31192,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/tests/test_main.py",
-      start: 29992,
-      end: 37171,
+      start: 31192,
+      end: 39175,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/tests/fixtures.py",
-      start: 37171,
-      end: 42175,
+      start: 39175,
+      end: 44504,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/tests/data/__init__.py",
-      start: 42175,
-      end: 42175,
+      start: 44504,
+      end: 44504,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/tests/data/example-21.12-py3-none-any.whl",
-      start: 42175,
-      end: 43630,
+      start: 44504,
+      end: 45959,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/tests/data/example-21.12-py3.6.egg",
-      start: 43630,
-      end: 45127,
+      start: 45959,
+      end: 47456,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/docs/__init__.py",
-      start: 45127,
-      end: 45127,
+      start: 47456,
+      end: 47456,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/docs/using.rst",
-      start: 45127,
-      end: 54933,
+      start: 47456,
+      end: 56742,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/docs/conf.py",
-      start: 54933,
-      end: 60401,
+      start: 56742,
+      end: 62320,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/docs/index.rst",
-      start: 60401,
-      end: 62566,
+      start: 62320,
+      end: 64227,
       audio: 0
     }, {
       filename: "/lib/python3.7/site-packages/importlib_metadata/docs/changelog.rst",
-      start: 62566,
-      end: 69790,
+      start: 64227,
+      end: 71982,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/importlib_metadata-1.3.0-py3.7.egg-info/top_level.txt",
-      start: 69790,
-      end: 69809,
+      filename: "/lib/python3.7/site-packages/importlib_metadata-1.5.0-py3.7.egg-info/top_level.txt",
+      start: 71982,
+      end: 72001,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/importlib_metadata-1.3.0-py3.7.egg-info/PKG-INFO",
-      start: 69809,
-      end: 71802,
+      filename: "/lib/python3.7/site-packages/importlib_metadata-1.5.0-py3.7.egg-info/PKG-INFO",
+      start: 72001,
+      end: 73994,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/importlib_metadata-1.3.0-py3.7.egg-info/SOURCES.txt",
-      start: 71802,
-      end: 73480,
+      filename: "/lib/python3.7/site-packages/importlib_metadata-1.5.0-py3.7.egg-info/SOURCES.txt",
+      start: 73994,
+      end: 75669,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/importlib_metadata-1.3.0-py3.7.egg-info/dependency_links.txt",
-      start: 73480,
-      end: 73481,
+      filename: "/lib/python3.7/site-packages/importlib_metadata-1.5.0-py3.7.egg-info/dependency_links.txt",
+      start: 75669,
+      end: 75670,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/importlib_metadata-1.3.0-py3.7.egg-info/requires.txt",
-      start: 73481,
-      end: 73656,
+      filename: "/lib/python3.7/site-packages/importlib_metadata-1.5.0-py3.7.egg-info/requires.txt",
+      start: 75670,
+      end: 75845,
       audio: 0
     }],
-    remote_package_size: 49079,
-    package_uuid: "7042ada2-eaf9-4772-b8fa-3ae8c1f4d1f0"
+    remote_package_size: 50215,
+    package_uuid: "620d2733-dc03-40a9-9f57-2170291971dd"
   })
 })();

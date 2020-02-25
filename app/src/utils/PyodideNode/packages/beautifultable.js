@@ -27,6 +27,7 @@ Module.expectedDataFileDownloads++;
     } else {
       throw 'using preloaded data can only be done on a web page, web worker or in nodejs';
     }
+
     var PACKAGE_NAME = "beautifultable.data";
     var REMOTE_PACKAGE_BASE = "beautifultable.data";
     if (typeof Module["locateFilePackage"] === "function" && !Module["locateFile"]) {
@@ -37,7 +38,6 @@ Module.expectedDataFileDownloads++;
     var REMOTE_PACKAGE_SIZE = metadata.remote_package_size;
     var PACKAGE_UUID = metadata.package_uuid;
     const fetchRemotePackage = require('./utils').fetchRemotePackage;
-
 
     function handleError(error) {
       console.error("package error:", error)
@@ -227,6 +227,6 @@ Module.expectedDataFileDownloads++;
       audio: 0
     }],
     remote_package_size: 44592,
-    package_uuid: "b124cd96-0396-417b-b769-690df12e3469"
+    package_uuid: "ad06adec-f789-4d9e-a7b8-55b08dd6085d"
   })
 })();

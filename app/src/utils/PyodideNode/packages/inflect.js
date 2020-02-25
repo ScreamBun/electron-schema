@@ -59,7 +59,7 @@ Module.expectedDataFileDownloads++;
       Module["FS_createPath"]("/", "lib", true, true);
       Module["FS_createPath"]("/lib", "python3.7", true, true);
       Module["FS_createPath"]("/lib/python3.7", "site-packages", true, true);
-      Module["FS_createPath"]("/lib/python3.7/site-packages", "inflect-3.0.2-py3.7.egg-info", true, true);
+      Module["FS_createPath"]("/lib/python3.7/site-packages", "inflect-0.0.0-py3.7.egg-info", true, true);
 
       function DataRequest(start, end, audio) {
         this.start = start;
@@ -102,12 +102,12 @@ Module.expectedDataFileDownloads++;
         var curr;
         var compressedData = {
           data: null,
-          cachedOffset: 60960,
+          cachedOffset: 61316,
           cachedIndexes: [-1, -1],
           cachedChunks: [null, null],
-          offsets: [0, 1060, 2332, 3358, 4356, 5279, 6375, 7359, 8285, 9411, 10391, 11276, 12066, 13103, 14320, 15228, 16153, 17284, 18681, 19771, 20793, 21844, 23052, 24221, 24816, 25518, 26533, 27445, 28502, 29543, 30349, 31179, 31935, 32970, 33931, 35126, 35893, 36667, 37481, 38185, 39298, 40111, 41294, 42363, 43047, 43883, 45081, 46049, 47262, 48331, 49378, 50319, 51259, 52452, 53820, 54980, 56291, 57568, 58666, 59831],
-          sizes: [1060, 1272, 1026, 998, 923, 1096, 984, 926, 1126, 980, 885, 790, 1037, 1217, 908, 925, 1131, 1397, 1090, 1022, 1051, 1208, 1169, 595, 702, 1015, 912, 1057, 1041, 806, 830, 756, 1035, 961, 1195, 767, 774, 814, 704, 1113, 813, 1183, 1069, 684, 836, 1198, 968, 1213, 1069, 1047, 941, 940, 1193, 1368, 1160, 1311, 1277, 1098, 1165, 1129],
-          successes: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+          offsets: [0, 1010, 2281, 3328, 4344, 5232, 6345, 7321, 8242, 9381, 10383, 11281, 12068, 13087, 14320, 15264, 16183, 17280, 18682, 19816, 20757, 21795, 22941, 24103, 24834, 25660, 26628, 27533, 28600, 29519, 30319, 31166, 31952, 32964, 33961, 35080, 35888, 36649, 37493, 38224, 39246, 40111, 41292, 42404, 43115, 43917, 45133, 46164, 47268, 48348, 49329, 50275, 51193, 52056, 53415, 54589, 55851, 57164, 58268, 59331, 60658],
+          sizes: [1010, 1271, 1047, 1016, 888, 1113, 976, 921, 1139, 1002, 898, 787, 1019, 1233, 944, 919, 1097, 1402, 1134, 941, 1038, 1146, 1162, 731, 826, 968, 905, 1067, 919, 800, 847, 786, 1012, 997, 1119, 808, 761, 844, 731, 1022, 865, 1181, 1112, 711, 802, 1216, 1031, 1104, 1080, 981, 946, 918, 863, 1359, 1174, 1262, 1313, 1104, 1063, 1327, 658],
+          successes: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         };
         compressedData.data = byteArray;
         assert(typeof Module.LZ4 === "object", "LZ4 not present - was your app build with  -s LZ4=1  ?");
@@ -140,35 +140,35 @@ Module.expectedDataFileDownloads++;
     files: [{
       filename: "/lib/python3.7/site-packages/inflect.py",
       start: 0,
-      end: 97843,
+      end: 98181,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/inflect-3.0.2-py3.7.egg-info/top_level.txt",
-      start: 97843,
-      end: 97851,
+      filename: "/lib/python3.7/site-packages/inflect-0.0.0-py3.7.egg-info/top_level.txt",
+      start: 98181,
+      end: 98189,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/inflect-3.0.2-py3.7.egg-info/PKG-INFO",
-      start: 97851,
-      end: 121498,
+      filename: "/lib/python3.7/site-packages/inflect-0.0.0-py3.7.egg-info/PKG-INFO",
+      start: 98189,
+      end: 122789,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/inflect-3.0.2-py3.7.egg-info/SOURCES.txt",
-      start: 121498,
-      end: 122360,
+      filename: "/lib/python3.7/site-packages/inflect-0.0.0-py3.7.egg-info/SOURCES.txt",
+      start: 122789,
+      end: 123671,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/inflect-3.0.2-py3.7.egg-info/dependency_links.txt",
-      start: 122360,
-      end: 122361,
+      filename: "/lib/python3.7/site-packages/inflect-0.0.0-py3.7.egg-info/dependency_links.txt",
+      start: 123671,
+      end: 123672,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/inflect-3.0.2-py3.7.egg-info/requires.txt",
-      start: 122361,
-      end: 122539,
+      filename: "/lib/python3.7/site-packages/inflect-0.0.0-py3.7.egg-info/requires.txt",
+      start: 123672,
+      end: 123881,
       audio: 0
     }],
-    remote_package_size: 65056,
-    package_uuid: "a22ac590-3055-4778-a790-f1a5821a517c"
+    remote_package_size: 65412,
+    package_uuid: "457be61b-c8bd-456b-ba9f-caf8637a4c25"
   })
 })();

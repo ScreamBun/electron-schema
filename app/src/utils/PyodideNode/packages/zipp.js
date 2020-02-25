@@ -59,7 +59,7 @@ Module.expectedDataFileDownloads++;
       Module["FS_createPath"]("/", "lib", true, true);
       Module["FS_createPath"]("/lib", "python3.7", true, true);
       Module["FS_createPath"]("/lib/python3.7", "site-packages", true, true);
-      Module["FS_createPath"]("/lib/python3.7/site-packages", "zipp-0.6.0-py3.7.egg-info", true, true);
+      Module["FS_createPath"]("/lib/python3.7/site-packages", "zipp-3.0.0-py3.7.egg-info", true, true);
 
       function DataRequest(start, end, audio) {
         this.start = start;
@@ -102,12 +102,12 @@ Module.expectedDataFileDownloads++;
         var curr;
         var compressedData = {
           data: null,
-          cachedOffset: 4206,
+          cachedOffset: 5628,
           cachedIndexes: [-1, -1],
           cachedChunks: [null, null],
-          offsets: [0, 1126, 2323, 3471],
-          sizes: [1126, 1197, 1148, 735],
-          successes: [1, 1, 1, 1]
+          offsets: [0, 1130, 2346, 3612, 4776],
+          sizes: [1130, 1216, 1266, 1164, 852],
+          successes: [1, 1, 1, 1, 1]
         };
         compressedData.data = byteArray;
         assert(typeof Module.LZ4 === "object", "LZ4 not present - was your app build with  -s LZ4=1  ?");
@@ -140,35 +140,35 @@ Module.expectedDataFileDownloads++;
     files: [{
       filename: "/lib/python3.7/site-packages/zipp.py",
       start: 0,
-      end: 5011,
+      end: 6931,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/zipp-0.6.0-py3.7.egg-info/top_level.txt",
-      start: 5011,
-      end: 5016,
+      filename: "/lib/python3.7/site-packages/zipp-0.0.0-py3.7.egg-info/top_level.txt",
+      start: 6931,
+      end: 6936,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/zipp-0.6.0-py3.7.egg-info/PKG-INFO",
-      start: 5016,
-      end: 6595,
+      filename: "/lib/python3.7/site-packages/zipp-0.0.0-py3.7.egg-info/PKG-INFO",
+      start: 6936,
+      end: 8810,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/zipp-0.6.0-py3.7.egg-info/SOURCES.txt",
-      start: 6595,
-      end: 6970,
+      filename: "/lib/python3.7/site-packages/zipp-0.0.0-py3.7.egg-info/SOURCES.txt",
+      start: 8810,
+      end: 9217,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/zipp-0.6.0-py3.7.egg-info/dependency_links.txt",
-      start: 6970,
-      end: 6971,
+      filename: "/lib/python3.7/site-packages/zipp-0.0.0-py3.7.egg-info/dependency_links.txt",
+      start: 9217,
+      end: 9218,
       audio: 0
     }, {
-      filename: "/lib/python3.7/site-packages/zipp-0.6.0-py3.7.egg-info/requires.txt",
-      start: 6971,
-      end: 7081,
+      filename: "/lib/python3.7/site-packages/zipp-0.0.0-py3.7.egg-info/requires.txt",
+      start: 9218,
+      end: 9312,
       audio: 0
     }],
-    remote_package_size: 8302,
-    package_uuid: "e7a9c2ef-9a18-4531-95e9-9d50225a21a7"
+    remote_package_size: 9724,
+    package_uuid: "07b254b8-b45a-454c-bee8-e26898cb7edb"
   })
 })();
