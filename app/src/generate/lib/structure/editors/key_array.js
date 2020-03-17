@@ -78,7 +78,7 @@ const KeyArrayEditor = props => {
 KeyArrayEditor.propTypes = {
   id: PropTypes.string,
   placeholder: PropTypes.string,
-  value: PropTypes.object,
+  value: PropTypes.array,
   change: PropTypes.func,
   remove: PropTypes.func
 };
