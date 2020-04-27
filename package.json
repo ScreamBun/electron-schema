@@ -2,11 +2,11 @@
   "name": "electron_app",
   "productName": "ElectronSchemaEditor",
   "version": "1.0.0",
-  "description": "",
+  "homepage": "http://google.com",
+  "description": "Lorem Ipsum",
   "author": {
-    "name": "",
-    "email": "",
-    "url": ""
+    "name": "halkdsjflakfdj",
+    "email": "alksjfldk@gmail.com"
   },
   "license": "MIT",
   "scripts": {
