@@ -1,11 +1,9 @@
-// @flow
 import fs from 'fs';
 import chalk from 'chalk';
 import { execSync } from 'child_process';
-import { dependencies } from '../../package';
+import { dependencies } from '../../package.json';
 
-(() => {
-  if (!dependencies) return;
+if (dependencies) {
   const dependenciesKeys = Object.keys(dependencies);
   const nativeDeps = fs
     .readdirSync('node_modules')
@@ -18,9 +16,7 @@ import { dependencies } from '../../package';
       execSync(`npm ls ${nativeDeps.join(' ')} --json`).toString()
     );
     const rootDependencies = Object.keys(dependenciesObject);
-    const filteredRootDependencies = rootDependencies.filter(rootDependency =>
-      dependenciesKeys.includes(rootDependency)
-    );
+    const filteredRootDependencies = rootDependencies.filter(rootDependency => dependenciesKeys.includes(rootDependency));
     if (filteredRootDependencies.length > 0) {
       const plural = filteredRootDependencies.length > 1;
       console.log(`
@@ -48,4 +44,4 @@ ${chalk.bold(
   } catch (e) {
     console.log('Native dependencies could not be checked');
   }
-})();
+}

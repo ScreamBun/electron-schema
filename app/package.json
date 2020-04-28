@@ -1,14 +1,21 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "electron-react-boilerplate",
-  "version": "0.18.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
-  "main": "./main.prod.js",
-  "author": "",
+  "name": "electron_app",
+  "productName": "ElectronSchemaEditor",
+  "version": "1.0.0",
+  "description": "Lorem Ipsum",
+  "author": {
+    "name": "Test Example",
+    "email": "test@example.com",
+    "url": "https://example.com"
+  },
+  "license": "MIT",
+  "main": "./main.js",
   "scripts": {
     "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
     "postinstall": "yarn electron-rebuild"
   },
-  "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "isomorphic-fetch": "^2.2.1",
+    "fs-extra": "^9.0.0"
+  }
 }

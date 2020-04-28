@@ -1,82 +1,80 @@
-#!/usr/bin/env node
+import path from 'path';
+import fs from 'fs-extra';
+import NamedRegExp from 'named-regexp-groups';
+import download from 'download-file';
+import request from 'sync-request';
 
-const path = require("path");
-const fs = require("fs-extra");
-const NamedRegExp = require("named-regexp-groups");
-const download = require("download-file");
-const request = require("sync-request");
-const csso = require("csso");
+const ROOT_DIR = path.join(__dirname, '..', '..', 'app', 'resources');
+const CHECK_DIRS = ['themes', 'assets', 'assets/fonts'];
 
-const ROOT_DIR = path.join(__dirname, '..', '..', 'app', 'resources')
-const CHECK_DIRS = ["themes", "assets", "assets/fonts"]
+const THEME_API = 'https://bootswatch.com/api/4.json';
+const THEME_FONT_DIR = '/assets/';
+const THEME_FONT_URL = '../assets/';
 
-const THEME_API = "https://bootswatch.com/api/4.json"
-const THEME_FONT_DIR = "/assets/"
-const THEME_FONT_URL = "../assets/"
+const CSS_URL_IMPORT = new NamedRegExp(/^@import url\(["'](:<url>.*?)["']\);\s*?$/);
+const FILE_URL_IMPORT = new NamedRegExp(/\s*?src:( local\(.*?\),)? local\(['"](:<name>.*?)['"]\), url\(['"]?(:<url>.*?)['"]?\) format\(['"](:<format>.*?)['"]\);/);
+const URL_REPLACE = new NamedRegExp(/url\([""]?(:<url>.*?)[""]?\)/);
 
-const CSS_URL_IMPORT = new NamedRegExp(/^@import url\([\"\'](:<url>.*?)[\"\']\);\s*?$/);
-const FILE_URL_IMPORT = new NamedRegExp(/\s*?src:( local\(.*?\),)? local\([\'\"](:<name>.*?)[\'\"]\), url\([\'\"]?(:<url>.*?)[\'\"]?\) format\([\'\"](:<format>.*?)[\'\"]\);/);
-const URL_REPLACE = new NamedRegExp(/url\([\"\"]?(:<url>.*?)[\"\"]?\)/)
-
-for (i in CHECK_DIRS) {
-  let dir = path.join(ROOT_DIR, CHECK_DIRS[i])
+CHECK_DIRS.forEach(d => {
+  const dir = path.join(ROOT_DIR, d);
   if (!fs.pathExistsSync(dir)) {
     fs.mkdirSync(dir);
   }
-}
+});
 
-let themes = request("GET", THEME_API);
-themes = JSON.parse(themes.getBody("utf8"));
-theme_names = []
+let BootswatchThemes = request('GET', THEME_API);
+BootswatchThemes = JSON.parse(BootswatchThemes.getBody('utf8'));
+const themeNames = [];
 
-for (let theme of themes["themes"]) {
-  console.log("Downloading Theme: " + theme["name"]);
-  let theme_name = theme["name"].toLowerCase();
-  theme_names.push(theme_name)
+BootswatchThemes.themes.forEach(theme => {
+  console.log(`Downloading Theme: ${theme.name}`);
+  const themeName = theme.name.toLowerCase();
+  themeNames.push(themeName);
 
-  let css = request("GET", theme["css"]).getBody("utf8"),
-    pre_css_lines = [],
-    post_css_lines = []
+  let preProcessCss = [];
+  const css = request('GET', theme.css).getBody('utf8');
 
-  for (let line of css.split(/\n\r?/gm)) {
-    if (line.startsWith("@import url(")) {
-      let css_import_url = line.replace(CSS_URL_IMPORT, "$+{url}");
-      css_import = request("GET", css_import_url).getBody("utf8");
+  css.split(/\n\r?/gm).forEach(line => {
+    if (line.startsWith('@import url(')) {
+      const cssImportURL = line.replace(CSS_URL_IMPORT, '$+{url}');
+      const cssImport = request('GET', cssImportURL).getBody('utf8');
 
-      pre_css_lines.push("/* " + line + " */")
-      pre_css_lines = pre_css_lines.concat(css_import.split(/\n\r?/g))
+      preProcessCss.push(`/* ${line} */`);
+      preProcessCss = preProcessCss.concat(cssImport.split(/\n\r?/g));
     } else {
-      pre_css_lines.push(line)
+      preProcessCss.push(line);
     }
-  }
+  });
 
   // set imports to local & download files
-  for (let line of pre_css_lines) {
-    if (line.match(/\s*?src:.*url\([\"\']?https?:\/\/.*/) && !line.startsWith('/*')) {
-      let src = FILE_URL_IMPORT.exec(line)["groups"]
-      let ext = path.extname(src["url"])
-      let fileName = "fonts/" + src["name"] + ext
+  const postProcessCss = preProcessCss.map(line => {
+    let processedLine = line;
+    if (line.match(/\s*?src:.*url\(["']?https?:\/\/.*/) && !line.startsWith('/*')) {
+      const src = FILE_URL_IMPORT.exec(line).groups;
+      const ext = path.extname(src.url);
+      const fileName = `fonts/${src.name}${ext}`;
 
       if (!fs.existsSync(path.join(ROOT_DIR, THEME_FONT_DIR, fileName))) {
-        let opts = {
-          directory: path.join(ROOT_DIR, THEME_FONT_DIR, "fonts"),
-          filename: src["name"] + ext
-        }
-        download(src["url"], opts, (err) => {
-          if (err) throw err
-          console.log("Downloaded reference: " + opts["filename"])
+        const opts = {
+          directory: path.join(ROOT_DIR, THEME_FONT_DIR, 'fonts'),
+          filename: src.name + ext
+        };
+        download(src.url, opts, err => {
+          if (err) throw err;
+          console.log(`Downloaded reference: ${opts.filename}`);
         });
       }
-      line = line.replace(URL_REPLACE, "url('" + THEME_FONT_URL + fileName + "')")
+      processedLine = processedLine.replace(URL_REPLACE, `url('${THEME_FONT_URL}${fileName}')`);
     }
 
-    line = line.replace(/\\[^\\]/g, "\\\\")
-    line = line.replace(/^\s+\*/, "*")
-    line = line.replace(/^\s+/, "\t")
-    post_css_lines.push(line)
-  }
+    processedLine = processedLine.replace(/\\[^\\]/g, '\\\\');
+    processedLine = processedLine.replace(/^\s+\*/, '*');
+    processedLine = processedLine.replace(/^\s+/, '\t');
+    return processedLine;
+  });
 
-  let theme_css = fs.createWriteStream(path.join(ROOT_DIR, "themes", theme_name + ".css"), {flags: "w"})
-  theme_css.write(post_css_lines.join("\n"))
-  theme_css.end()
-}
+  const outFile = path.join(ROOT_DIR, 'themes', `${themeName}.css`);
+  const themeCss = fs.createWriteStream(outFile, { flags: 'w' });
+  themeCss.write(postProcessCss.join('\n'));
+  themeCss.end();
+});

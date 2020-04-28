@@ -1,8 +1,8 @@
-import { combineReducers } from 'redux'
-import { connectRouter } from 'connected-react-router'
+import { combineReducers } from 'redux';
+import jadn2json from './jadn';
 
-
-export default (history) => combineReducers({
-  'router': connectRouter(history), // MUST BE 'router'
+// eslint-disable-next-line no-unused-vars
+export default history => combineReducers({
   // Custom Reducers
-})
+  'jadn2json': jadn2json
+});

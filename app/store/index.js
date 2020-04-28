@@ -1,59 +1,60 @@
-import storage from 'redux-persist/es/storage'
-import { apiMiddleware, isRSAA } from 'redux-api-middleware'
-import { createStore, compose, applyMiddleware } from 'redux'
-import { createFilter } from 'redux-persist-transform-filter'
-import { persistReducer, persistStore } from 'redux-persist'
-import { routerMiddleware } from 'connected-react-router'
+import storage from 'redux-persist/es/storage';
+import { apiMiddleware } from 'redux-api-middleware';
+import { createStore, compose, applyMiddleware } from 'redux';
+import { createFilter } from 'redux-persist-transform-filter';
+import { persistReducer, persistStore } from 'redux-persist';
+import thunk from 'redux-thunk';
 
-import createRootReducer from './reducers'
-import asyncDispatchMiddleware from './asyncDispatchMiddleware'
+import createRootReducer from './reducers';
+import asyncDispatchMiddleware from './asyncDispatchMiddleware';
 
-
-export default (history) => {
+export default history => {
   const persistedFilter = createFilter(
-    'Auth', ['access']
-  )
+    'Auth',
+    [ 'access' ]
+  );
 
   const reducer = persistReducer(
     {
-      key: 'orc_gui',
-      storage: storage,
+      key: 'schema_gui',
+      storage,
       whitelist: ['Auth'],
       blacklist: ['Router'],
       transforms: [persistedFilter]
     },
     createRootReducer(history)
-  )
+  );
 
-  let middleware = [
+  const middleware = [
     apiMiddleware,
-    asyncDispatchMiddleware,
-    routerMiddleware(history)
-  ]
+    thunk,
+    asyncDispatchMiddleware
+  ];
 
-  /* Logger */
+  // Logger
   if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line global-require
     const { createLogger } = require('redux-logger');
     const logger = createLogger({
       diff: false,
       level: 'info',
       logErrors: true
     });
-    // middleware.push(logger);
+    middleware.push(logger);
   }
 
   const enhancers = compose(
     applyMiddleware(
       ...middleware
     )
-  )
+  );
 
   const store = createStore(
     reducer,
     {},
     enhancers
-  )
+  );
 
-  persistStore(store)
-  return store
-}
+  persistStore(store);
+  return store;
+};

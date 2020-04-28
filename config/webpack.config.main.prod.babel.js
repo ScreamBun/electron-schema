@@ -1,34 +1,34 @@
 /**
  * Webpack config for production electron main process
  */
-import baseConfig from './webpack.config.base'
+import webpack from 'webpack';
+import merge from 'webpack-merge';
+import path from 'path';
+import TerserPlugin from 'terser-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
+import DeleteSourceMaps from '../internals/scripts/DeleteSourceMaps';
 
-import webpack from 'webpack'
-import merge from 'webpack-merge'
-import path from 'path'
+import baseConfig from './webpack.config.base';
 
-import TerserPlugin from 'terser-webpack-plugin'
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import CheckNodeEnv from '../internals/scripts/CheckNodeEnv'
+const env = 'production';
+CheckNodeEnv(env);
+DeleteSourceMaps();
 
-const env = 'production'
-CheckNodeEnv(env)
-
-const ROOT_DIR = path.join(__dirname, '..')
+const ROOT_DIR = path.join(__dirname, '..');
+const APP_DIR = path.join(ROOT_DIR, 'app');
+const DIST_DIR = path.join(APP_DIR, 'dist', 'main');
 
 export default merge.smart(baseConfig, {
   mode: env,
-  devtool: 'source-map',
-  entry: './app/main.dev',
+  devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
+  entry: './app/main',
   output: {
-    path: ROOT_DIR,
-    filename: './app/main.prod.js'
+    path: DIST_DIR,
+    filename: 'main.js'
   },
   plugins: [
-    new BundleAnalyzerPlugin({
-      analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
-      openAnalyzer: process.env.OPEN_ANALYZER === 'true'
-    }),
     /**
      * Create global constants which can be configured at compile time
      * Useful for allowing different behaviour between development builds and release builds
@@ -38,18 +38,24 @@ export default merge.smart(baseConfig, {
       NODE_ENV: env,
       DEBUG_PROD: false,
       START_MINIMIZED: false
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode:
+        process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
+      openAnalyzer: process.env.OPEN_ANALYZER === 'true'
+    }),
+    new CleanWebpackPlugin({
+      dry: false
     })
   ],
   optimization: {
-    minimizer: process.env.E2E_BUILD
-      ? []
-      : [
-        new TerserPlugin({
-          parallel: true,
-          sourceMap: true,
-          cache: true
-        })
-      ]
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        sourceMap: false,
+        cache: true
+      })
+    ]
   },
   target: 'electron-main',
   /**
@@ -61,4 +67,4 @@ export default merge.smart(baseConfig, {
     __dirname: false,
     __filename: false
   }
-})
+});

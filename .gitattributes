@@ -4,4 +4,6 @@
 *.jpeg binary
 *.ico binary
 *.icns binary
+*.data binary
+*.wasm binary
 *.ttf binary

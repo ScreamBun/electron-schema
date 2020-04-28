@@ -1,60 +1,98 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import Sidebar from 'react-sidebar'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import Sidebar from 'react-sidebar';
+import { Draggable } from 'react-drag-and-drop';
 
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  ListGroup,
+  ListGroupItem
+} from 'reactstrap';
+
+import SchemaStructure from '../generate/lib/structure';
 
 class SidebarMenu extends Component {
   constructor(props, context) {
-    super(props, context)
-    this.mql = window.matchMedia('(min-width: 800px)')
+    super(props, context);
+    this.mql = window.matchMedia('(min-width: 768px)');
 
-    this.mediaQueryChanged = this.mediaQueryChanged.bind(this)
-    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this)
+    this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
+    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
 
     this.state = {
       sidebarDocked: this.mql.matches,
       sidebarOpen: false
-    }
+    };
+
+    this.keys = SchemaStructure;
+  }
+
+  // pass reference to this down to child component
+  getChildContext() {
+    return {
+      sidebarDocked: this.state.sidebarDocked,
+      sidebarOpen: this.state.sidebarOpen,
+      sidebarToggle: () => this.onSetSidebarOpen(!this.state.sidebarOpen)
+    };
   }
 
   componentDidMount() {
-    this.mql.addListener(this.mediaQueryChanged)
+    this.mql.addListener(this.mediaQueryChanged);
   }
 
   componentWillUnmount() {
-    this.mql.removeListener(this.mediaQueryChanged)
+    this.mql.removeListener(this.mediaQueryChanged);
   }
 
   onSetSidebarOpen(open) {
     this.setState({
       sidebarOpen: open
-    })
+    });
   }
 
   mediaQueryChanged() {
     this.setState({
       sidebarDocked: this.mql.matches,
       sidebarOpen: false
-    })
-  }
-
-  // pass reference to this down to ThemeChooser component
-  getChildContext() {
-    return {
-      sidebarOpen: this.state.sidebarOpen,
-      sidebarDocked: this.state.sidebarDocked
-    }
+    });
   }
 
   renderContents() {
-    let toggle = <li className="nav-item"><a className="nav-link" href="#">Toggle</a></li>
+    const metaKeys = Object.keys(this.keys.meta).map(k => (
+      <Draggable type="meta" data={ k } key={ k } >
+        <ListGroupItem action>{ this.keys.meta[k].key }</ListGroupItem>
+      </Draggable>
+    ));
+
+    const typesKeys = Object.keys(this.keys.types).map(k => (
+      <Draggable type="types" data={ k } key={ k } >
+        <ListGroupItem action>{ this.keys.types[k].key }</ListGroupItem>
+      </Draggable>
+    ));
+
     return (
-      <ul id='sidebarContents'>
-        { this.state.sidebarDocked ? '' : toggle }
-        <li className="nav-item"><a className="nav-link" href="#">Sidebar Contents</a></li>
-      </ul>
-    )
+      <div>
+        <Card>
+          <CardHeader>Meta</CardHeader>
+          <CardBody>
+            <ListGroup>
+              { metaKeys }
+            </ListGroup>
+          </CardBody>
+        </Card>
+        <Card>
+          <CardHeader>Types</CardHeader>
+          <CardBody>
+            <ListGroup>
+              { typesKeys }
+            </ListGroup>
+          </CardBody>
+        </Card>
+      </div>
+    );
   }
 
   render() {
@@ -64,17 +102,30 @@ class SidebarMenu extends Component {
         open={ this.state.sidebarOpen }
         docked={ this.state.sidebarDocked }
         onSetOpen={ this.onSetSidebarOpen }
-        sidebarClassName='navbar-dark bg-dark'
+        sidebarClassName="navbar-dark bg-dark"
+        rootId="sidebarRoot"
+        sidebarId="sidebarContents"
+        contentId="sidebarMain"
+        overlayId="sidebarOverlay"
       >
         { this.props.children || <span /> }
       </Sidebar>
-    )
+    );
   }
 }
 
-SidebarMenu.childContextTypes = {
-  sidebarOpen: PropTypes.bool,
-  sidebarDocked: PropTypes.bool
-}
+SidebarMenu.propTypes = {
+  children: PropTypes.element
+};
 
-export default connect()(SidebarMenu)
+SidebarMenu.defaultProps = {
+  children: null
+};
+
+SidebarMenu.childContextTypes = {
+  sidebarDocked: PropTypes.bool,
+  sidebarOpen: PropTypes.bool,
+  sidebarToggle: PropTypes.func
+};
+
+export default connect()(SidebarMenu);

@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "beautifultable": [],
+    "importlib_metadata": ["zipp"],
+    "typeguard": [],
+    "zipp": [],
+    "jadnschema": ["beautifultable", "inflect", "typeguard"],
+    "inflect": ["importlib_metadata"],
+    "setuptools": []
+  },
+  "import_name_to_package_name": {
+    "beautifultable": "beautifultable",
+    "importlib_metadata": "importlib_metadata",
+    "typeguard": "typeguard",
+    "zipp": "zipp",
+    "jadnschema": "jadnschema",
+    "inflect": "inflect",
+    "setuptools": "setuptools",
+    "easy_install": "setuptools",
+    "pkg_resources": "setuptools"
+  }
+}

@@ -9,6 +9,42 @@
 }
 
 /* SideBar */
-#sidebarContents {
-	padding: 1em;
+#sidebarRoot {
+  margin-top: 60px;
+  #sidebarContents {
+    min-width: 175px;
+    max-width: 250px;
+    padding: 1em 0.5em;
+    z-index: 100 !important;
+    .card {
+      margin-bottom: 1em;
+      .card-body {
+        padding: 0.5em;
+      }
+    }
+    .list-group {
+      &-item {
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+      }
+    }
+  }
+  #sidebarOverlay {
+    display: none;
+  }
+}
+
+/* Drag & Drop */
+[draggable='true'] {
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+ /* (Optional) Apply a "closed-hand" cursor during drag operation. */
+[draggable='true']:active {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
 }
