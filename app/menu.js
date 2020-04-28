@@ -1,9 +1,7 @@
-// @flow
 import {
   app,
   dialog,
   shell,
-  BrowserWindow,
   Menu
 } from 'electron';
 import contextMenu from 'electron-context-menu';
@@ -18,11 +16,7 @@ const isMac = process.platform === 'darwin';
 const isWin = ['win32', 'win64'].includes(process.platform);
 
 export default class MenuBuilder {
-  mainWindow: BrowserWindow;
-
-  validInputFields: ['plainText'];
-
-  constructor(mainWindow: BrowserWindow) {
+  constructor(mainWindow) {
     this.mainWindow = mainWindow;
   }
 

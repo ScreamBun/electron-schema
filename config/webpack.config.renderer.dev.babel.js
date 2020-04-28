@@ -1,5 +1,3 @@
-/* eslint global-require: off, import/no-dynamic-require: off */
-
 /**
  * Build config for development electron renderer process that uses
  * Hot-Module-Replacement - https://webpack.js.org/concepts/hot-module-replacement/
@@ -10,6 +8,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import chalk from 'chalk';
 import { spawn, execSync } from 'child_process';
+import { TypedCssModulesPlugin } from 'typed-css-modules-webpack-plugin';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
 import baseConfig from './webpack.config.base';
@@ -80,6 +79,9 @@ export default merge.smart(baseConfig, {
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.LoaderOptionsPlugin({
       debug: true
+    }),
+    new TypedCssModulesPlugin({
+      globPattern: 'app/**/*.{css,scss,sass}'
     })
   ],
   devServer: {
@@ -119,16 +121,6 @@ export default merge.smart(baseConfig, {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true
-          }
-        }
-      },
-      {
         test: /\.(c|le)ss$/,
         use: [
           'style-loader',
@@ -141,7 +133,9 @@ export default merge.smart(baseConfig, {
           {
             loader: 'less-loader',
             options: {
-              strictMath: true
+              lessOptions: {
+                strictMath: true
+              }
             }
           }
         ]

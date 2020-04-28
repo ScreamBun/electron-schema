@@ -31,7 +31,6 @@ node_modules
 .DS_Store
 
 # flow-typed
-flow-typed/npm/*
 !flow-typed/npm/module_vx.x.x.js
 
 # App packaged
@@ -46,6 +45,9 @@ __snapshots__
 # Package.json
 package.json
 .travis.yml
+*.css.d.ts
+*.sass.d.ts
+*.scss.d.ts
 
 # Non-packaged files
 config

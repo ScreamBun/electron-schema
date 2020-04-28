@@ -165,16 +165,13 @@ fabric.properties
 # OSX
 .DS_Store
 
-# flow-typed
-flow-typed/npm/*
-!flow-typed/npm/module_vx.x.x.js
-
 # App packaged
 release
 dist
 dll
 
 # Assorted dev files
-config.dev.json
-/app/pyapi/build/
-/app/app.prod.html
+npm-debug.log.*
+*.css.d.ts
+*.sass.d.ts
+*.scss.d.ts

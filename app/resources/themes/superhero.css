@@ -1,7 +1,7 @@
 /*!
 * Bootswatch v4.4.1
 * Homepage: https://bootswatch.com
-* Copyright 2012-2019 Thomas Park
+* Copyright 2012-2020 Thomas Park
 * Licensed under MIT
 * Based on Bootstrap
 */
@@ -11,23 +11,26 @@
 * Copyright 2011-2019 Twitter, Inc.
 * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
 */
-/* @import url("https://fonts.googleapis.com/css?family=Lato:300,400,700"); */
+/* @import url("https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap"); */
 @font-face {
 	font-family: 'Lato';
 	font-style: normal;
 	font-weight: 300;
+	font-display: swap;
 	src: local('Lato Light'), local('Lato-Light'), url('../assets/fonts/Lato-Light.ttf') format('truetype');
 }
 @font-face {
 	font-family: 'Lato';
 	font-style: normal;
 	font-weight: 400;
+	font-display: swap;
 	src: local('Lato Regular'), local('Lato-Regular'), url('../assets/fonts/Lato-Regular.ttf') format('truetype');
 }
 @font-face {
 	font-family: 'Lato';
 	font-style: normal;
 	font-weight: 700;
+	font-display: swap;
 	src: local('Lato Bold'), local('Lato-Bold'), url('../assets/fonts/Lato-Bold.ttf') format('truetype');
 }
 
@@ -6250,9 +6253,9 @@ a.close.disabled {
 	max-width: 350px;
 	overflow: hidden;
 	font-size: 0.875rem;
-	background-color: rgba(255, 255, 255, 0.85);
+	background-color: #4E5D6C;
 	background-clip: padding-box;
-	border: 1px solid rgba(0, 0, 0, 0.1);
+	border: 1px solid rgba(0, 0, 0, 0.2);
 	-webkit-box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
 	box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
 	-webkit-backdrop-filter: blur(10px);
@@ -6286,10 +6289,10 @@ a.close.disabled {
 	-ms-flex-align: center;
 	align-items: center;
 	padding: 0.25rem 0.75rem;
-	color: #868e96;
-	background-color: rgba(255, 255, 255, 0.85);
+	color: #EBEBEB;
+	background-color: #4E5D6C;
 	background-clip: padding-box;
-	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .toast-body {
@@ -11007,6 +11010,8 @@ label,
 }
 
 .close {
+	color: #fff;
+	text-shadow: none;
 	opacity: 0.5;
 }
 
@@ -11021,14 +11026,4 @@ label,
 
 .modal-header, .modal-footer {
 	background-color: rgba(255, 255, 255, 0.075);
-}
-
-.modal-header .close, .modal-footer .close {
-	color: #fff;
-	text-shadow: none;
-	opacity: 0.5;
-}
-
-.modal-header .close:hover, .modal-header .close:focus, .modal-footer .close:hover, .modal-footer .close:focus {
-	opacity: 1;
 }

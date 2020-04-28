@@ -1,4 +1,4 @@
-/* eslint global-require: off */
+/* eslint global-require: off, import/no-extraneous-dependencies: off */
 const developmentEnvironments = ['development', 'test'];
 
 const developmentPlugins = [
@@ -20,14 +20,10 @@ module.exports = api => {
 
   return {
     presets: [
-      require('@babel/preset-flow'),
-      [require('@babel/preset-react'), { development }],
-      [
-        require('@babel/preset-env'),
-        {
-          targets: { electron: require('electron/package.json').version }
-        }
-      ]
+      // @babel/preset-env will automatically target our browserslist targets
+      require('@babel/preset-env'),
+      require('@babel/preset-typescript'),
+      [require('@babel/preset-react'), { development }]
     ],
     plugins: [
       // Stage 0

@@ -17,7 +17,7 @@ if (!Module.expectedDataFileDownloads) {
 const fetchNode = file => {
   return new Promise((resolve, reject) => {
     const fetch = require('isomorphic-fetch');
-    const fs = require('fs-extra');
+    const fs = require('fs');
 
     if (file.indexOf('http') === -1) {
       // local

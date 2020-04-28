@@ -1,20 +1,10 @@
 /* eslint global-require: off */
-import 'v8-compile-cache';
-import {
-  app,
-  dialog,
-  ipcMain,
-  BrowserWindow
-} from 'electron';
+import { app, dialog, ipcMain, BrowserWindow } from 'electron';
 import fs from 'fs-extra';
 import url from 'url';
 import path from 'path';
 import MenuBuilder from './menu';
-import {
-  jadnFormat,
-  ConverterScript,
-  SchemaFormats
-} from './src/utils';
+import { jadnFormat, ConverterScript, SchemaFormats } from './src/utils';
 import pyodideNode from './src/utils/PyodideNode/PyodideNode';
 
 // Config
@@ -181,10 +171,9 @@ const convertSchema = args => {
 
 ipcMain.on('file-save', (event, args) => {
   const kargs = { ...args };
-  let ext = kargs.format || null;
-  if (ext !== null) {
-    ext = kargs.filePath ? path.extname(kargs.filePath).substring(1) : SchemaFormats.JADN;
-  }
+  console.log('file-save', kargs)
+  let ext = kargs.format ||  SchemaFormats.JADN;
+  console.log('ext', ext)
 
   dialog
     .showSaveDialog(mainWindow, {

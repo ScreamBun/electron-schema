@@ -1,7 +1,7 @@
 /*!
 * Bootswatch v4.4.1
 * Homepage: https://bootswatch.com
-* Copyright 2012-2019 Thomas Park
+* Copyright 2012-2020 Thomas Park
 * Licensed under MIT
 * Based on Bootstrap
 */
@@ -11,23 +11,26 @@
 * Copyright 2011-2019 Twitter, Inc.
 * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
 */
-/* @import url("https://fonts.googleapis.com/css?family=Lato:400,700,400italic"); */
+/* @import url("https://fonts.googleapis.com/css?family=Lato:400,700,400italic&display=swap"); */
 @font-face {
 	font-family: 'Lato';
 	font-style: italic;
 	font-weight: 400;
+	font-display: swap;
 	src: local('Lato Italic'), local('Lato-Italic'), url('../assets/fonts/Lato-Italic.ttf') format('truetype');
 }
 @font-face {
 	font-family: 'Lato';
 	font-style: normal;
 	font-weight: 400;
+	font-display: swap;
 	src: local('Lato Regular'), local('Lato-Regular'), url('../assets/fonts/Lato-Regular.ttf') format('truetype');
 }
 @font-face {
 	font-family: 'Lato';
 	font-style: normal;
 	font-weight: 700;
+	font-display: swap;
 	src: local('Lato Bold'), local('Lato-Bold'), url('../assets/fonts/Lato-Bold.ttf') format('truetype');
 }
 
@@ -5773,7 +5776,7 @@ a.badge-dark:focus, a.badge-dark.focus {
 
 @-webkit-keyframes progress-bar-stripes {
 	from {
-	background-position: 0.625rem 0;
+	background-position: 1rem 0;
 	}
 	to {
 	background-position: 0 0;
@@ -5782,7 +5785,7 @@ a.badge-dark:focus, a.badge-dark.focus {
 
 @keyframes progress-bar-stripes {
 	from {
-	background-position: 0.625rem 0;
+	background-position: 1rem 0;
 	}
 	to {
 	background-position: 0 0;
@@ -5793,9 +5796,9 @@ a.badge-dark:focus, a.badge-dark.focus {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
-	height: 0.625rem;
+	height: 1rem;
 	overflow: hidden;
-	font-size: 0.625rem;
+	font-size: 0.703125rem;
 	background-color: #ecf0f1;
 	border-radius: 0.25rem;
 }
@@ -5829,7 +5832,7 @@ a.badge-dark:focus, a.badge-dark.focus {
 
 .progress-bar-striped {
 	background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-	background-size: 0.625rem 0.625rem;
+	background-size: 1rem 1rem;
 }
 
 .progress-bar-animated {
@@ -10958,10 +10961,13 @@ a.text-dark:hover, a.text-dark:focus {
 	color: #212529;
 }
 
-.modal .close {
+.modal .close,
+.toast .close {
 	color: #000;
 }
 
-.modal .close:not(:disabled):not(.disabled):hover, .modal .close:not(:disabled):not(.disabled):focus {
+.modal .close:not(:disabled):not(.disabled):hover, .modal .close:not(:disabled):not(.disabled):focus,
+.toast .close:not(:disabled):not(.disabled):hover,
+.toast .close:not(:disabled):not(.disabled):focus {
 	color: #000;
 }

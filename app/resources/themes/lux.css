@@ -1,7 +1,7 @@
 /*!
 * Bootswatch v4.4.1
 * Homepage: https://bootswatch.com
-* Copyright 2012-2019 Thomas Park
+* Copyright 2012-2020 Thomas Park
 * Licensed under MIT
 * Based on Bootstrap
 */
@@ -11,17 +11,19 @@
 * Copyright 2011-2019 Twitter, Inc.
 * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
 */
-/* @import url("https://fonts.googleapis.com/css?family=Nunito+Sans:400,600"); */
+/* @import url("https://fonts.googleapis.com/css?family=Nunito+Sans:400,600&display=swap"); */
 @font-face {
 	font-family: 'Nunito Sans';
 	font-style: normal;
 	font-weight: 400;
+	font-display: swap;
 	src: local('Nunito Sans Regular'), local('NunitoSans-Regular'), url('../assets/fonts/NunitoSans-Regular.ttf') format('truetype');
 }
 @font-face {
 	font-family: 'Nunito Sans';
 	font-style: normal;
 	font-weight: 600;
+	font-display: swap;
 	src: local('Nunito Sans SemiBold'), local('NunitoSans-SemiBold'), url('../assets/fonts/NunitoSans-SemiBold.ttf') format('truetype');
 }
 

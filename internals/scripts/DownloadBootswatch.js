@@ -1,8 +1,8 @@
-const path = require('path');
-const fs = require('fs-extra');
-const NamedRegExp = require('named-regexp-groups');
-const download = require('download-file');
-const request = require('sync-request');
+import path from 'path';
+import fs from 'fs-extra';
+import NamedRegExp from 'named-regexp-groups';
+import download from 'download-file';
+import request from 'sync-request';
 
 const ROOT_DIR = path.join(__dirname, '..', '..', 'app', 'resources');
 const CHECK_DIRS = ['themes', 'assets', 'assets/fonts'];
@@ -15,7 +15,7 @@ const CSS_URL_IMPORT = new NamedRegExp(/^@import url\(["'](:<url>.*?)["']\);\s*?
 const FILE_URL_IMPORT = new NamedRegExp(/\s*?src:( local\(.*?\),)? local\(['"](:<name>.*?)['"]\), url\(['"]?(:<url>.*?)['"]?\) format\(['"](:<format>.*?)['"]\);/);
 const URL_REPLACE = new NamedRegExp(/url\([""]?(:<url>.*?)[""]?\)/);
 
-CHECK_DIRS.each(d => {
+CHECK_DIRS.forEach(d => {
   const dir = path.join(ROOT_DIR, d);
   if (!fs.pathExistsSync(dir)) {
     fs.mkdirSync(dir);
@@ -26,7 +26,7 @@ let BootswatchThemes = request('GET', THEME_API);
 BootswatchThemes = JSON.parse(BootswatchThemes.getBody('utf8'));
 const themeNames = [];
 
-BootswatchThemes.themes.each(theme => {
+BootswatchThemes.themes.forEach(theme => {
   console.log(`Downloading Theme: ${theme.name}`);
   const themeName = theme.name.toLowerCase();
   themeNames.push(themeName);
@@ -34,7 +34,7 @@ BootswatchThemes.themes.each(theme => {
   let preProcessCss = [];
   const css = request('GET', theme.css).getBody('utf8');
 
-  css.split(/\n\r?/gm).each(line => {
+  css.split(/\n\r?/gm).forEach(line => {
     if (line.startsWith('@import url(')) {
       const cssImportURL = line.replace(CSS_URL_IMPORT, '$+{url}');
       const cssImport = request('GET', cssImportURL).getBody('utf8');

@@ -19,7 +19,7 @@ export default {
   },
   // Determine the array of extensions that should be used to resolve modules
   resolve: {
-    extensions: ['.js', '.jsx', '.json'],
+    extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
     modules: [APP_DIR, 'node_modules']
   },
   externals: [...Object.keys(externals || {})],

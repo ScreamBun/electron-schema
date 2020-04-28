@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Schema Editor</title>
-    <script>
+    <script type="application/javascript">
       (() => {
-        if (!process.env.START_HOT) {
-          const link = document.createElement('link')
-          link.rel = 'stylesheet'
-          link.href = './css/styles.css'
+        if (typeof process !== 'object' || (typeof process === 'object' && !process.env.START_HOT)) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = './css/styles.css';
 
           // HACK: Writing the script path should be done with webpack
-          document.getElementsByTagName('head')[0].appendChild(link)
+          document.getElementsByTagName('head')[0].appendChild(link);
         }
       })();
     </script>
@@ -21,20 +21,22 @@
   <body>
     <noscript>You need to enable JavaScript to run this application.</noscript>
     <div id="root"></div>
-    <script>
-      {
+    <script type="application/javascript">
+      if (typeof process === 'object') {
         const scripts = [];
 
         // Dynamically insert the DLL script in development env in the renderer process
         if (process.env.NODE_ENV === 'development') {
-          scripts.push('../dll/renderer.dev.dll.js')
+          scripts.push('../dll/renderer.dev.dll.js');
         }
 
         // Dynamically insert the bundled app script in the renderer process
-        const port = process.env.PORT || 1212
-        scripts.push(process.env.START_HOT ? `http://localhost:${port}/dist/renderer.dev.js` : './renderer.prod.js')
+        const port = process.env.PORT || 1212;
+        scripts.push(process.env.START_HOT ? `http://localhost:${port}/dist/renderer.dev.js` : './renderer.prod.js');
 
-        document.write(scripts.map(script => `<script defer src="${script}"><\/script>`).join(''))
+        if (scripts.length) {
+          document.write(scripts.map(script => `<script defer type="application/javascript" src="${script}"><\/script>`).join(''));
+        }
       }
     </script>
   </body>
