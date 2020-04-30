@@ -5,7 +5,7 @@
 import webpack from 'webpack';
 import merge from 'webpack-merge';
 import path from 'path';
-import fs from 'fs-extra';
+import fs from 'fs';
 import chalk from 'chalk';
 import { spawn, execSync } from 'child_process';
 import { TypedCssModulesPlugin } from 'typed-css-modules-webpack-plugin';
@@ -13,17 +13,18 @@ import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
 import baseConfig from './webpack.config.base';
 
-const env = 'development';
+const NODE_ENV = 'development';
 
 // When an ESLint server is running, we can't set the NODE_ENV so we'll check if it's
 // at the dev webpack config is not accidentally run in a production environment
 if (process.env.NODE_ENV === 'production') {
-  CheckNodeEnv(env);
+  CheckNodeEnv(NODE_ENV);
 }
 
 const ROOT_DIR = path.join(__dirname, '..');
 const DIST_DIR = path.join(__dirname, 'dist');
 const DLL_DIR = path.join(ROOT_DIR, 'dll');
+const MAX_LIMIT = 10 * 1024;
 
 const port = process.env.PORT || 1212;
 const publicPath = `http://localhost:${port}/dist`;
@@ -40,7 +41,7 @@ if (!requiredByDLLConfig && !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))
 }
 
 export default merge.smart(baseConfig, {
-  mode: env,
+  mode: NODE_ENV,
   devtool: 'inline-source-map',
   entry: [
     ...(process.env.PLAIN_HMR ? [] : ['react-hot-loader/patch']),
@@ -66,7 +67,7 @@ export default merge.smart(baseConfig, {
      * 'staging', for example, by changing the ENV variables in the npm scripts
      */
     new webpack.EnvironmentPlugin({
-      NODE_ENV: env
+      NODE_ENV
     }),
     requiredByDLLConfig ? null : new webpack.DllReferencePlugin({
       context: DLL_DIR,
@@ -121,15 +122,17 @@ export default merge.smart(baseConfig, {
   module: {
     rules: [
       {
-        test: /\.(c|le)ss$/,
+        test: /\.css$/,
         use: [
           'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1
-            }
-          },
+          'css-loader'
+        ]
+      },
+      {  // LESS support - compile all .less files and pipe it to style.css
+        test: /\.less$/,
+        use: [
+          'style-loader',
+          'css-loader',
           {
             loader: 'less-loader',
             options: {
@@ -140,57 +143,51 @@ export default merge.smart(baseConfig, {
           }
         ]
       },
-      // WOFF Font
-      {
+      {  // WOFF Font
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10 * 1024,
+            limit: MAX_LIMIT,
             mimetype: 'application/font-woff'
           }
         }
       },
-      // WOFF2 Font
-      {
+      {  // WOFF2 Font
         test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10 * 1024,
+            limit: MAX_LIMIT,
             mimetype: 'application/font-woff'
           }
         }
       },
-      // TTF Font
-      {
+      {  // TTF Font
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10 * 1024,
+            limit: MAX_LIMIT,
             mimetype: 'application/octet-stream'
           }
         }
       },
-      // EOT Font
-      {
+      {  // EOT Font
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         use: 'file-loader'
       },
-      // SVG Font
-      {
+      {  // SVG Font
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10 * 1024,
+            limit: MAX_LIMIT,
             mimetype: 'image/svg+xml'
           }
         }
       },
-      // Common Image Formats
-      {
+      {  // Common Image Formats
         test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
         use: 'url-loader'
       }

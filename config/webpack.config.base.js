@@ -6,8 +6,7 @@ import path from 'path';
 
 import { dependencies as externals } from '../app/package.json';
 
-const env = 'production';
-
+const NODE_ENV = 'production';
 const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
 
@@ -25,7 +24,7 @@ export default {
   externals: [...Object.keys(externals || {})],
   plugins: [
     new webpack.EnvironmentPlugin({
-      NODE_ENV: env
+      NODE_ENV
     }),
     new webpack.NamedModulesPlugin()
   ],

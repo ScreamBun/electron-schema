@@ -1,10 +1,18 @@
 /* eslint global-require: off */
-import { app, dialog, ipcMain, BrowserWindow } from 'electron';
-import fs from 'fs-extra';
+import {
+  app,
+  dialog,
+  ipcMain,
+  BrowserWindow
+} from 'electron';
+import fs from 'fs';
 import url from 'url';
-import path from 'path';
 import MenuBuilder from './menu';
-import { jadnFormat, ConverterScript, SchemaFormats } from './src/utils';
+import {
+  jadnFormat,
+  ConverterScript,
+  SchemaFormats
+} from './src/utils';
 import pyodideNode from './src/utils/PyodideNode/PyodideNode';
 
 // Config
@@ -48,9 +56,8 @@ const installExtensions = async () => {
 let mainWindow = null;
 
 if (process.env.NODE_ENV === 'production') {
-  const sourceMapSupport = require('source-map-support');
-  sourceMapSupport.install();
-} else if (isDevelopment || process.env.DEBUG_PROD === 'true') {
+  require('source-map-support').install();
+} else if (isDevelopment) {
   require('electron-debug')();
 }
 
@@ -126,7 +133,7 @@ app.on('window-all-closed', () => {
 // create main BrowserWindow when electron is ready
 app.on('ready', async () => {
   await pyodideSetup();
-  if (isDevelopment || process.env.DEBUG_PROD === 'true') {
+  if (isDevelopment) {
     await installExtensions();
   }
   createMainWindow();
@@ -141,21 +148,21 @@ app.on('activate', () => {
 
 // Recent Documents action `Open`
 app.on('open-file', (event, filePath) => {
-  fs.readJson(filePath, (err, packageObj) => {
-    if (err) {
-      dialog.showMessageBoxSync(mainWindow, {
-        type: 'error',
-        title: 'Open Error',
-        detail: 'DETAILS -> TBD...'
-      });
-      console.error(err);
-    } else {
-      mainWindow.webContents.send('file-open', {
-        filePaths: [filePath],
-        contents: packageObj
-      });
-    }
-  });
+  try {
+    const rawFile = fs.readFileSync(filePath);
+    const packageObj = JSON.parse(rawFile);
+    mainWindow.webContents.send('file-open', {
+      filePaths: [filePath],
+      contents: packageObj
+    });
+  } catch (err) {
+    dialog.showMessageBoxSync(mainWindow, {
+      type: 'error',
+      title: 'Open Error',
+      detail: 'DETAILS -> TBD...'
+    });
+    console.error(err);
+  }
 });
 
 // Renderer event actions
@@ -171,9 +178,7 @@ const convertSchema = args => {
 
 ipcMain.on('file-save', (event, args) => {
   const kargs = { ...args };
-  console.log('file-save', kargs)
-  let ext = kargs.format ||  SchemaFormats.JADN;
-  console.log('ext', ext)
+  const ext = kargs.format ||  SchemaFormats.JADN;
 
   dialog
     .showSaveDialog(mainWindow, {
@@ -196,7 +201,7 @@ ipcMain.on('file-save', (event, args) => {
             break;
         }
 
-        fs.outputFile(kargs.filePath, contents, err => {
+        fs.writeFile(kargs.filePath, contents, err => {
           if (err) {
             dialog.showMessageSync(mainWindow, {
               type: 'error',

@@ -1,7 +1,7 @@
 // Base on https://github.com/gabrielfreire/neuralnet.js/tree/wasm-nodejs
 import { app } from 'electron';
 import path from 'path';
-import fs from 'fs-extra';
+import fs from 'fs';
 import fetch from 'isomorphic-fetch';
 
 const prod = process.env.NODE_ENV === 'production';
@@ -10,7 +10,8 @@ const localURL = path.join(ROOT_DIR, ...(prod ? ['assets', 'pyodide'] : []), '/'
 const localPackagesURL = path.join(localURL, 'packages', '/');
 
 const pkg_json = path.join(localPackagesURL, 'packages.json');
-const packages = fs.readJsonSync(pkg_json, { throws: false }).dependencies;
+let rawFile = fs.readFileSync(pkg_json);
+const packages = JSON.parse(rawFile).dependencies;
 
 const loadedPackages = new Set();
 

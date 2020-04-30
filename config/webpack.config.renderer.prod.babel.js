@@ -9,23 +9,23 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import TerserPlugin from 'terser-webpack-plugin';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import DeleteSourceMaps from '../internals/scripts/DeleteSourceMaps';
 
 import baseConfig from './webpack.config.base';
 
-const env = 'production';
-CheckNodeEnv(env);
+const NODE_ENV = 'production';
+CheckNodeEnv(NODE_ENV);
 DeleteSourceMaps();
 
 const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
 const DIST_DIR = path.join(APP_DIR, 'dist', 'renderer');
+const MAX_LIMIT = 10 * 1024;
 
 export default merge.smart(baseConfig, {
-  mode: env,
-  devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
+  mode: NODE_ENV,
+  devtool: 'cheap-source-map',
   entry: path.join(APP_DIR, 'index'),
   output: {
     path: DIST_DIR,
@@ -38,8 +38,7 @@ export default merge.smart(baseConfig, {
      * NODE_ENV should be production so that modules do not perform certain development checks
      */
     new webpack.EnvironmentPlugin({
-      NODE_ENV: env,
-      DEBUG_PROD: false
+      NODE_ENV
     }),
     new MiniCssExtractPlugin({
       filename: 'css/styles.css'
@@ -55,9 +54,6 @@ export default merge.smart(baseConfig, {
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
       openAnalyzer: process.env.OPEN_ANALYZER === 'true'
-    }),
-    new CleanWebpackPlugin({
-      dry: false
     })
   ],
   optimization: {
@@ -86,15 +82,17 @@ export default merge.smart(baseConfig, {
   module: {
     rules: [
       {
-        test: /\.(c|le)ss$/,
+        test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              url: false
-            }
-          },
+          'css-loader'
+        ]
+      },
+      {  // LESS support - compile all .less files and pipe it to style.css
+        test: /\.less$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
           {
             loader: 'less-loader',
             options: {
@@ -105,12 +103,12 @@ export default merge.smart(baseConfig, {
           }
         ]
       },
-      { // WOFF Font
+      {  // WOFF Font
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10 * 1024,
+            limit: MAX_LIMIT,
             mimetype: 'application/font-woff',
             fallback: {
               loader: 'file-loader',
@@ -121,12 +119,12 @@ export default merge.smart(baseConfig, {
           }
         }
       },
-      { // WOFF2 Font
+      {  // WOFF2 Font
         test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10 * 1024,
+            limit: MAX_LIMIT,
             mimetype: 'application/font-woff',
             fallback: {
               loader: 'file-loader',
@@ -137,12 +135,12 @@ export default merge.smart(baseConfig, {
           }
         }
       },
-      { // TTF Font
+      {  // TTF Font
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10 * 1024,
+            limit: MAX_LIMIT,
             mimetype: 'application/octet-stream',
             fallback: {
               loader: 'file-loader',
@@ -153,7 +151,7 @@ export default merge.smart(baseConfig, {
           }
         }
       },
-      { // EOT Font
+      {  // EOT Font
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         use: {
           loader: 'file-loader',
@@ -162,23 +160,23 @@ export default merge.smart(baseConfig, {
           }
         }
       },
-      { // SVG Font
+      {  // SVG Font
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10 * 1024,
+            limit: MAX_LIMIT,
             mimetype: 'image/svg+xml',
             name: 'fonts/[name].[ext]'
           }
         }
       },
-      { // Common Image Formats
+      {  // Common Image Formats
         test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10 * 1024,
+            limit: MAX_LIMIT,
             fallback: {
               loader: 'file-loader',
               options: {

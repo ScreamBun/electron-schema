@@ -1,8 +1,7 @@
 import { combineReducers } from 'redux';
 import jadn2json from './jadn';
 
-// eslint-disable-next-line no-unused-vars
-export default history => combineReducers({
+export default history => combineReducers({  // eslint-disable-line no-unused-vars, @typescript-eslint/no-unused-vars
   // Custom Reducers
   'jadn2json': jadn2json
 });
