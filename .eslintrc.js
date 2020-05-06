@@ -1,5 +1,3 @@
-const rules = require('./config/eslint_rules');
-
 module.exports = {
   extends: 'erb/typescript',
   parserOptions: {
@@ -16,7 +14,7 @@ module.exports = {
     }
   },
   rules: {
-    ...rules,
+    ...require('./config/eslint_rules'),
     // A temporary hack related to IDE not resolving correct package.json
     'import/no-extraneous-dependencies': 0
   }

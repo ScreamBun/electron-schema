@@ -1,5 +1,4 @@
 // Import Rules
-
 module.exports = {
   'import/default': 0,
   'import/dynamic-import-chunkname': [0, {

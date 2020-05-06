@@ -1,5 +1,4 @@
 // JSX-a11y Rules
-
 module.exports = {
   'jsx-a11y/accessible-emoji': 2,
   'jsx-a11y/alt-text': [2, {

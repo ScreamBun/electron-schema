@@ -1,5 +1,4 @@
 // Jest Rules
-
 module.exports = {
   'jest/expect-expect': 1,
   'jest/no-commented-out-tests': 1,
