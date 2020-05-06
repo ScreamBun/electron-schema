@@ -1,5 +1,4 @@
 // Eslint Base Rules
-
 module.exports = {
   'accessor-pairs': 0,
   'array-bracket-newline': [0, 'consistent'],
@@ -201,7 +200,7 @@ module.exports = {
   }],
   'max-classes-per-file': [2, 1],
   'max-depth': [0, 4],
-  'max-len': [1, 120, 2, {
+  'max-len': [1, 128, 2, {
     ignoreComments: true,
     ignoreRegExpLiterals: true,
     ignoreStrings: true,
@@ -226,7 +225,7 @@ module.exports = {
     max: 1
   }],
   'multiline-comment-style': [0, 'starred-block'],
-  'multiline-ternary': [0, 'never'],
+  'multiline-ternary': [1, 'never'],
   'new-cap': [2, {
     newIsCap: true,
     newIsCapExceptions: [],
@@ -371,7 +370,7 @@ module.exports = {
   'no-obj-calls': 2,
   'no-octal': 2,
   'no-octal-escape': 2,
-  'no-param-reassign': [0, {
+  'no-param-reassign': [1, {
     props: true,
     ignorePropertyModificationsFor: [
       'acc',

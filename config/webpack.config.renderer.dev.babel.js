@@ -12,6 +12,7 @@ import { TypedCssModulesPlugin } from 'typed-css-modules-webpack-plugin';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
 import baseConfig from './webpack.config.base';
+import Loaders from './webpack.loaders';
 
 const NODE_ENV = 'development';
 
@@ -125,71 +126,57 @@ export default merge.smart(baseConfig, {
         test: /\.css$/,
         use: [
           'style-loader',
-          'css-loader'
+          Loaders.css,
         ]
       },
       {  // LESS support - compile all .less files and pipe it to style.css
         test: /\.less$/,
         use: [
           'style-loader',
-          'css-loader',
-          {
-            loader: 'less-loader',
-            options: {
-              lessOptions: {
-                strictMath: true
-              }
-            }
-          }
+          Loaders.css,
+          Loaders.less
         ]
       },
       {  // WOFF Font
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'url-loader',
+        use: merge.smart(Loaders.url, {
           options: {
-            limit: MAX_LIMIT,
             mimetype: 'application/font-woff'
           }
-        }
+        })
       },
       {  // WOFF2 Font
         test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'url-loader',
+        use: merge.smart(Loaders.url, {
           options: {
-            limit: MAX_LIMIT,
             mimetype: 'application/font-woff'
           }
-        }
+        })
       },
       {  // TTF Font
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'url-loader',
+        use: merge.smart(Loaders.url, {
           options: {
-            limit: MAX_LIMIT,
             mimetype: 'application/octet-stream'
           }
-        }
+        })
       },
       {  // EOT Font
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         use: 'file-loader'
       },
-      {  // SVG Font
+      { // SVG
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: MAX_LIMIT,
-            mimetype: 'image/svg+xml'
-          }
+        loader: 'svg-url-loader',
+        options: {
+          limit: 10 * 1024,
+          noquotes: true,
+          fallback: Loaders.file
         }
       },
       {  // Common Image Formats
-        test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
-        use: 'url-loader'
+        test: /\.(?:bmp|ico|gif|png|jpe?g|tiff|webp)$/,
+        use: Loaders.url
       }
     ]
   },

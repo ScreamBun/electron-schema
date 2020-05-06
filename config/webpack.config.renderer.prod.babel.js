@@ -13,6 +13,7 @@ import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import DeleteSourceMaps from '../internals/scripts/DeleteSourceMaps';
 
 import baseConfig from './webpack.config.base';
+import Loaders from './webpack.loaders';
 
 const NODE_ENV = 'production';
 CheckNodeEnv(NODE_ENV);
@@ -105,86 +106,44 @@ export default merge.smart(baseConfig, {
       },
       {  // WOFF Font
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'url-loader',
+        use: merge.smart(Loaders.url, {
           options: {
-            limit: MAX_LIMIT,
-            mimetype: 'application/font-woff',
-            fallback: {
-              loader: 'file-loader',
-              options: {
-                name: 'fonts/[name].[ext]'
-              }
-            }
+            mimetype: 'application/font-woff'
           }
-        }
+        })
       },
       {  // WOFF2 Font
         test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'url-loader',
+        use: merge.smart(Loaders.url, {
           options: {
-            limit: MAX_LIMIT,
-            mimetype: 'application/font-woff',
-            fallback: {
-              loader: 'file-loader',
-              options: {
-                name: 'fonts/[name].[ext]'
-              }
-            }
+            mimetype: 'application/font-woff'
           }
-        }
+        })
       },
       {  // TTF Font
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'url-loader',
+        use: merge.smart(Loaders.url, {
           options: {
-            limit: MAX_LIMIT,
-            mimetype: 'application/octet-stream',
-            fallback: {
-              loader: 'file-loader',
-              options: {
-                name: 'fonts/[name].[ext]'
-              }
-            }
+            mimetype: 'application/octet-stream'
           }
-        }
+        })
       },
       {  // EOT Font
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: 'fonts/[name].[ext]'
-          }
-        }
+        use: 'file-loader'
       },
-      {  // SVG Font
+      { // SVG
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: MAX_LIMIT,
-            mimetype: 'image/svg+xml',
-            name: 'fonts/[name].[ext]'
-          }
+        loader: 'svg-url-loader',
+        options: {
+          limit: 10 * 1024,
+          noquotes: true,
+          fallback: Loaders.file
         }
       },
       {  // Common Image Formats
-        test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: MAX_LIMIT,
-            fallback: {
-              loader: 'file-loader',
-              options: {
-                name: 'img/[name].[ext]'
-              }
-            }
-          }
-        }
+        test: /\.(?:bmp|ico|gif|png|jpe?g|tiff|webp)$/,
+        use: Loaders.url
       }
     ]
   }

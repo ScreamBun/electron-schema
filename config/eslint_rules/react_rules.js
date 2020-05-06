@@ -1,5 +1,4 @@
 // React Rules
-
 module.exports = {
   'react/boolean-prop-naming': [0, {
     message: '',

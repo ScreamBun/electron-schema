@@ -1,5 +1,4 @@
 // Typescript Rules
-
 module.exports = {
   '@typescript-eslint/adjacent-overload-signatures': 2,
   '@typescript-eslint/ban-ts-ignore': 2,
