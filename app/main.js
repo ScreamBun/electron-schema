@@ -180,6 +180,10 @@ ipcMain.on('file-save', (event, args) => {
   const kargs = { ...args };
   const ext = kargs.format ||  SchemaFormats.JADN;
 
+  console.log(kargs.filePath);
+  console.log(app.getPath('documents'), 'documetn');
+  kargs.filePath = kargs.filePath.substr(0, kargs.filePath.lastIndexOf(".")) +'.'+ ext;
+
   dialog
     .showSaveDialog(mainWindow, {
       title: 'Save Schema',
