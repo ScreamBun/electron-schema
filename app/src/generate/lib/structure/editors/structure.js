@@ -142,7 +142,7 @@ class StructureEditor extends Component {
     setTimeout(() => this.initState(), 100);
     const structureFields = (this.state.value.fields || []).map((f, i) => (
       <FieldEditor
-        key={ f }
+        key={ i }
         dataIndex={ i }
         enumerated={ this.state.value.type.toLowerCase() === 'enumerated' }
         value={ f }
