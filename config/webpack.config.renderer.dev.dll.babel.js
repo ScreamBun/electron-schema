@@ -9,15 +9,15 @@ import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import baseConfig from './webpack.config.base';
 import { dependencies } from '../package.json';
 
-const env = 'development';
-CheckNodeEnv(env);
+const NODE_ENV = 'development';
+CheckNodeEnv(NODE_ENV);
 
 const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
 const DLL_DIR = path.join(ROOT_DIR, 'dll');
 
 export default merge.smart(baseConfig, {
-  mode: env,
+  mode: NODE_ENV,
   devtool: 'eval',
   entry: {
     renderer: Object.keys(dependencies || {})
@@ -36,7 +36,7 @@ export default merge.smart(baseConfig, {
      * NODE_ENV should be production so that modules do not perform certain development checks
      */
     new webpack.EnvironmentPlugin({
-      NODE_ENV: env
+      NODE_ENV
     }),
     new webpack.DllPlugin({
       path: path.join(DLL_DIR, '[name].json'),

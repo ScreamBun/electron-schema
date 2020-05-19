@@ -7,13 +7,11 @@ import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import { createBrowserHistory } from 'history';
 import configureStore from './store';
 
-// Import some styles
-import 'bootstrap';
+// Import styles
+import './resources/styles.global.less';
 
 // App Components
 import App from './src';
-import './resources/themes/lumen.css';
-import './resources/styles.global.less';
 
 const history = createBrowserHistory();
 const store = configureStore(history);

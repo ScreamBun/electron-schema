@@ -6,14 +6,13 @@ import merge from 'webpack-merge';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import DeleteSourceMaps from '../internals/scripts/DeleteSourceMaps';
 
 import baseConfig from './webpack.config.base';
 
-const env = 'production';
-CheckNodeEnv(env);
+const NODE_ENV = 'production';
+CheckNodeEnv(NODE_ENV);
 DeleteSourceMaps();
 
 const ROOT_DIR = path.join(__dirname, '..');
@@ -21,8 +20,8 @@ const APP_DIR = path.join(ROOT_DIR, 'app');
 const DIST_DIR = path.join(APP_DIR, 'dist', 'main');
 
 export default merge.smart(baseConfig, {
-  mode: env,
-  devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
+  mode: NODE_ENV,
+  devtool: 'cheap-source-map',
   entry: './app/main',
   output: {
     path: DIST_DIR,
@@ -35,17 +34,13 @@ export default merge.smart(baseConfig, {
      * NODE_ENV should be production so that modules do not perform certain development checks
      */
     new webpack.EnvironmentPlugin({
-      NODE_ENV: env,
-      DEBUG_PROD: false,
+      NODE_ENV,
       START_MINIMIZED: false
     }),
     new BundleAnalyzerPlugin({
       analyzerMode:
         process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
       openAnalyzer: process.env.OPEN_ANALYZER === 'true'
-    }),
-    new CleanWebpackPlugin({
-      dry: false
     })
   ],
   optimization: {

@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'fs-extra';
+import fs from 'fs';
 import NamedRegExp from 'named-regexp-groups';
 import download from 'download-file';
 import request from 'sync-request';
@@ -17,7 +17,7 @@ const URL_REPLACE = new NamedRegExp(/url\([""]?(:<url>.*?)[""]?\)/);
 
 CHECK_DIRS.forEach(d => {
   const dir = path.join(ROOT_DIR, d);
-  if (!fs.pathExistsSync(dir)) {
+  if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
 });

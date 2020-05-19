@@ -5,7 +5,7 @@ import {
   Menu
 } from 'electron';
 import contextMenu from 'electron-context-menu';
-import fs from 'fs-extra';
+import fs from 'fs';
 import {
   safeGet,
   SchemaFormats
@@ -279,19 +279,18 @@ export default class MenuBuilder {
           const rslt = { ...result };
           if (!rslt.canceled) {
             app.addRecentDocument(rslt.filePaths[0]);
-            fs.readJson(rslt.filePaths[0], (err, packageObj) => {
-              if (err) {
-                dialog.showMessageBoxSync(this.mainWindow, {
-                  type: 'error',
-                  title: 'Open Error',
-                  detail: 'DETAILS -> TBD...'
-                });
-                console.error(err);
-              } else {
-                rslt.contents = packageObj;
-                this.mainWindow.webContents.send('file-open', rslt);
-              }
-            });
+            try {
+              const rawFile = fs.readFileSync(rslt.filePaths[0]);
+              rslt.contents = JSON.parse(rawFile);
+              this.mainWindow.webContents.send('file-open', rslt);
+            } catch (err) {
+              dialog.showMessageBoxSync(this.mainWindow, {
+                type: 'error',
+                title: 'Open Error',
+                detail: 'DETAILS -> TBD...'
+              });
+              console.error(err);
+            }
           }
           return rslt;
         })

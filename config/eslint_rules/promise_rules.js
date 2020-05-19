@@ -1,5 +1,4 @@
 // Promise Rules
-
 module.exports = {
   'promise/always-return': 2,
   'promise/avoid-new': 0,
