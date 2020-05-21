@@ -33,7 +33,7 @@ const FieldEditor = props => {
   const values = {};
 
   if (props.value && typeof props.value === 'object') {
-    values.id = props.value[0] || 0;
+    values.id = props.value[0] || '';
 
     if (props.enumerated) {
       values.value = props.value[1] || '';
@@ -48,9 +48,12 @@ const FieldEditor = props => {
 
   const removeAll = () => props.remove(props.dataIndex);
 
-  const onChange = e => {
+  const onChange = (e, isNum) => {
     const key = e.target.placeholder.toLowerCase();
     let value = e.target.value;
+
+    if(isNum && ( !/^\d+$/.test(value) && value != "" )) return;
+
     if (key === 'options') {
       value = value.split(/,\s+?/);
     }
@@ -91,7 +94,7 @@ const FieldEditor = props => {
       <div className="row m-0">
         <FormGroup className={ props.enumerated ? 'col-md-4' : 'col-md-3' }>
           <Label>ID</Label>
-          <Input type="string" placeholder="ID" value={ values.id } onChange={ onChange } />
+          <Input type="number" placeholder="ID" value={ values.id } onChange={ (e) => onChange(e, true) } />
         </FormGroup>
         {props.enumerated ? (
           <FormGroup className="col-md-4">
