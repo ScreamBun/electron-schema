@@ -17,6 +17,14 @@ Note: A Windows .exe version is still currently in progress. This app is current
 - After constructing the desired JADN schema, save or export it as a different file format. Supported formats include HTML, JSON, MarkDown, and PDF. 
     - N.B. Invalid schemas will not allow converting to different file formats. Schema validation currently in progress.
 
-### Tutorial
-The following is an in-depth, step-by-step guide for first-time users. 
-- Step1
+### Constructing a JADN schema
+- While JADN is flexible and highly customizable, a properly formatted schema must meet these minimal requirements
+    - `Module` and `Exports` must be present under `Meta`
+    - At least one item must be present under `Type`
+        1. Type name cannot be the same as the default name (e.g. type 'choice' must be renamed)
+        2. Type name must contain only alphanumeric characters
+        3. Type name must begin with a capital letter
+        4. Type name must be added as a new entry under `Exports` (case-sensitive)
+            -  N.B. Any additional `Type` items need not be added to `Exports`
+            
+- A sample template reflecting these basic requirements is available [here](./template.jadn). Importing this template and modifying as necessary is the easiest way to get started
