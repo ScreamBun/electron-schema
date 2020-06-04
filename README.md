@@ -10,7 +10,7 @@ Note: A Windows .exe version is still currently in progress. This app is current
 - MacOS version available [here](www.google.com)
 
 ### Quick Guide
-- Create a JADN schema from scratch, or import an existing file (see [Constructing a JADN schema](#constructing-a-jadn-schema))
+- Create a JADN schema from scratch, or import an existing file (see [Constructing a JADN schema](#constructing-a-jadn-schema) below)
     - To import an existing JADN schema, go to `File -> Import` and select document. The schema will load automatically in the JADN editor. 
 - The GUI is primarily a drag-and-drop. Drag the desired elements on the left-side panel into the editor to populate it, and edit as necessary. 
     - Toggle between the JADN and JSON editors to view progress. The JSON editor is read-only.
