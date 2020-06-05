@@ -52,7 +52,7 @@ const FieldEditor = props => {
     const key = e.target.placeholder.toLowerCase();
     let value = e.target.value;
 
-    if(isNum && ( !/^\d+$/.test(value) && value != "" )) return;
+    if (isNum && ( !/^\d+$/.test(value) && value !== '' )) return;
 
     if (key === 'options') {
       value = value.split(/,\s+?/);

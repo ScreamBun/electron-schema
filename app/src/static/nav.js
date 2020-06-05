@@ -25,6 +25,3 @@ Nav.contextTypes = {
 };
 
 export default connect()(Nav);
-
-
-

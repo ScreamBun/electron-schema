@@ -49,10 +49,9 @@ package.json
 # Non-packaged files
 config
 dll
-flow-typed
-internals
 resources
 
 # Assorted
+babel.config.js
 app/src/utils/jadn-editor/mitsuketa
 app/src/utils/PyodideNode

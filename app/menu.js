@@ -6,10 +6,8 @@ import {
 } from 'electron';
 import contextMenu from 'electron-context-menu';
 import fs from 'fs';
-import {
-  safeGet,
-  SchemaFormats
-} from './src/utils';
+import { SchemaFormats } from 'jadnschema';
+import { safeGet } from './src/utils';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const isMac = process.platform === 'darwin';
@@ -143,7 +141,7 @@ export default class MenuBuilder {
             },
             {
               label: '&MarkDown',
-              click: () => this.webContentsSave(SchemaFormats.MD)
+              click: () => this.webContentsSave(SchemaFormats.MarkDown)
             }
             /*
             {

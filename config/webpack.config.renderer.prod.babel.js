@@ -1,14 +1,15 @@
 /**
  * Build config for electron renderer process
  */
-import webpack from 'webpack';
-import merge from 'webpack-merge';
-import path from 'path';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
+import webpack from 'webpack';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import merge from 'webpack-merge';
+
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import DeleteSourceMaps from '../internals/scripts/DeleteSourceMaps';
 
@@ -22,11 +23,36 @@ DeleteSourceMaps();
 const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
 const DIST_DIR = path.join(APP_DIR, 'dist', 'renderer');
-const MAX_LIMIT = 10 * 1024;
+
+const minimizer = [];
+if (!process.env.E2E_BUILD) {
+  minimizer.push(
+    new TerserPlugin({
+      cache: true,
+      parallel: true,
+      sourceMap: true,
+      terserOptions: {
+        output: {
+          comments: false
+        }
+      }
+    })
+  );
+  minimizer.push(
+    new OptimizeCSSAssetsPlugin({
+      cssProcessorOptions: {
+        map: {
+          inline: false,
+          annotation: true
+        }
+      }
+    })
+  );
+}
 
 export default merge.smart(baseConfig, {
   mode: NODE_ENV,
-  devtool: 'cheap-source-map',
+  devtool: process.env.DEBUG_PROD === 'true' ? 'cheap-source-map' : 'none',
   entry: path.join(APP_DIR, 'index'),
   output: {
     path: DIST_DIR,
@@ -39,10 +65,12 @@ export default merge.smart(baseConfig, {
      * NODE_ENV should be production so that modules do not perform certain development checks
      */
     new webpack.EnvironmentPlugin({
-      NODE_ENV
+      NODE_ENV,
+      DEBUG_PROD: false,
+      E2E_BUILD: false
     }),
     new MiniCssExtractPlugin({
-      filename: 'css/styles.css'
+      filename: 'styles.css'
     }),
     new CopyWebpackPlugin([
       {
@@ -58,26 +86,7 @@ export default merge.smart(baseConfig, {
     })
   ],
   optimization: {
-    minimizer: [
-      new TerserPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: true,
-        terserOptions: {
-          output: {
-            comments: false
-          }
-        }
-      }),
-      new OptimizeCSSAssetsPlugin({
-        cssProcessorOptions: {
-          map: {
-            inline: false,
-            annotation: true
-          }
-        }
-      })
-    ]
+    minimizer
   },
   target: 'electron-preload',
   module: {
@@ -100,6 +109,19 @@ export default merge.smart(baseConfig, {
               lessOptions: {
                 strictMath: true
               }
+            }
+          }
+        ]
+      },
+      {  // SASS support - compile all .scss/sass files and pipe it to style.css
+        test: /\.s[ac]ss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true
             }
           }
         ]

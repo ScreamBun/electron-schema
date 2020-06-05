@@ -1,8 +1,8 @@
 /**
  * Base webpack config used across other specific configs
  */
-import webpack from 'webpack';
 import path from 'path';
+import webpack from 'webpack';
 
 import { dependencies as externals } from '../app/package.json';
 
@@ -31,7 +31,7 @@ export default {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.[jt]sx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',

@@ -6,39 +6,24 @@ import {
   BrowserWindow
 } from 'electron';
 import fs from 'fs';
+import { convert, SchemaFormats } from 'jadnschema';
 import url from 'url';
 import MenuBuilder from './menu';
-import {
-  jadnFormat,
-  ConverterScript,
-  SchemaFormats
-} from './src/utils';
-import pyodideNode from './src/utils/PyodideNode/PyodideNode';
+import { jadnFormat } from './src/utils';
 
 // Config
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const isWin = ['win32', 'win64'].includes(process.platform);
 app.allowRendererProcessReuse = true;
 
-// Python Setup
-let schemaConverters = {};
-let pyodide = null;
-
-const pyodideSetup = async () => {
-  await pyodideNode.loadLanguage();
-  pyodide = pyodideNode.getModule();
-
-  // pyodide is now ready to use...
-  await pyodide.loadPackage('jadnschema');
-
-  // configure the python environment
-  pyodide.runPython(ConverterScript);
-  schemaConverters = Object.assign(
-    {},
-    ...Object.values(SchemaFormats).map(k => ({
-      [k]: s => pyodide.pyimport(`convert2${k}`)(JSON.stringify(s))
-    }))
-  );
+// JADN Setup
+const schemaConverters = {
+  [SchemaFormats.HTML]: schema => convert.html_dumps(schema),
+  [SchemaFormats.JADN]: schema => convert.jadn_dumps(schema),
+  // [SchemaFormats.JIDL]: schema => convert.jidl_dumps(schema),
+  [SchemaFormats.JSON]: schema => convert.json_dumps(schema),
+  [SchemaFormats.MarkDown]: schema => convert.md_dumps(schema),
+  // [SchemaFormats.PDF]: schema => convert.pdf_dumps(schema),
 };
 
 // App Window Setup
@@ -132,7 +117,6 @@ app.on('window-all-closed', () => {
 
 // create main BrowserWindow when electron is ready
 app.on('ready', async () => {
-  await pyodideSetup();
   if (isDevelopment) {
     await installExtensions();
   }
@@ -181,8 +165,8 @@ ipcMain.on('file-save', (event, args) => {
   const ext = kargs.format ||  SchemaFormats.JADN;
 
   console.log(kargs.filePath);
-  console.log(app.getPath('documents'), 'documetn');
-  kargs.filePath = kargs.filePath.substr(0, kargs.filePath.lastIndexOf(".")) +'.'+ ext;
+  console.log(app.getPath('documents'), 'documents');
+  kargs.filePath = `${kargs.filePath.substr(0, kargs.filePath.lastIndexOf('.'))}.${ext}`;
 
   dialog
     .showSaveDialog(mainWindow, {

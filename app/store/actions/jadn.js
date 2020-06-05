@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { SchemaFormats } from '../../src/utils';
+import { SchemaFormats } from 'jadnschema';
 
 // Helper functions
 export const CONVERT_TO_JSON_SUCCESS = 'CONVERT_TO_JSON_SUCCESS';
