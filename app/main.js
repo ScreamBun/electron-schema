@@ -22,7 +22,7 @@ const schemaConverters = {
   [SchemaFormats.JADN]: schema => convert.jadn_dumps(schema),
   // [SchemaFormats.JIDL]: schema => convert.jidl_dumps(schema),
   [SchemaFormats.JSON]: schema => convert.json_dumps(schema),
-  [SchemaFormats.MarkDown]: schema => convert.md_dumps(schema),
+  [SchemaFormats.MarkDown]: schema => convert.md_dumps(schema), // eslint-disable-line comma-dangle
   // [SchemaFormats.PDF]: schema => convert.pdf_dumps(schema),
 };
 

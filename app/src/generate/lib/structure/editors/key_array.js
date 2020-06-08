@@ -36,6 +36,7 @@ const KeyArrayEditor = props => {
   };
 
   const indices = props.value.map((arr, i) => (
+    // eslint-disable-next-line react/no-array-index-key
     <div className="input-group col-sm-12 mb-1" key={ i }>
       <Input
         type="text"

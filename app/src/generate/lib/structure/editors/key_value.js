@@ -22,6 +22,17 @@ const KeyValueEditor = props => {
     inputArgs.onChange = e => props.change(e.target.checked);
   }
 
+  let remove = '';
+  if (props.remove) {
+    remove = (
+      <div className="input-group-append">
+        <Button color='danger' onClick={ () => props.remove(props.id.toLowerCase()) }>
+          <FontAwesomeIcon icon={ faMinusSquare } />
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <FormGroup row className="border m-1 p-1">
       <Label htmlFor={ `editor-${props.id}` } sm={ 2 } ><strong>{ props.id }</strong></Label>
@@ -33,15 +44,7 @@ const KeyValueEditor = props => {
           placeholder={ props.placeholder }
           { ...inputArgs }
         />
-        {props.remove ? (
-          <div className="input-group-append">
-            <Button color='danger' onClick={ () => props.remove(props.id.toLowerCase()) }>
-              <FontAwesomeIcon icon={ faMinusSquare } />
-            </Button>
-          </div>
-        ) : (
-          ''
-        )}
+        { remove }
       </div>
       { props.description ? <FormText color='muted' className='ml-3'>{ props.description }</FormText> : '' }
     </FormGroup>

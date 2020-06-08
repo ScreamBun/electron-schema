@@ -9,7 +9,7 @@ import fs from 'fs';
 import { SchemaFormats } from 'jadnschema';
 import { safeGet } from './src/utils';
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDebug = process.env.NODE_ENV !== 'production' || process.env.DEBUG_PROD === 'true';
 const isMac = process.platform === 'darwin';
 const isWin = ['win32', 'win64'].includes(process.platform);
 
@@ -45,7 +45,7 @@ export default class MenuBuilder {
           visible: isVisible(params, 'Paste')
         }),
         actions.separator(),
-        isDevelopment ? actions.inspect() : actions.separator()
+        isDebug ? actions.inspect() : actions.separator()
       ],
       showCopyImage: false,
       showCopyImageAddress: false,
@@ -237,7 +237,7 @@ export default class MenuBuilder {
         }
       ]
     };
-    const subMenuView = isDevelopment ? subMenuViewDev : subMenuViewProd;
+    const subMenuView = isDebug ? subMenuViewDev : subMenuViewProd;
 
     const subMenuHelp = {
       label: 'Help',

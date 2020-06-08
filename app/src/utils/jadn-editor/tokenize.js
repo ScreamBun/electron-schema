@@ -217,7 +217,7 @@ const tokenFollowed = buffer => {
 
 // Main Function
 // eslint-disable-next-line camelcase
-export const DomNode_Update = (obj, locale = defaultLocale, colors) => {
+export const DomNodeUpdate = (obj, locale = defaultLocale, colors) => {
   const containerNode = obj.cloneNode(true);
   const hasChildren = containerNode.hasChildNodes();
 
@@ -1101,7 +1101,7 @@ const determineValue = buffer => {
 
 // Main Function
 // eslint-disable-next-line camelcase
-export const JSON_Placeholder = (obj, colors) => {
+export const PlaceholderJSON = (obj, colors) => {
   const buffer = {
     inputText: JSON.stringify(obj),
     position: 0,

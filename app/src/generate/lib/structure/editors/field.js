@@ -79,6 +79,38 @@ const FieldEditor = props => {
     }
   };
 
+  let options = (
+    <div className="col-md-9 p-0 m-0">
+      <FormGroup className="col-md-4 d-inline-block">
+        <Label>Name</Label>
+        <Input type="string" placeholder="Name" value={ values.name } onChange={ onChange } />
+      </FormGroup>
+
+      <FormGroup className="col-md-4 d-inline-block">
+        <Label>Type</Label>
+        <Input type="string" placeholder="Type" value={ values.type } onChange={ onChange } />
+      </FormGroup>
+
+      <FormGroup className="col-md-4 d-inline-block">
+        <Button outline color="info" onClick={ () => toggleModal(!isOpen) }>Field Options</Button>
+        <OptionsModal
+          saveModal={ saveModal }
+          isOpen={ isOpen }
+          toggleModal={ () => toggleModal(!isOpen) }
+          fieldOptions
+        />
+      </FormGroup>
+    </div>
+  );
+  if (props.enumerated) {
+    options = (
+      <FormGroup className="col-md-4">
+        <Label>Value</Label>
+        <Input type="string" placeholder="Value" value={ values.value } onChange={ onChange } />
+      </FormGroup>
+    );
+  }
+
   return (
     <div className="col-sm-12 border m-1 p-1">
       <ButtonGroup size="sm" className="float-right">
@@ -96,34 +128,9 @@ const FieldEditor = props => {
           <Label>ID</Label>
           <Input type="number" placeholder="ID" value={ values.id } onChange={ (e) => onChange(e, true) } />
         </FormGroup>
-        {props.enumerated ? (
-          <FormGroup className="col-md-4">
-            <Label>Value</Label>
-            <Input type="string" placeholder="Value" value={ values.value } onChange={ onChange } />
-          </FormGroup>
-        ) : (
-          <div className="col-md-9 p-0 m-0">
-            <FormGroup className="col-md-4 d-inline-block">
-              <Label>Name</Label>
-              <Input type="string" placeholder="Name" value={ values.name } onChange={ onChange } />
-            </FormGroup>
 
-            <FormGroup className="col-md-4 d-inline-block">
-              <Label>Type</Label>
-              <Input type="string" placeholder="Type" value={ values.type } onChange={ onChange } />
-            </FormGroup>
+        { options }
 
-            <FormGroup className="col-md-4 d-inline-block">
-              <Button outline color="info" onClick={ () => toggleModal(!isOpen) }>Field Options</Button>
-              <OptionsModal
-                saveModal={ saveModal }
-                isOpen={ isOpen }
-                toggleModal={ () => toggleModal(!isOpen) }
-                fieldOptions
-              />
-            </FormGroup>
-          </div>
-        )}
         <FormGroup className={ props.enumerated ? 'col-md-4' : 'col-md-12' }>
           <Label>Comment</Label>
           <Input

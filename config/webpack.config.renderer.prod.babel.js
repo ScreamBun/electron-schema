@@ -24,31 +24,6 @@ const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
 const DIST_DIR = path.join(APP_DIR, 'dist', 'renderer');
 
-const minimizer = [];
-if (!process.env.E2E_BUILD) {
-  minimizer.push(
-    new TerserPlugin({
-      cache: true,
-      parallel: true,
-      sourceMap: true,
-      terserOptions: {
-        output: {
-          comments: false
-        }
-      }
-    })
-  );
-  minimizer.push(
-    new OptimizeCSSAssetsPlugin({
-      cssProcessorOptions: {
-        map: {
-          inline: false,
-          annotation: true
-        }
-      }
-    })
-  );
-}
 
 export default merge.smart(baseConfig, {
   mode: NODE_ENV,
@@ -66,27 +41,47 @@ export default merge.smart(baseConfig, {
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV,
-      DEBUG_PROD: false,
-      E2E_BUILD: false
+      DEBUG_PROD: process.env.DEBUG_PROD === 'true',
     }),
     new MiniCssExtractPlugin({
-      filename: 'styles.css'
+      filename: 'css/styles.css'
     }),
-    new CopyWebpackPlugin([
-      {
-        // Theme Assets
-        from: path.join(APP_DIR, 'resources', 'assets'),
-        to: path.join(DIST_DIR, 'assets'),
-        toType: 'dir'
-      }
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          // Theme Assets
+          from: path.join(APP_DIR, 'resources', 'assets'),
+          to: path.join(DIST_DIR, 'assets'),
+          toType: 'dir'
+        }
+      ]
+    }),
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
       openAnalyzer: process.env.OPEN_ANALYZER === 'true'
     })
   ],
   optimization: {
-    minimizer
+    minimizer: [
+      new TerserPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true,
+        terserOptions: {
+          output: {
+            comments: false
+          }
+        }
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorOptions: {
+          map: {
+            inline: false,
+            annotation: true
+          }
+        }
+      })
+    ]
   },
   target: 'electron-preload',
   module: {

@@ -142,7 +142,7 @@ class StructureEditor extends Component {
     setTimeout(() => this.initState(), 100);
     const structureFields = (this.state.value.fields || []).map((f, i) => (
       <FieldEditor
-        key={ i }
+        key={ i }  // eslint-disable-line react/no-array-index-key
         dataIndex={ i }
         enumerated={ this.state.value.type.toLowerCase() === 'enumerated' }
         value={ f }
@@ -234,9 +234,7 @@ class StructureEditor extends Component {
             <Collapse isOpen={ this.state.fieldCollapse }>
               { structureFields }
             </Collapse>
-            { !this.state.fieldCollapse && structureFields.length > 0 ? (
-              <p>Expand to view/edit fields</p>
-            ) : '' }
+            { !this.state.fieldCollapse && structureFields.length > 0 ? <p>Expand to view/edit fields</p> : '' }
           </FormGroup>
         </div>
       </div>

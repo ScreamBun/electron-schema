@@ -24,7 +24,8 @@ class SidebarMenu extends Component {
 
     this.state = {
       sidebarDocked: this.mql.matches,
-      sidebarOpen: false
+      sidebarOpen: false,
+      initCheck: false
     };
 
     this.keys = SchemaStructure;
@@ -96,6 +97,13 @@ class SidebarMenu extends Component {
   }
 
   render() {
+    if (this.mql.matches && !this.state.initCheck) {
+      setTimeout(() => this.setState({
+        sidebarDocked: true,
+        initCheck: true
+      }), 10);
+    }
+
     return (
       <Sidebar
         sidebar={ this.renderContents() }

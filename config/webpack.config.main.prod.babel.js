@@ -19,16 +19,6 @@ const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
 const DIST_DIR = path.join(APP_DIR, 'dist', 'main');
 
-const minimizer = [];
-if (!process.env.E2E_BUILD) {
-  minimizer.push(
-    new TerserPlugin({
-      parallel: true,
-      sourceMap: true,
-      cache: true
-    })
-  );
-}
 
 export default merge.smart(baseConfig, {
   mode: NODE_ENV,
@@ -46,9 +36,8 @@ export default merge.smart(baseConfig, {
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV,
-      DEBUG_PROD: false,
-      START_MINIMIZED: false,
-      E2E_BUILD: false
+      DEBUG_PROD: process.env.DEBUG_PROD === 'true',
+      START_MINIMIZED: false
     }),
     new BundleAnalyzerPlugin({
       analyzerMode:
@@ -57,7 +46,13 @@ export default merge.smart(baseConfig, {
     })
   ],
   optimization: {
-    minimizer
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        sourceMap: true,
+        cache: true
+      })
+    ]
   },
   target: 'electron-main',
   /**

@@ -39,8 +39,7 @@ class KeyObjectEditor extends Component {
   }
 
   toObject(val) {
-    val = val || this.state.value;
-    return val.reduce((obj, row) => ({
+    return (val || this.state.value).reduce((obj, row) => ({
       ...obj,
       [row.key]: row.value
     }), {});
@@ -96,6 +95,7 @@ class KeyObjectEditor extends Component {
 
   render() {
     const indices = this.state.value.map((obj, i) => (
+      // eslint-disable-next-line react/no-array-index-key
       <div className="input-group col-sm-12 mb-1" key={ i }>
         <Input
           type="text"

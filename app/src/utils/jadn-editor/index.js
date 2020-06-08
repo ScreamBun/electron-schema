@@ -5,7 +5,7 @@ import { getType } from 'react-json-editor-ajrm/mitsuketa';
 import defaultLocale from 'react-json-editor-ajrm/locale/en';
 
 // eslint-disable-next-line camelcase
-import { DomNode_Update, JSON_Placeholder } from './tokenize';
+import { DomNodeUpdate, PlaceholderJSON } from './tokenize';
 
 class JADNInput extends JSONInput {
   tokenize(obj) {
@@ -19,12 +19,12 @@ class JADNInput extends JSONInput {
 
     // DOM Node || OnBlue or Update
     if ('nodeType' in obj) {
-      return DomNode_Update(obj, locale, this.colors);
+      return DomNodeUpdate(obj, locale, this.colors);
     }
 
     // JS OBJECTS || PLACEHOLDER
     if (!('nodeType' in obj)) {
-      return JSON_Placeholder(obj, this.colors);
+      return PlaceholderJSON(obj, this.colors);
     }
 
     console.log('Oops....');

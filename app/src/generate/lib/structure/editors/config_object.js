@@ -66,26 +66,19 @@ class KeyObjectEditor extends Component {
     return propsChange || stateChange;
   }
 
-  toObject(val) {
-    val = val || this.state.values;
-    return val.reduce((obj, row) => {
-      obj[row.key] = row.value;
-      return obj;
-    }, {});
-  }
-
   removeAll() {
     this.props.remove(this.props.id.toLowerCase());
   }
 
   onChange(k, v) {
     this.setState(prevState => {
+      const ps = { ...prevState };
       if (v === '') {
-        delete prevState[k];
+        delete ps[k];
       } else {
-        prevState[k] = v;
+        ps[k] = v;
       }
-      return prevState;
+      return ps;
     });
   }
 
