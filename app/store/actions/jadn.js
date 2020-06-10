@@ -5,7 +5,7 @@ import { SchemaFormats } from 'jadnschema';
 export const CONVERT_TO_JSON_SUCCESS = 'CONVERT_TO_JSON_SUCCESS';
 const convertToJSONSuccess = jsonSchema => ({
   type: CONVERT_TO_JSON_SUCCESS,
-  payload: jsonSchema
+  payload: JSON.parse(jsonSchema)
 });
 
 // Store functions

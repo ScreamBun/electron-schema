@@ -300,6 +300,5 @@
     "setupFiles": [
       "./internals/scripts/CheckBuildsExist.js"
     ]
-  },
-  "extraResources": "app/src/utils/PyodideNode"
+  }
 }
