@@ -61,6 +61,7 @@ module.exports = {
       '**/protractor.conf.*.js',
       '**/karma.conf.js'
     ],
+    peerDependencies: true,
     optionalDependencies: false
   }],
   'import/no-internal-modules': [0, {

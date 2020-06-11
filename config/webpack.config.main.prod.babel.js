@@ -7,9 +7,10 @@ import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import merge from 'webpack-merge';
 
-import baseConfig from './webpack.config.base';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import DeleteSourceMaps from '../internals/scripts/DeleteSourceMaps';
+
+import baseConfig from './webpack.config.base';
 
 const NODE_ENV = 'production';
 CheckNodeEnv(NODE_ENV);
@@ -17,7 +18,7 @@ DeleteSourceMaps();
 
 const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
-const DIST_DIR = path.join(APP_DIR, 'dist', 'main');
+const DIST_DIR = path.join(APP_DIR, 'dist');
 
 
 export default merge.smart(baseConfig, {
@@ -40,8 +41,7 @@ export default merge.smart(baseConfig, {
       START_MINIMIZED: false
     }),
     new BundleAnalyzerPlugin({
-      analyzerMode:
-        process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
+      analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
       openAnalyzer: process.env.OPEN_ANALYZER === 'true'
     })
   ],

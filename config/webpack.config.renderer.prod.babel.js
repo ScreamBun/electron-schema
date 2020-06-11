@@ -22,8 +22,7 @@ DeleteSourceMaps();
 
 const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
-const DIST_DIR = path.join(APP_DIR, 'dist', 'renderer');
-
+const DIST_DIR = path.join(APP_DIR, 'dist');
 
 export default merge.smart(baseConfig, {
   mode: NODE_ENV,
@@ -41,7 +40,7 @@ export default merge.smart(baseConfig, {
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV,
-      DEBUG_PROD: process.env.DEBUG_PROD === 'true',
+      DEBUG_PROD: process.env.DEBUG_PROD === 'true'
     }),
     new MiniCssExtractPlugin({
       filename: 'css/styles.css'

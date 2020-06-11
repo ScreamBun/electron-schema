@@ -1,6 +1,7 @@
 // Typescript Rules
 module.exports = {
   '@typescript-eslint/adjacent-overload-signatures': 2,
+  '@typescript-eslint/await-thenable': 2,
   '@typescript-eslint/ban-ts-ignore': 2,
   '@typescript-eslint/ban-types': 2,
   '@typescript-eslint/brace-style': [0, '1tbs', {
@@ -17,7 +18,7 @@ module.exports = {
     after: true
   }],
   '@typescript-eslint/consistent-type-assertions': 2,
-  '@typescript-eslint/explicit-function-return-type': 0,
+  '@typescript-eslint/explicit-function-return-type': 1,
   '@typescript-eslint/func-call-spacing': [0, 'never' ],
   '@typescript-eslint/indent': [0, 2, {
     SwitchCase: 1,
@@ -60,7 +61,7 @@ module.exports = {
   }],
   '@typescript-eslint/interface-name-prefix': 2,
   '@typescript-eslint/keyword-spacing': 0,
-  '@typescript-eslint/member-delimiter-style': 0,
+  '@typescript-eslint/member-delimiter-style': 2,
   '@typescript-eslint/no-array-constructor': 2,
   '@typescript-eslint/no-dupe-class-members': 2,
   '@typescript-eslint/no-empty-function': [2, {
@@ -80,6 +81,7 @@ module.exports = {
     enforceForArrowConditionals: false
   }],
   '@typescript-eslint/no-extra-semi': 0,
+  '@typescript-eslint/no-for-in-array': 2,
   '@typescript-eslint/no-implied-eval': 2,
   '@typescript-eslint/no-inferrable-types': 2,
   '@typescript-eslint/no-magic-numbers': [0, {
@@ -89,10 +91,12 @@ module.exports = {
     detectObjects: false
   }],
   '@typescript-eslint/no-misused-new': 2,
+  '@typescript-eslint/no-misused-promises': 2,
   '@typescript-eslint/no-namespace': 2,
   '@typescript-eslint/no-non-null-assertion': 1,
   '@typescript-eslint/no-this-alias': 2,
   '@typescript-eslint/no-throw-literal': 2,
+  '@typescript-eslint/no-unnecessary-type-assertion': 2,
   '@typescript-eslint/no-unused-expressions': [2, {
     allowShortCircuit: false,
     allowTernary: false,
@@ -108,12 +112,16 @@ module.exports = {
     classes: true,
     variables: true
   }],
-  '@typescript-eslint/no-useless-constructor': 2,
-  '@typescript-eslint/no-var-requires': 0,
+  '@typescript-eslint/no-useless-constructor': 1,
+  '@typescript-eslint/no-var-requires': 2,
   '@typescript-eslint/prefer-namespace-keyword': 2,
+  '@typescript-eslint/prefer-includes': 2,
+  '@typescript-eslint/prefer-regexp-exec': 2,
+  '@typescript-eslint/prefer-string-starts-ends-with': 2,
   '@typescript-eslint/quotes': [0, 'single', {
     avoidEscape: true
   }],
+  '@typescript-eslint/require-await': 2,
   '@typescript-eslint/semi': [0, 'always'],
   '@typescript-eslint/space-before-function-paren': [0, {
     anonymous: 'always',
@@ -121,5 +129,6 @@ module.exports = {
     asyncArrow: 'always'
   }],
   '@typescript-eslint/triple-slash-reference': 2,
-  '@typescript-eslint/type-annotation-spacing': 0,
+  '@typescript-eslint/type-annotation-spacing': 2,
+  '@typescript-eslint/unbound-method': 2,
 }

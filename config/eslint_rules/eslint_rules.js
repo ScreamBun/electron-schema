@@ -258,7 +258,7 @@ module.exports = {
   }],
   'no-console': 0,
   'no-const-assign': 2,
-  'no-constant-condition': 1,
+  'no-constant-condition': 2,
   'no-constructor-return': 0,
   'no-continue': 2,
   'no-control-regex': 2,
@@ -267,7 +267,7 @@ module.exports = {
   'no-div-regex': 0,
   'no-dupe-args': 2,
   'no-dupe-class-members': 2,
-  'no-dupe-else-if': 0,
+  'no-dupe-else-if': 2,
   'no-dupe-keys': 2,
   'no-duplicate-case': 2,
   'no-duplicate-imports': 0,
@@ -294,7 +294,7 @@ module.exports = {
     nestedBinaryExpressions: false,
     returnAssign: false
   }],
-  'no-extra-semi': 0,
+  'no-extra-semi': 2,
   'no-fallthrough': 0,
   'no-floating-decimal': 0,
   'no-func-assign': 2,
@@ -346,7 +346,7 @@ module.exports = {
     allowSamePrecedence: false
   }],
   'no-mixed-requires': [0, false],
-  'no-mixed-spaces-and-tabs': 0,
+  'no-mixed-spaces-and-tabs': 1,
   'no-multi-assign': 0,
   'no-multi-spaces': [0, {
     ignoreEOLComments: false
@@ -539,7 +539,7 @@ module.exports = {
   }],
   'no-self-compare': 2,
   'no-sequences': 2,
-  'no-setter-return': 0,
+  'no-setter-return': 1,
   'no-shadow': 2,
   'no-shadow-restricted-names': 2,
   'no-space-before-semi': 0,
@@ -559,13 +559,16 @@ module.exports = {
   'no-undef-init': 2,
   'no-undefined': 0,
   'no-underscore-dangle': [1, {
-    allow: ['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'],
-    allowAfterSuper: false,
-    allowAfterThis: false,
+    allow: [
+      '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__',
+      '^_[^_]'
+    ],
+    allowAfterSuper: true,
+    allowAfterThis: true,
     allowAfterThisConstructor: false,
-    enforceInMethodNames: true
+    enforceInMethodNames: false
   }],
-  'no-unexpected-multiline': 0,
+  'no-unexpected-multiline': 1,
   'no-unmodified-loop-condition': 0,
   'no-unneeded-ternary': [2, {
     defaultAssignment: false
@@ -593,7 +596,7 @@ module.exports = {
   'no-useless-catch': 2,
   'no-useless-computed-key': 2,
   'no-useless-concat': 2,
-  'no-useless-constructor': 2,
+  'no-useless-constructor': 1,
   'no-useless-escape': 2,
   'no-useless-rename': [2, {
     ignoreDestructuring: false,

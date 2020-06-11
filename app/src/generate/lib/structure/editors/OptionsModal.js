@@ -109,6 +109,7 @@ class OptionsModal extends Component {
     super(props, context);
     this.saveModal = this.saveModal.bind(this);
     this.saveModalState = this.saveModalState.bind(this);
+
     this.state = OptionsModal.deserializeOptionsData(this.props.optionValues);
   }
 

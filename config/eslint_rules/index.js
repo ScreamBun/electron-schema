@@ -5,6 +5,6 @@ module.exports = {
   ...require('./jest_rules'),
   ...require('./jsx-a11y_rules'),
   ...require('./promise_rules'),
-  ...require('./react_rules'),
-  ...require('./typescript_rules')
+  ...require('./react_rules')
+  // ...require('./typescript_rules')
 }

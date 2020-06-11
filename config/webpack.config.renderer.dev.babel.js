@@ -10,9 +10,10 @@ import { TypedCssModulesPlugin } from 'typed-css-modules-webpack-plugin';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
 
-import baseConfig from './webpack.config.base';
 import Loaders from './webpack.loaders';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
+
+import baseConfig from './webpack.config.base';
 
 const NODE_ENV = 'development';
 
@@ -47,7 +48,7 @@ export default merge.smart(baseConfig, {
     ...(process.env.PLAIN_HMR ? [] : ['react-hot-loader/patch']),
     `webpack-dev-server/client?http://localhost:${port}/`,
     'webpack/hot/only-dev-server',
-    require.resolve('../app/index')
+    require.resolve('../app/index.js')
   ],
   output: {
     publicPath: `http://localhost:${port}/dist/`,

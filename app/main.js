@@ -9,7 +9,6 @@ import fs from 'fs';
 import { convert, SchemaFormats } from 'jadnschema';
 import url from 'url';
 import MenuBuilder from './menu';
-import { jadnFormat } from './src/utils';
 
 // Config
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -133,7 +132,7 @@ app.on('activate', () => {
 // Recent Documents action `Open`
 app.on('open-file', (event, filePath) => {
   try {
-    const rawFile = fs.readFileSync(filePath);
+    const rawFile = fs.readFileSync(filePath).toString();
     const packageObj = JSON.parse(rawFile);
     mainWindow.webContents.send('file-open', {
       filePaths: [filePath],
@@ -143,7 +142,7 @@ app.on('open-file', (event, filePath) => {
     dialog.showMessageBoxSync(mainWindow, {
       type: 'error',
       title: 'Open Error',
-      detail: 'DETAILS -> TBD...'
+      message: 'DETAILS -> TBD...'
     });
     console.error(err);
   }
@@ -152,7 +151,7 @@ app.on('open-file', (event, filePath) => {
 // Renderer event actions
 const convertSchema = args => {
   const schema = args.schema ? args.schema : {};
-  const format = args.format ? args.format : 'NULL';
+  const format = args.format || 'NULL';
 
   if (Object.values(SchemaFormats).includes(format)) {
     return schemaConverters[format](schema);
@@ -177,24 +176,14 @@ ipcMain.on('file-save', (event, args) => {
     .then(result => {
       if (!result.canceled) {
         kargs.filePath = result.filePath;
-        let contents = convertSchema({ format: ext, schema: kargs.contents });
-        switch (ext) {
-          case SchemaFormats.JADN:
-            contents = jadnFormat(contents);
-            break;
-          case SchemaFormats.JSON:
-            contents = JSON.stringify(contents, null, 2);
-            break;
-          default:
-            break;
-        }
+        const contents = convertSchema({ format: ext, schema: kargs.contents });
 
         fs.writeFile(kargs.filePath, contents, err => {
           if (err) {
-            dialog.showMessageSync(mainWindow, {
+            dialog.showMessageBoxSync(mainWindow, {
               type: 'error',
               title: 'Open Error',
-              detail: 'DETAILS -> TBD...'
+              message: 'DETAILS -> TBD...'
             });
             console.error(err);
           } else {
@@ -211,7 +200,7 @@ ipcMain.on('file-save', (event, args) => {
       dialog.showMessageBoxSync(mainWindow, {
         type: 'error',
         title: 'Open Error',
-        detail: 'DETAILS -> TBD...'
+        message: 'DETAILS -> TBD...'
       });
       console.log(err);
     });

@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import { Droppable } from 'react-drag-and-drop';
+import ReactMarkdown from 'react-markdown';
 import {
-  Nav,
-  NavItem,
-  NavLink,
   TabContent,
   TabPane
 } from 'reactstrap';
@@ -16,7 +14,8 @@ import locale from 'react-json-editor-ajrm/locale/en';
 
 import SchemaStructure from './lib/structure';
 import JADNInput from '../utils/jadn-editor';
-import { convertToJSON } from '../../store/actions/jadn';
+import * as ConvertActions from '../../store/actions/convert';
+import { setTabs } from '../../store/actions/tabs';
 
 class GenerateSchema extends Component {
   constructor(props, context) {
@@ -25,14 +24,16 @@ class GenerateSchema extends Component {
     this.onDrop = this.onDrop.bind(this);
 
     this.state = {
-      activeView: 'editor',
       schema: { meta: {}, types: [] },
       schemaPath: ''
     };
 
-    this.linkStyles = {
-      cursor: 'pointer'
-    };
+    this.props.setTabs([
+      'Editor',
+      'JADN',
+      'JSON',
+      'MarkDown'
+    ]);
 
     this.keys = SchemaStructure;
     this.minHeight = '50em';
@@ -66,7 +67,7 @@ class GenerateSchema extends Component {
       });
     });
 
-    ipcRenderer.on('schema-new', async (event, store) => {
+    ipcRenderer.on('schema-new', (event, store) => {
       const stateUpdate = {};
       switch (store.action) {
         case 'save':
@@ -96,17 +97,10 @@ class GenerateSchema extends Component {
 
     if (this.state.schema !== nextState.schema) {
       this.props.jadn2json(nextState.schema);
+      this.props.jadn2md(nextState.schema);
     }
 
     return propsChange || stateChange;
-  }
-
-  toggleViews(view) {
-    if (this.state.activeView !== view) {
-      this.setState({
-        activeView: view
-      });
-    }
   }
 
   onDrop(data) {
@@ -230,30 +224,6 @@ class GenerateSchema extends Component {
     return (
       <div className="row mx-auto">
         <div id="schema-view" className="col-12">
-          <Nav tabs>
-            <NavItem>
-              <NavLink
-                className={ this.state.activeView === 'editor' ? 'active' : '' }
-                style={ this.linkStyles }
-                onClick={ () => this.toggleViews('editor') }
-              >Editor</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={ this.state.activeView === 'jadn' ? 'active' : '' }
-                style={ this.linkStyles }
-                onClick={ () => this.toggleViews('jadn') }
-              >JADN</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={ this.state.activeView === 'json' ? 'active' : '' }
-                style={ this.linkStyles }
-                onClick={ () => this.toggleViews('json') }
-              >JSON</NavLink>
-            </NavItem>
-          </Nav>
-
           <Droppable
             types={ ['meta', 'types'] } // <= allowed drop types
             onDrop={ this.onDrop }
@@ -262,15 +232,12 @@ class GenerateSchema extends Component {
               minHeight: this.minHeight
             }}
           >
-            <TabContent activeTab={ this.state.activeView }>
+            <TabContent activeTab={ this.props.activeView }>
               <TabPane tabId="editor" className="border">
                 { this.SchemaEditor() }
               </TabPane>
               <TabPane tabId="jadn">
-                <div
-                  className="form-control m-0 p-0 border"
-                  style={{ minHeight: this.minHeight }}
-                >
+                <div className="m-0 p-0 border">
                   <JADNInput
                     id="jadn_schema"
                     placeholder={ this.state.schema }
@@ -281,14 +248,14 @@ class GenerateSchema extends Component {
                     width="100%"
                     viewOnly
                     // waitAfterKeyPress={ 500 }
+                    style={{
+                      outerBox: { minHeight: this.minHeight }
+                    }}
                   />
                 </div>
               </TabPane>
               <TabPane tabId="json">
-                <div
-                  className="form-control m-0 p-0 border"
-                  style={{ minHeight: this.minHeight }}
-                >
+                <div className="m-0 p-0 border">
                   <JSONInput
                     id="json_schema"
                     placeholder={ this.props.json_schema }
@@ -299,8 +266,14 @@ class GenerateSchema extends Component {
                     width="100%"
                     viewOnly
                     // waitAfterKeyPress={ 500 }
+                    style={{
+                      outerBox: { minHeight: this.minHeight }
+                    }}
                   />
                 </div>
+              </TabPane>
+              <TabPane tabId="markdown" className="border">
+                <ReactMarkdown source={ this.props.md_schema} />
               </TabPane>
             </TabContent>
           </Droppable>
@@ -311,20 +284,29 @@ class GenerateSchema extends Component {
 }
 
 GenerateSchema.propTypes = {
+  activeView: PropTypes.string.isRequired,
+  setTabs: PropTypes.func.isRequired,
   jadn2json: PropTypes.func.isRequired,
-  json_schema: PropTypes.object
+  jadn2md: PropTypes.func.isRequired,
+  json_schema: PropTypes.object,
+  md_schema: PropTypes.string
 };
 
 GenerateSchema.defaultProps = {
-  json_schema: {}
+  json_schema: {},
+  md_schema: ''
 };
 
 const mapStateToProps = state => ({
-  json_schema: state.jadn2json.json_schema
+  activeView: state.tabs.activeView,
+  json_schema: state.convert.json_schema,
+  md_schema: state.convert.md_schema
 });
 
 const mapDispatchToProps = dispatch => ({
-  jadn2json: jadn => dispatch(convertToJSON(jadn))
+  setTabs: tabs => dispatch(setTabs(tabs)),
+  jadn2json: jadn => dispatch(ConvertActions.convertToJSON(jadn)),
+  jadn2md: md => dispatch(ConvertActions.convertToMD(md))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GenerateSchema);
