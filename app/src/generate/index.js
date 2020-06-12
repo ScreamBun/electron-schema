@@ -3,17 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import { Droppable } from 'react-drag-and-drop';
-import ReactMarkdown from 'react-markdown';
 import {
   TabContent,
   TabPane
 } from 'reactstrap';
 
-import JSONInput from 'react-json-editor-ajrm';
-import locale from 'react-json-editor-ajrm/locale/en';
 
 import SchemaStructure from './lib/structure';
-import JADNInput from '../utils/jadn-editor';
+import * as Tabs from './lib/tabs';
 import * as ConvertActions from '../../store/actions/convert';
 import { setTabs } from '../../store/actions/tabs';
 
@@ -28,12 +25,8 @@ class GenerateSchema extends Component {
       schemaPath: ''
     };
 
-    this.props.setTabs([
-      'Editor',
-      'JADN',
-      'JSON',
-      'MarkDown'
-    ]);
+    this.props.setTabs(['Editor', ...Object.keys(Tabs)]);
+    this.tabs = Object.entries(Tabs).map(([name, Tab]) => <Tab key={ name } />);
 
     this.keys = SchemaStructure;
     this.minHeight = '50em';
@@ -96,6 +89,7 @@ class GenerateSchema extends Component {
     const stateChange = this.state !== nextState;
 
     if (this.state.schema !== nextState.schema) {
+      this.props.setJADN(nextState.schema);
       this.props.jadn2json(nextState.schema);
       this.props.jadn2md(nextState.schema);
     }
@@ -236,45 +230,8 @@ class GenerateSchema extends Component {
               <TabPane tabId="editor" className="border">
                 { this.SchemaEditor() }
               </TabPane>
-              <TabPane tabId="jadn">
-                <div className="m-0 p-0 border">
-                  <JADNInput
-                    id="jadn_schema"
-                    placeholder={ this.state.schema }
-                    theme="light_mitsuketa_tribute"
-                    locale={ locale }
-                    // reset
-                    height="100%"
-                    width="100%"
-                    viewOnly
-                    // waitAfterKeyPress={ 500 }
-                    style={{
-                      outerBox: { minHeight: this.minHeight }
-                    }}
-                  />
-                </div>
-              </TabPane>
-              <TabPane tabId="json">
-                <div className="m-0 p-0 border">
-                  <JSONInput
-                    id="json_schema"
-                    placeholder={ this.props.json_schema }
-                    theme="light_mitsuketa_tribute"
-                    locale={ locale }
-                    // reset
-                    height="100%"
-                    width="100%"
-                    viewOnly
-                    // waitAfterKeyPress={ 500 }
-                    style={{
-                      outerBox: { minHeight: this.minHeight }
-                    }}
-                  />
-                </div>
-              </TabPane>
-              <TabPane tabId="markdown" className="border">
-                <ReactMarkdown source={ this.props.md_schema} />
-              </TabPane>
+
+              { this.tabs }
             </TabContent>
           </Droppable>
         </div>
@@ -286,27 +243,22 @@ class GenerateSchema extends Component {
 GenerateSchema.propTypes = {
   activeView: PropTypes.string.isRequired,
   setTabs: PropTypes.func.isRequired,
+  setJADN: PropTypes.func.isRequired,
   jadn2json: PropTypes.func.isRequired,
-  jadn2md: PropTypes.func.isRequired,
-  json_schema: PropTypes.object,
-  md_schema: PropTypes.string
+  jadn2md: PropTypes.func.isRequired
 };
 
-GenerateSchema.defaultProps = {
-  json_schema: {},
-  md_schema: ''
-};
+GenerateSchema.defaultProps = {};
 
 const mapStateToProps = state => ({
-  activeView: state.tabs.activeView,
-  json_schema: state.convert.json_schema,
-  md_schema: state.convert.md_schema
+  activeView: state.tabs.activeView
 });
 
 const mapDispatchToProps = dispatch => ({
   setTabs: tabs => dispatch(setTabs(tabs)),
+  setJADN: jadn => dispatch(ConvertActions.setJADN(jadn)),
   jadn2json: jadn => dispatch(ConvertActions.convertToJSON(jadn)),
-  jadn2md: md => dispatch(ConvertActions.convertToMD(md))
+  jadn2md: jadn => dispatch(ConvertActions.convertToMD(jadn))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GenerateSchema);

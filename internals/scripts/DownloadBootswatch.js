@@ -9,7 +9,7 @@ const CHECK_DIRS = ['themes', 'assets', 'assets/fonts'];
 
 const THEME_API = 'https://bootswatch.com/api/4.json';
 const THEME_FONT_DIR = '/assets/';
-const THEME_FONT_URL = '../assets/';
+const THEME_FONT_URL = '@{assetsDir}/';
 
 const CSS_URL_IMPORT = new NamedRegExp(/^@import url\(["'](:<url>.*?)["']\);\s*?$/);
 const FILE_URL_IMPORT = new NamedRegExp(/\s*?src:( local\(.*?\),)? local\(['"](:<name>.*?)['"]\), url\(['"]?(:<url>.*?)['"]?\) format\(['"](:<format>.*?)['"]\);/);
@@ -73,7 +73,7 @@ BootswatchThemes.themes.forEach(theme => {
     return processedLine;
   });
 
-  const outFile = path.join(ROOT_DIR, 'themes', `${themeName}.css`);
+  const outFile = path.join(ROOT_DIR, 'themes', `${themeName}.less`);
   const themeCss = fs.createWriteStream(outFile, { flags: 'w' });
   themeCss.write(postProcessCss.join('\n'));
   themeCss.end();
