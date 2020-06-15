@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 
 // Config
-import { createBrowserHistory } from 'history';
 import configureStore from './store';
 
 // Import styles
@@ -13,8 +12,7 @@ import './resources/styles.global.less';
 // App Components
 import App from './src';
 
-const history = createBrowserHistory();
-const store = configureStore(history);
+const store = configureStore();
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
 
@@ -22,7 +20,7 @@ const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
 const Root = () => (
   <AppContainer>
     <Provider store={ store } >
-      <App history={ history } />
+      <App />
     </Provider>
   </AppContainer>
 );

@@ -9,7 +9,7 @@ const CHECK_DIRS = ['themes', 'assets', 'assets/fonts'];
 
 const THEME_API = 'https://bootswatch.com/api/4.json';
 const THEME_FONT_DIR = '/assets/';
-const THEME_FONT_URL = '@{assetsDir}/';
+const THEME_FONT_URL = '../assets/';
 
 const CSS_URL_IMPORT = new NamedRegExp(/^@import url\(["'](:<url>.*?)["']\);\s*?$/);
 const FILE_URL_IMPORT = new NamedRegExp(/\s*?src:( local\(.*?\),)? local\(['"](:<name>.*?)['"]\), url\(['"]?(:<url>.*?)['"]?\) format\(['"](:<format>.*?)['"]\);/);

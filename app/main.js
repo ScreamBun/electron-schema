@@ -17,12 +17,12 @@ app.allowRendererProcessReuse = true;
 
 // JADN Setup
 const schemaConverters = {
-  [SchemaFormats.HTML]: schema => convert.html.dumps(schema),
-  [SchemaFormats.JADN]: schema => convert.jadn.dumps(schema),
-  // [SchemaFormats.JIDL]: schema => convert.jidl.dumps(schema),
-  [SchemaFormats.JSON]: schema => convert.json.dumps(schema),
-  [SchemaFormats.MarkDown]: schema => convert.md.dumps(schema)
-  // [SchemaFormats.PDF]: schema => convert.pdf.dumps(schema),
+  [SchemaFormats.HTML]: schema => convert.schema.html.dumps(schema),
+  [SchemaFormats.JADN]: schema => convert.schema.jadn.dumps(schema),
+  // [SchemaFormats.JIDL]: schema => convert.schema.jidl.dumps(schema),
+  [SchemaFormats.JSON]: schema => convert.schema.json.dumps(schema),
+  [SchemaFormats.MarkDown]: schema => convert.schema.md.dumps(schema)
+  // [SchemaFormats.PDF]: schema => convert.schema.pdf.dumps(schema),
 };
 
 // App Window Setup

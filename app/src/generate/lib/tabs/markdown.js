@@ -41,13 +41,13 @@ class MarkDown extends Component {
             <span className="h3">MarkDown</span>
             <ButtonGroup className="float-right">
               <Button
-                className={ this.state.activeTab === 'text' ? 'active' : '' }
+                active={ this.state.activeTab === 'text' }
                 onClick={ this.toggleTabs }
               >
                 <FontAwesomeIcon icon={ faCode } />
               </Button>
               <Button
-                className={ !this.state.activeTab === 'render' ? 'active' : '' }
+                active={ this.state.activeTab === 'render' }
                 onClick={ this.toggleTabs }
               >
                 <FontAwesomeIcon icon={ faFileAlt } />
