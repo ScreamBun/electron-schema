@@ -1,20 +1,18 @@
 import React, { Fragment } from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
-
-// Config
-import configureStore from './store';
-
-// Import styles
-import './resources/styles.global.less';
+import { Provider } from 'react-redux';
 
 // App Components
+import configureStore from './store';
 import App from './src';
 
-const store = configureStore();
+// App Styles
+import './resources/styles.global.less';
 
+// App Config
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
+const store = configureStore();
 
 // Create main App component
 const Root = () => (
@@ -25,5 +23,7 @@ const Root = () => (
   </AppContainer>
 );
 
-// Render the application into the DOM, the div inside index.html
-render(<Root />, document.getElementById('root'));
+// Render the application into the DOM, the #root div inside index.html
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => render(<Root />, document.getElementById('root')), 10);
+});

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import GenerateSchema from './generate';
 import { Nav, Sidebar } from './static';
 

@@ -2,7 +2,9 @@ import {
   app,
   dialog,
   shell,
-  Menu
+  Menu,
+  BrowserWindow,
+  MenuItemConstructorOptions
 } from 'electron';
 import contextMenu from 'electron-context-menu';
 import fs from 'fs';
@@ -13,22 +15,26 @@ const isDebug = process.env.NODE_ENV !== 'production' || process.env.DEBUG_PROD 
 const isMac = process.platform === 'darwin';
 const isWin = ['win32', 'win64'].includes(process.platform);
 
+
 export default class MenuBuilder {
-  constructor(mainWindow) {
+  mainWindow: BrowserWindow;
+
+  constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
   }
 
   buildMenu() {
+    this.setupContextMenu();
+
     const template = this.buildTemplate();
     const menu = Menu.buildFromTemplate(template);
 
-    this.setupContextMenu();
     Menu.setApplicationMenu(menu);
     return menu;
   }
 
   setupContextMenu() {
-    const isVisible = (params, action) => {
+    const isVisible = (params: Electron.ContextMenuParams, action: string): boolean => {
       let vis = params.isEditable;
       vis = vis && safeGet(params.editFlags, `can${action}`, false);
       vis = vis && this.validInputFields.includes(params.inputFieldType);
@@ -57,70 +63,23 @@ export default class MenuBuilder {
     });
   }
 
-  buildTemplate() {
-    // Mac only menus
-    const subMenuAbout = {
-      label: app.name,
-      submenu: [
-        {
-          label: 'About ElectronReact',
-          selector: 'orderFrontStandardAboutPanel:'
-        },
-        { type: 'separator' },
-        { label: 'Services', submenu: [] },
-        { type: 'separator' },
-        {
-          label: 'Hide ElectronReact',
-          accelerator: 'Command+H',
-          selector: 'hide:'
-        },
-        {
-          label: 'Hide Others',
-          accelerator: 'Command+Shift+H',
-          selector: 'hideOtherApplications:'
-        },
-        { label: 'Show All', selector: 'unhideAllApplications:' },
-        { type: 'separator' },
-        {
-          label: 'Quit',
-          accelerator: 'Command+Q',
-          click: () => app.quit()
-        }
-      ]
-    };
-    const subMenuWindow = {
-      label: 'Window',
-      submenu: [
-        {
-          label: 'Minimize',
-          accelerator: 'Command+M',
-          selector: 'performMiniaturize:'
-        },
-        { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
-        { type: 'separator' },
-        { label: 'Bring All to Front', selector: 'arrangeInFront:' }
-      ]
-    };
-
-    // Windows only menus
-
-    // Shared menus
-    const subMenuFile = {
+  buildTemplate(): Array<MenuItemConstructorOptions> {
+    const menuFile: MenuItemConstructorOptions = {
       label: '&File',
       submenu: [
         {
           label: '&New',
-          accelerator: isMac ? 'Command+N' : 'Ctrl+N',
+          accelerator: `${isMac ? 'Command' : 'Ctrl'}+N`,
           click: () => this.newSchema()
         },
         {
           label: '&Open',
-          accelerator: isMac ? 'Command+O' : 'Ctrl+O',
+          accelerator: `${isMac ? 'Command' : 'Ctrl'}+O`,
           click: () => this.openFile()
         },
         {
           label: '&Save',
-          accelerator: isMac ? 'Command+S' : 'Ctrl+S',
+          accelerator: `${isMac ? 'Command' : 'Ctrl'}+S`,
           click: () => this.mainWindow.webContents.send('file-save', {})
         },
         { type: 'separator' },
@@ -153,81 +112,63 @@ export default class MenuBuilder {
         }
       ]
     };
-
-    if (isWin) {
-      subMenuFile.submenu.push(
-        { type: 'separator' },
-        {
-          label: '&Close',
-          accelerator: 'Ctrl+W',
-          click: () => this.mainWindow.close()
-        }
-      );
-    }
-
-    const subMenuEdit = {
+    const menuEdit: MenuItemConstructorOptions = {
       label: '&Edit',
       submenu: [
         {
           label: '&Undo',
-          accelerator: isMac ? 'Command+Z' : 'Ctrl+Z',
+          accelerator: `${isMac ? 'Command' : 'Ctrl'}+Z`,
           selector: 'undo:'
         },
         {
           label: '&Redo',
-          accelerator: isMac ? 'Shift+Command+Z' : 'Shift+Ctrl+Z',
+          accelerator: `Shift+${isMac ? 'Command' : 'Ctrl'}+Z`,
           selector: 'redo:'
         },
         { type: 'separator' },
         {
           label: '&Cut',
-          accelerator: isMac ? 'Command+X' : 'Ctrl+X',
+          accelerator: `${isMac ? 'Command' : 'Ctrl'}+X`,
           selector: 'cut:'
         },
         {
           label: '&Copy',
-          accelerator: isMac ? 'Command+C' : 'Ctrl+C',
+          accelerator: `${isMac ? 'Command' : 'Ctrl'}+C`,
           selector: 'copy:'
         },
         {
           label: '&Paste',
-          accelerator: isMac ? 'Command+V' : 'Ctrl+V',
+          accelerator: `${isMac ? 'Command' : 'Ctrl'}+V`,
           selector: 'paste:'
         },
         {
           label: '&Select All',
-          accelerator: isMac ? 'Command+A' : 'Ctrl+A',
+          accelerator: `${isMac ? 'Command' : 'Ctrl'}+A`,
           selector: 'selectAll:'
         }
       ]
     };
-    const subMenuViewDev = {
+    const menuViewDev: MenuItemConstructorOptions = {
       label: '&View',
       submenu: [
         {
           label: '&Reload',
-          accelerator: isMac ? 'Command+R' : 'Ctrl+R',
-          click: () => {
-            this.mainWindow.webContents.reload();
-          }
+          accelerator: `${isMac ? 'Command' : 'Ctrl'}+R`,
+          click: () => this.mainWindow.webContents.reload()
         },
         {
           label: 'Toggle Full Screen',
           accelerator: isMac ? 'Ctrl+Command+F' : 'F11',
-          click: () => {
-            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          }
+          click: () => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
         },
         {
           label: 'Toggle Developer Tools',
-          accelerator: isMac ? 'Alt+Command+I' : 'Alt+Ctrl+I',
-          click: () => {
-            this.mainWindow.toggleDevTools();
-          }
+          accelerator: `Alt+${isMac ? 'Command' : 'Ctrl'}+I`,
+          click: () => this.mainWindow.webContents.toggleDevTools()
         }
       ]
     };
-    const subMenuViewProd = {
+    const menuViewProd: MenuItemConstructorOptions = {
       label: 'View',
       submenu: [
         {
@@ -237,9 +178,9 @@ export default class MenuBuilder {
         }
       ]
     };
-    const subMenuView = isDebug ? subMenuViewDev : subMenuViewProd;
+    const menuView = isDebug ? menuViewDev : menuViewProd;
 
-    const subMenuHelp = {
+    const menuHelp: MenuItemConstructorOptions = {
       label: 'Help',
       submenu: [
         {
@@ -249,21 +190,74 @@ export default class MenuBuilder {
       ]
     };
 
-    const menuTemplate = [subMenuFile, subMenuEdit, subMenuView, subMenuHelp];
-
+    // Mac only options
     if (isMac) {
-      menuTemplate.splice(0, 0, subMenuAbout);
-      menuTemplate.splice(4, 0, subMenuWindow);
+      const menuAbout: MenuItemConstructorOptions = {
+        label: app.name,
+        submenu: [
+          {
+            label: 'About ElectronReact',
+            selector: 'orderFrontStandardAboutPanel:'
+          },
+          { type: 'separator' },
+          { label: 'Services', submenu: [] },
+          { type: 'separator' },
+          {
+            label: 'Hide ElectronReact',
+            accelerator: 'Command+H',
+            selector: 'hide:'
+          },
+          {
+            label: 'Hide Others',
+            accelerator: 'Command+Shift+H',
+            selector: 'hideOtherApplications:'
+          },
+          { label: 'Show All', selector: 'unhideAllApplications:' },
+          { type: 'separator' },
+          {
+            label: 'Quit',
+            accelerator: 'Command+Q',
+            click: () => app.quit()
+          }
+        ]
+      };
+      const menuWindow: MenuItemConstructorOptions = {
+        label: 'Window',
+        submenu: [
+          {
+            label: 'Minimize',
+            accelerator: 'Command+M',
+            selector: 'performMiniaturize:'
+          },
+          { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
+          { type: 'separator' },
+          { label: 'Bring All to Front', selector: 'arrangeInFront:' }
+        ]
+      };
+
+      return [menuAbout, menuFile, menuEdit, menuView, menuWindow, menuHelp];
     }
 
-    return menuTemplate;
+    // Windows only options
+    if (isWin) {
+      menuFile.submenu.push(
+        { type: 'separator' },
+        {
+          label: '&Close',
+          accelerator: 'Ctrl+W',
+          click: () => this.mainWindow.close()
+        }
+      );
+    }
+
+    return [menuFile, menuEdit, menuView, menuHelp];
   }
 
-  webContentsSave(fmt) {
+  webContentsSave(fmt: SchemaFormats) {
     this.mainWindow.webContents.send('file-save', { format: fmt });
   }
 
-  openFile(file) {
+  openFile(file?: string) {
     if (file) {
       console.log(file);
     } else {
@@ -274,18 +268,18 @@ export default class MenuBuilder {
           filters: [{ name: 'Default', extensions: ['jadn'] }]
         })
         .then(result => {
-          const rslt = { ...result };
+          const rslt: Record<string, any> = { ...result };
           if (!rslt.canceled) {
             app.addRecentDocument(rslt.filePaths[0]);
             try {
-              const rawFile = fs.readFileSync(rslt.filePaths[0]);
+              const rawFile = fs.readFileSync(rslt.filePaths[0]).toString();
               rslt.contents = JSON.parse(rawFile);
               this.mainWindow.webContents.send('file-open', rslt);
             } catch (err) {
               dialog.showMessageBoxSync(this.mainWindow, {
                 type: 'error',
                 title: 'Open Error',
-                detail: 'DETAILS -> TBD...'
+                message: 'DETAILS -> TBD...'
               });
               console.error(err);
             }

@@ -57,7 +57,7 @@ module.exports = {
   }],
   'react/jsx-equals-spacing': [0, 'never'],
   'react/jsx-filename-extension': [2, {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx', '.tsx']
   }],
   'react/jsx-first-prop-new-line': [0, 'multiline-multiprop'],
   'react/jsx-fragments': [2, 'syntax'],

@@ -5,28 +5,50 @@ import {
   ipcMain,
   BrowserWindow
 } from 'electron';
+import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
 import fs from 'fs';
 import { convert, SchemaFormats } from 'jadnschema';
-import url from 'url';
+import { SchemaSimpleJADN } from 'jadnschema/lib/jadnschema/schema/interfaces';
+import path from 'path';
 import MenuBuilder from './menu';
 
 // Config
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const isWin = ['win32', 'win64'].includes(process.platform);
 app.allowRendererProcessReuse = true;
 
 // JADN Setup
 const schemaConverters = {
-  [SchemaFormats.HTML]: schema => convert.schema.html.dumps(schema),
-  [SchemaFormats.JADN]: schema => convert.schema.jadn.dumps(schema),
-  // [SchemaFormats.JIDL]: schema => convert.schema.jidl.dumps(schema),
-  [SchemaFormats.JSON]: schema => convert.schema.json.dumps(schema),
-  [SchemaFormats.MarkDown]: schema => convert.schema.md.dumps(schema)
-  // [SchemaFormats.PDF]: schema => convert.schema.pdf.dumps(schema),
+  [SchemaFormats.HTML]: (schema: SchemaSimpleJADN) => convert.schema.html.dumps(schema),
+  [SchemaFormats.JADN]: (schema: SchemaSimpleJADN) => convert.schema.jadn.dumps(schema),
+  // [SchemaFormats.JIDL]: (schema: SchemaSimpleJADN) => convert.schema.jidl.dumps(schema),
+  [SchemaFormats.JSON]: (schema: SchemaSimpleJADN) => convert.schema.json.dumps(schema),
+  [SchemaFormats.MarkDown]: (schema: SchemaSimpleJADN) => convert.schema.md.dumps(schema)
+  // [SchemaFormats.PDF]: (schema: SchemaSimpleJADN) => convert.schema.pdf.dumps(schema),
 };
 
+// App Updater
+export default class AppUpdater {
+  constructor() {
+    log.transports.file.level = 'info';
+    autoUpdater.logger = log;
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+}
+
 // App Window Setup
+let mainWindow: BrowserWindow | null = null;
+
+if (process.env.NODE_ENV === 'production') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require('source-map-support').install();
+} else if (isDevelopment || process.env.DEBUG_PROD === 'true') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require('electron-debug')();
+}
+
 const installExtensions = async () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
   const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
@@ -36,76 +58,57 @@ const installExtensions = async () => {
   ).catch(console.log);
 };
 
-// Window objects
-let mainWindow = null;
+// Window Creation
+const createMainWindow = async () => {
+  if (isDevelopment || process.env.DEBUG_PROD === 'true') {
+    await installExtensions();
+  }
 
-if (process.env.NODE_ENV === 'production') {
-  require('source-map-support').install();
-} else if (isDevelopment) {
-  require('electron-debug')();
-}
-
-// Temporary fix broken high-dpi scale factor on Windows (125% scaling)
-// info: https://github.com/electron/electron/issues/9691
-if (isWin) {
-  app.commandLine.appendSwitch('high-dpi-support', 'true');
-  app.commandLine.appendSwitch('force-device-scale-factor', '1');
-}
-
-/* Add event listeners... */
-const createMainWindow = () => {
-  // Create the browser window.
+  // Create the browser window
   mainWindow = new BrowserWindow({
-    width: 1024,
     height: 768,
+    width: 1024,
     show: false,
-    webPreferences: {
+    webPreferences: isDevelopment || process.env.E2E_BUILD === 'true' ? {
       nodeIntegration: true
+    } : {
+      preload: path.join(__dirname, 'renderer.prod.js')
     }
   });
 
-  if (isDevelopment) {
-    console.log('Dev Run');
-    mainWindow.webContents.openDevTools();
-  }
-
   // Load content
-  mainWindow.loadURL(
-    url.format({
-      pathname: `${__dirname}/app.html`,
-      protocol: 'file',
-      slashes: true
-    })
-  );
+  mainWindow.loadURL(`file://${__dirname}/app.html`);
 
   // Don't show until we are ready and loaded
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-    mainWindow.focus();
+    if (process.env.START_MINIMIZED) {
+      mainWindow.minimize();
+    } else {
+      mainWindow.show();
+      mainWindow.focus();
 
-    // Open the DevTools automatically if developing
-    if (isDevelopment) {
-      mainWindow.webContents.openDevTools();
+      // Open the DevTools automatically if developing
+      if (isDevelopment) {
+        mainWindow.webContents.openDevTools();
+      }
     }
   });
 
-  // Emitted when the window is closed.
+  // Emitted when the window is closed
   mainWindow.on('closed', () => {
     mainWindow = null;
-  });
-
-  mainWindow.webContents.on('devtools-opened', () => {
-    mainWindow.focus();
-    setImmediate(() => {
-      mainWindow.focus();
-    });
   });
 
   // Build and add app menu
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
+
+  // Remove this if your app does not use auto updates
+  // eslint-disable-next-line
+  new AppUpdater();
 };
 
+/* Add event listeners... */
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
@@ -114,23 +117,20 @@ app.on('window-all-closed', () => {
   }
 });
 
-// create main BrowserWindow when electron is ready
-app.on('ready', async () => {
-  if (isDevelopment) {
-    await installExtensions();
-  }
-  createMainWindow();
-});
+// Create main BrowserWindow when electron is ready
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+app.on('ready', createMainWindow);
 
 app.on('activate', () => {
-  // on macOS it is common to re-create a window even after all windows have been closed
+  // On macOS it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open
   if (mainWindow === null) {
     createMainWindow();
   }
 });
 
 // Recent Documents action `Open`
-app.on('open-file', (event, filePath) => {
+app.on('open-file', (_, filePath) => {
   try {
     const rawFile = fs.readFileSync(filePath).toString();
     const packageObj = JSON.parse(rawFile);
@@ -149,7 +149,12 @@ app.on('open-file', (event, filePath) => {
 });
 
 // Renderer event actions
-const convertSchema = args => {
+interface Args {
+  format: SchemaFormats;
+  schema: SchemaSimpleJADN;
+}
+
+const convertSchema = (args: Args) => {
   const schema = args.schema ? args.schema : {};
   const format = args.format || 'NULL';
 
@@ -206,4 +211,4 @@ ipcMain.on('file-save', (event, args) => {
     });
 });
 
-ipcMain.handle('convert-schema', (event, args) => convertSchema(args));
+ipcMain.handle('convert-schema', (_, args: Args) => convertSchema(args));

@@ -5,10 +5,11 @@ import download from 'download-file';
 import request from 'sync-request';
 
 const ROOT_DIR = path.join(__dirname, '..', '..', 'app', 'resources');
+const THEME_DIR = path.join(ROOT_DIR, 'themes');
+const THEME_FONT_DIR = path.join(ROOT_DIR, 'assets', 'fonts');
 const CHECK_DIRS = ['themes', 'assets', 'assets/fonts'];
 
 const THEME_API = 'https://bootswatch.com/api/4.json';
-const THEME_FONT_DIR = '/assets/';
 const THEME_FONT_URL = '../assets/';
 
 const CSS_URL_IMPORT = new NamedRegExp(/^@import url\(["'](:<url>.*?)["']\);\s*?$/);
@@ -24,12 +25,10 @@ CHECK_DIRS.forEach(d => {
 
 let BootswatchThemes = request('GET', THEME_API);
 BootswatchThemes = JSON.parse(BootswatchThemes.getBody('utf8'));
-const themeNames = [];
 
 BootswatchThemes.themes.forEach(theme => {
   console.log(`Downloading Theme: ${theme.name}`);
   const themeName = theme.name.toLowerCase();
-  themeNames.push(themeName);
 
   let preProcessCss = [];
   const css = request('GET', theme.css).getBody('utf8');
@@ -52,19 +51,19 @@ BootswatchThemes.themes.forEach(theme => {
     if (line.match(/\s*?src:.*url\(["']?https?:\/\/.*/) && !line.startsWith('/*')) {
       const src = FILE_URL_IMPORT.exec(line).groups;
       const ext = path.extname(src.url);
-      const fileName = `fonts/${src.name}${ext}`;
+      const fileName = `${src.name}${ext}`;
 
-      if (!fs.existsSync(path.join(ROOT_DIR, THEME_FONT_DIR, fileName))) {
+      if (!fs.existsSync(path.join(THEME_FONT_DIR, fileName))) {
         const opts = {
-          directory: path.join(ROOT_DIR, THEME_FONT_DIR, 'fonts'),
-          filename: src.name + ext
+          directory: THEME_FONT_DIR,
+          filename: fileName
         };
         download(src.url, opts, err => {
           if (err) throw err;
           console.log(`Downloaded reference: ${opts.filename}`);
         });
       }
-      processedLine = processedLine.replace(URL_REPLACE, `url('${THEME_FONT_URL}${fileName}')`);
+      processedLine = processedLine.replace(URL_REPLACE, `url('${THEME_FONT_URL}fonts/${fileName}')`);
     }
 
     processedLine = processedLine.replace(/\\[^\\]/g, '\\\\');
@@ -73,7 +72,7 @@ BootswatchThemes.themes.forEach(theme => {
     return processedLine;
   });
 
-  const outFile = path.join(ROOT_DIR, 'themes', `${themeName}.less`);
+  const outFile = path.join(THEME_DIR, `${themeName}.less`);
   const themeCss = fs.createWriteStream(outFile, { flags: 'w' });
   themeCss.write(postProcessCss.join('\n'));
   themeCss.end();

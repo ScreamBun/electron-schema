@@ -18,7 +18,6 @@ module.exports = {
   rules: {
     // eslint-disable-next-line global-require
     ...require('./config/eslint_rules'),
-    // A temporary hack related to IDE not resolving correct package.json
-    'import/no-extraneous-dependencies': 0
+    'import/extensions': 0
   }
 };

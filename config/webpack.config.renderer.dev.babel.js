@@ -2,18 +2,15 @@
  * Build config for development electron renderer process that uses
  * Hot-Module-Replacement - https://webpack.js.org/concepts/hot-module-replacement/
  */
-import chalk from 'chalk';
 import { spawn, execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { TypedCssModulesPlugin } from 'typed-css-modules-webpack-plugin';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
-
-import Loaders from './webpack.loaders';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
-import baseConfig from './webpack.config.base';
+import baseConfig from './webpack.config.base.renderer';
 
 const NODE_ENV = 'development';
 
@@ -24,7 +21,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const ROOT_DIR = path.join(__dirname, '..');
-const DIST_DIR = path.join(__dirname, 'dist');
+const APP_DIR = path.join(ROOT_DIR, 'app');
+const DIST_DIR = path.join(APP_DIR, 'dist');
 const DLL_DIR = path.join(ROOT_DIR, 'dll');
 
 const port = process.env.PORT || 1212;
@@ -36,8 +34,7 @@ const requiredByDLLConfig = module.parent.filename.includes('webpack.config.rend
  * Warn if the DLL is not built
  */
 if (!requiredByDLLConfig && !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))) {
-  const msg = 'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"';
-  console.log(chalk.black.bgYellow.bold(msg));
+  console.info('The DLL files are missing. Sit back while we build them for you with "yarn build-dll"');
   execSync('yarn build-dll');
 }
 
@@ -48,7 +45,7 @@ export default merge.smart(baseConfig, {
     ...(process.env.PLAIN_HMR ? [] : ['react-hot-loader/patch']),
     `webpack-dev-server/client?http://localhost:${port}/`,
     'webpack/hot/only-dev-server',
-    require.resolve('../app/index.js')
+    require.resolve('../app/index.tsx')
   ],
   output: {
     publicPath: `http://localhost:${port}/dist/`,
@@ -120,76 +117,6 @@ export default merge.smart(baseConfig, {
     }
   },
   target: 'electron-renderer',
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          Loaders.css,
-        ]
-      },
-      {  // LESS support - compile all .less files and pipe it to style.css
-        test: /\.less$/,
-        use: [
-          'style-loader',
-          Loaders.css,
-          Loaders.less
-        ]
-      },
-      {  // SASS support - compile all .scss/sass files and pipe it to style.css
-        test: /\.s[ac]ss$/,
-        use: [
-          'style-loader',
-          Loaders.css,
-          {
-            loader: 'sass-loader'
-          }
-        ]
-      },
-      {  // WOFF Font
-        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        use: merge.smart(Loaders.url, {
-          options: {
-            mimetype: 'application/font-woff'
-          }
-        })
-      },
-      {  // WOFF2 Font
-        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        use: merge.smart(Loaders.url, {
-          options: {
-            mimetype: 'application/font-woff'
-          }
-        })
-      },
-      {  // TTF Font
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        use: merge.smart(Loaders.url, {
-          options: {
-            mimetype: 'application/octet-stream'
-          }
-        })
-      },
-      {  // EOT Font
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'file-loader'
-      },
-      { // SVG
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'svg-url-loader',
-        options: {
-          limit: 10 * 1024,
-          noquotes: true,
-          fallback: Loaders.file
-        }
-      },
-      {  // Common Image Formats
-        test: /\.(?:bmp|ico|gif|png|jpe?g|tiff|webp)$/,
-        use: Loaders.url
-      }
-    ]
-  },
   node: {
     __dirname: false,
     __filename: false
