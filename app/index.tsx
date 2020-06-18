@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { render } from 'react-dom';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
@@ -15,7 +15,7 @@ const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
 const store = configureStore();
 
 // Create main App component
-const Root = () => (
+const Root = (): Component => (
   <AppContainer>
     <Provider store={ store } >
       <App />

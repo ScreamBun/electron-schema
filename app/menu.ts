@@ -1,20 +1,24 @@
+import fs from 'fs';
 import {
   app,
   dialog,
   shell,
-  Menu,
   BrowserWindow,
+  Menu,
   MenuItemConstructorOptions
 } from 'electron';
 import contextMenu from 'electron-context-menu';
-import fs from 'fs';
 import { SchemaFormats } from 'jadnschema';
 import { safeGet } from './src/utils';
+
+interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
+  selector?: string;
+  submenu?: DarwinMenuItemConstructorOptions[] | Menu;
+}
 
 const isDebug = process.env.NODE_ENV !== 'production' || process.env.DEBUG_PROD === 'true';
 const isMac = process.platform === 'darwin';
 const isWin = ['win32', 'win64'].includes(process.platform);
-
 
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
@@ -23,7 +27,7 @@ export default class MenuBuilder {
     this.mainWindow = mainWindow;
   }
 
-  buildMenu() {
+  buildMenu(): Menu {
     this.setupContextMenu();
 
     const template = this.buildTemplate();
@@ -33,7 +37,7 @@ export default class MenuBuilder {
     return menu;
   }
 
-  setupContextMenu() {
+  setupContextMenu(): void {
     const isVisible = (params: Electron.ContextMenuParams, action: string): boolean => {
       let vis = params.isEditable;
       vis = vis && safeGet(params.editFlags, `can${action}`, false);
@@ -46,10 +50,10 @@ export default class MenuBuilder {
         actions.separator(),
         actions.copy({
           visible: isVisible(params, 'Copy')
-        }),
+        } as contextMenu.ActionOptions),
         actions.paste({
           visible: isVisible(params, 'Paste')
-        }),
+        } as contextMenu.ActionOptions),
         actions.separator(),
         isDebug ? actions.inspect() : actions.separator()
       ],
@@ -63,201 +67,224 @@ export default class MenuBuilder {
     });
   }
 
-  buildTemplate(): Array<MenuItemConstructorOptions> {
-    const menuFile: MenuItemConstructorOptions = {
-      label: '&File',
+  buildTemplate(): Array<DarwinMenuItemConstructorOptions|MenuItemConstructorOptions> {
+    const menu = this.baseMenu();
+
+    if (isMac) {
+      return this.macMenu(menu);
+    }
+    return menu;
+  }
+
+  baseMenu(): Array<DarwinMenuItemConstructorOptions|MenuItemConstructorOptions>{
+    const fileMenu: DarwinMenuItemConstructorOptions|MenuItemConstructorOptions = {
+      label: 'File',
       submenu: [
         {
-          label: '&New',
+          label: 'New',
           accelerator: `${isMac ? 'Command' : 'Ctrl'}+N`,
-          click: () => this.newSchema()
+          click: (): void => this.newSchema()
         },
         {
-          label: '&Open',
+          label: 'Open',
           accelerator: `${isMac ? 'Command' : 'Ctrl'}+O`,
-          click: () => this.openFile()
+          click: (): void => this.openFile()
         },
         {
-          label: '&Save',
+          label: 'Save',
           accelerator: `${isMac ? 'Command' : 'Ctrl'}+S`,
-          click: () => this.mainWindow.webContents.send('file-save', {})
+          click: (): void => this.mainWindow.webContents.send('file-save', {})
         },
         { type: 'separator' },
         {
           label: 'Export As',
           submenu: [
             {
-              label: '&JADN Schema',
-              click: () => this.webContentsSave(SchemaFormats.JADN)
+              label: 'JADN Schema',
+              click: (): void => this.webContentsSave(SchemaFormats.JADN)
             },
             {
-              label: '&JSON Schema',
-              click: () => this.webContentsSave(SchemaFormats.JSON)
+              label: 'JSON Schema',
+              click: (): void => this.webContentsSave(SchemaFormats.JSON)
             },
             {
-              label: '&HTML',
-              click: () => this.webContentsSave(SchemaFormats.HTML)
+              label: 'HTML',
+              click: (): void => this.webContentsSave(SchemaFormats.HTML)
             },
             {
-              label: '&MarkDown',
-              click: () => this.webContentsSave(SchemaFormats.MarkDown)
+              label: 'MarkDown',
+              click: (): void => this.webContentsSave(SchemaFormats.MarkDown)
             }
             /*
             {
               label: '&PDF',
-              click: () => this.webContentsSave(SchemaFormats.PDF)
+              click: (): void => this.webContentsSave(SchemaFormats.PDF)
             }
             */
-          ]
+          ],
+          ...(isWin ? [
+            { type: 'separator' },
+            {
+              label: 'Close',
+              accelerator: 'Ctrl+W',
+              click: (): void => this.mainWindow.close()
+            }
+          ] : [])
         }
       ]
     };
-    const menuEdit: MenuItemConstructorOptions = {
-      label: '&Edit',
+    const editMenu: DarwinMenuItemConstructorOptions|MenuItemConstructorOptions = {
+      label: 'Edit',
       submenu: [
         {
-          label: '&Undo',
+          label: 'Undo',
           accelerator: `${isMac ? 'Command' : 'Ctrl'}+Z`,
-          selector: 'undo:'
+          ...(isMac ? { selector: 'undo:' } : {})
         },
         {
-          label: '&Redo',
+          label: 'Redo',
           accelerator: `Shift+${isMac ? 'Command' : 'Ctrl'}+Z`,
-          selector: 'redo:'
+          ...(isMac ? { selector: 'redo:' } : {})
         },
         { type: 'separator' },
         {
-          label: '&Cut',
+          label: 'Cut',
           accelerator: `${isMac ? 'Command' : 'Ctrl'}+X`,
-          selector: 'cut:'
+          ...(isMac ? { selector: 'cut:' } : {})
         },
         {
-          label: '&Copy',
+          label: 'Copy',
           accelerator: `${isMac ? 'Command' : 'Ctrl'}+C`,
-          selector: 'copy:'
+          ...(isMac ? { selector: 'copy:' } : {})
         },
         {
-          label: '&Paste',
+          label: 'Paste',
           accelerator: `${isMac ? 'Command' : 'Ctrl'}+V`,
-          selector: 'paste:'
+          ...(isMac ? { selector: 'paste:' } : {})
         },
         {
-          label: '&Select All',
+          label: 'Select All',
           accelerator: `${isMac ? 'Command' : 'Ctrl'}+A`,
-          selector: 'selectAll:'
+          ...(isMac ? { selector: 'selectAll:' } : {})
         }
       ]
     };
-    const menuViewDev: MenuItemConstructorOptions = {
-      label: '&View',
+    const viewDev: MenuItemConstructorOptions = {
+      label: 'View',
       submenu: [
         {
-          label: '&Reload',
+          label: 'Reload',
           accelerator: `${isMac ? 'Command' : 'Ctrl'}+R`,
-          click: () => this.mainWindow.webContents.reload()
+          click: (): void => this.mainWindow.webContents.reload()
         },
         {
           label: 'Toggle Full Screen',
           accelerator: isMac ? 'Ctrl+Command+F' : 'F11',
-          click: () => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
+          click: (): void => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
         },
         {
           label: 'Toggle Developer Tools',
           accelerator: `Alt+${isMac ? 'Command' : 'Ctrl'}+I`,
-          click: () => this.mainWindow.webContents.toggleDevTools()
+          click: (): void => this.mainWindow.webContents.toggleDevTools()
         }
       ]
     };
-    const menuViewProd: MenuItemConstructorOptions = {
+    const viewProd: MenuItemConstructorOptions = {
       label: 'View',
       submenu: [
         {
-          label: 'Toggle &Full Screen',
+          label: 'Toggle Full Screen',
           accelerator: isMac ? 'Ctrl+Command+F' : 'F11',
-          click: () => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
+          click: (): void => this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
         }
       ]
     };
-    const menuView = isDebug ? menuViewDev : menuViewProd;
-
-    const menuHelp: MenuItemConstructorOptions = {
+    const helpMenu = {
       label: 'Help',
       submenu: [
         {
           label: 'JADN Learn More',
-          click: () => shell.openExternal('https://github.com/oasis-tcs/openc2-jadn')
+          click: (): Promise<void> => shell.openExternal('https://github.com/oasis-tcs/openc2-jadn')
         }
       ]
     };
 
-    // Mac only options
-    if (isMac) {
-      const menuAbout: MenuItemConstructorOptions = {
-        label: app.name,
-        submenu: [
-          {
-            label: 'About ElectronReact',
-            selector: 'orderFrontStandardAboutPanel:'
-          },
-          { type: 'separator' },
-          { label: 'Services', submenu: [] },
-          { type: 'separator' },
-          {
-            label: 'Hide ElectronReact',
-            accelerator: 'Command+H',
-            selector: 'hide:'
-          },
-          {
-            label: 'Hide Others',
-            accelerator: 'Command+Shift+H',
-            selector: 'hideOtherApplications:'
-          },
-          { label: 'Show All', selector: 'unhideAllApplications:' },
-          { type: 'separator' },
-          {
-            label: 'Quit',
-            accelerator: 'Command+Q',
-            click: () => app.quit()
-          }
-        ]
-      };
-      const menuWindow: MenuItemConstructorOptions = {
-        label: 'Window',
-        submenu: [
-          {
-            label: 'Minimize',
-            accelerator: 'Command+M',
-            selector: 'performMiniaturize:'
-          },
-          { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
-          { type: 'separator' },
-          { label: 'Bring All to Front', selector: 'arrangeInFront:' }
-        ]
-      };
-
-      return [menuAbout, menuFile, menuEdit, menuView, menuWindow, menuHelp];
-    }
-
-    // Windows only options
-    if (isWin) {
-      menuFile.submenu.push(
-        { type: 'separator' },
-        {
-          label: '&Close',
-          accelerator: 'Ctrl+W',
-          click: () => this.mainWindow.close()
-        }
-      );
-    }
-
-    return [menuFile, menuEdit, menuView, menuHelp];
+    return [
+      fileMenu,
+      editMenu,
+      isDebug ? viewDev : viewProd,
+      helpMenu
+    ];
   }
 
-  webContentsSave(fmt: SchemaFormats) {
+  // eslint-disable-next-line class-methods-use-this
+  macMenu(base: Array<DarwinMenuItemConstructorOptions|MenuItemConstructorOptions>): Array<DarwinMenuItemConstructorOptions|MenuItemConstructorOptions> {
+    const aboutMenu: DarwinMenuItemConstructorOptions = {
+      label: app.name,
+      submenu: [
+        {
+          label: 'About ElectronReact',
+          selector: 'orderFrontStandardAboutPanel:'
+        },
+        { type: 'separator' },
+        {
+          label: 'Services',
+          submenu: []
+        },
+        { type: 'separator' },
+        {
+          label: 'Hide ElectronReact',
+          accelerator: 'Command+H',
+          selector: 'hide:'
+        },
+        {
+          label: 'Hide Others',
+          accelerator: 'Command+Shift+H',
+          selector: 'hideOtherApplications:'
+        },
+        {
+          label: 'Show All',
+          selector: 'unhideAllApplications:'
+        },
+        { type: 'separator' },
+        {
+          label: 'Quit',
+          accelerator: 'Command+Q',
+          click: (): void => app.quit()
+        }
+      ]
+    };
+    const windowMenu: DarwinMenuItemConstructorOptions = {
+      label: 'Window',
+      submenu: [
+        {
+          label: 'Minimize',
+          accelerator: 'Command+M',
+          selector: 'performMiniaturize:'
+        },
+        {
+          label: 'Close',
+          accelerator: 'Command+W',
+          selector: 'performClose:'
+        },
+        { type: 'separator' },
+        {
+          label: 'Bring All to Front',
+          selector: 'arrangeInFront:'
+        }
+      ]
+    };
+
+    base.splice(0, 0, aboutMenu);
+    base.splice(4, 0, windowMenu);
+    return base;
+  }
+
+  webContentsSave(fmt: SchemaFormats): void {
     this.mainWindow.webContents.send('file-save', { format: fmt });
   }
 
-  openFile(file?: string) {
+  openFile(file?: string): void {
     if (file) {
       console.log(file);
     } else {
@@ -268,6 +295,7 @@ export default class MenuBuilder {
           filters: [{ name: 'Default', extensions: ['jadn'] }]
         })
         .then(result => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const rslt: Record<string, any> = { ...result };
           if (!rslt.canceled) {
             app.addRecentDocument(rslt.filePaths[0]);
@@ -292,7 +320,7 @@ export default class MenuBuilder {
     }
   }
 
-  newSchema() {
+  newSchema(): void {
     const buttons = ['Cancel', 'Erase', 'Save'];
     const rslt = dialog.showMessageBoxSync(this.mainWindow, {
       type: 'question',

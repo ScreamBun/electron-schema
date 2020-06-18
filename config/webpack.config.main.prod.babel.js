@@ -6,7 +6,6 @@ import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import merge from 'webpack-merge';
-
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import DeleteSourceMaps from '../internals/scripts/DeleteSourceMaps';
 
@@ -20,10 +19,9 @@ const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
 const DIST_DIR = path.join(APP_DIR, 'dist');
 
-
 export default merge.smart(baseConfig, {
   mode: NODE_ENV,
-  devtool: process.env.DEBUG_PROD === 'true' ? 'cheap-source-map' : 'none',
+  devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
   entry: './app/main',
   output: {
     path: DIST_DIR,

@@ -18,7 +18,6 @@ class GenerateSchema extends Component {
   constructor(props, context) {
     super(props, context);
     this.mql = window.matchMedia('(min-width: 768px)');
-    this.onDrop = this.onDrop.bind(this);
 
     this.state = {
       schema: { meta: {}, types: [] },
@@ -220,7 +219,7 @@ class GenerateSchema extends Component {
         <div id="schema-view" className="col-12">
           <Droppable
             types={ ['meta', 'types'] } // <= allowed drop types
-            onDrop={ this.onDrop }
+            onDrop={ this.onDrop.bind(this) }
             className="col-12 p-0"
             style={{
               minHeight: this.minHeight

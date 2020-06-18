@@ -20,7 +20,6 @@ import logo from '../../../resources/icon.png';
 class NavBar extends Component {
   constructor(props, context) {
     super(props, context);
-    this.toggleNav = this.toggleNav.bind(this);
 
     this.state = {
       navOpen: false
@@ -58,7 +57,7 @@ class NavBar extends Component {
               color="info"
               data-toggle="collapse"
               aria-label="Toggle sidebar"
-              onClick={ () => this.context.sidebarToggle() }
+              onClick={ this.context.sidebarToggle }
             >
               <FontAwesomeIcon icon={ faEllipsisV } size="lg" className="mx-1" />
             </Button>
@@ -70,7 +69,7 @@ class NavBar extends Component {
               aria-controls="navMain"
               aria-expanded="false"
               aria-label="Toggle navigation"
-              onClick={ this.toggleNav }
+              onClick={ this.toggleNav.bind(this) }
             >
               <FontAwesomeIcon icon={ faBars } size="lg" />
             </Button>

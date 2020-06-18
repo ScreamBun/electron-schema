@@ -107,8 +107,6 @@ class OptionsModal extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.saveModal = this.saveModal.bind(this);
-    this.saveModalState = this.saveModalState.bind(this);
 
     this.state = OptionsModal.deserializeOptionsData(this.props.optionValues);
   }
@@ -131,13 +129,13 @@ class OptionsModal extends Component {
       <ModalBody>
         <FieldOptionsEditor
           deserializedState={ this.state.field }
-          saveModalState={ this.saveModalState }
+          saveModalState={ this.saveModalState.bind(this) }
           fieldOptions={ this.props.fieldOptions }
         />
-        <TypeOptionsEditor deserializedState={ this.state.type } saveModalState={ this.saveModalState } />
+        <TypeOptionsEditor deserializedState={ this.state.type } saveModalState={ this.saveModalState.bind(this) } />
       </ModalBody>
       <ModalFooter>
-        <Button color="success" onClick={ this.saveModal }>Set</Button>
+        <Button color="success" onClick={ this.saveModal.bind(this) }>Set</Button>
         <Button color="secondary" onClick={ this.props.toggleModal }>Close</Button>
       </ModalFooter>
     </Modal>

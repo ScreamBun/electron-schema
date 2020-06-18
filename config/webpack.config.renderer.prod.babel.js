@@ -1,9 +1,9 @@
 /**
  * Build config for electron renderer process
  */
+import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
-import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
@@ -21,13 +21,28 @@ const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
 const DIST_DIR = path.join(APP_DIR, 'dist');
 
+const cssLoader = [
+  {
+    loader: MiniCssExtractPlugin.loader,
+    options: {
+      publicPath: './'
+    }
+  },
+  {
+    loader: 'css-loader',
+    options: {
+      sourceMap: true
+    }
+  }
+];
+
 export default merge.smart(baseConfig, {
   mode: NODE_ENV,
-  devtool: process.env.DEBUG_PROD === 'true' ? 'cheap-source-map' : 'none',
+  devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
   plugins: [
     /**
      * Create global constants which can be configured at compile time
-     * Useful for allowing different behaviour between development builds and release builds
+     * Useful for allowing different behavior between development builds and release builds
      * NODE_ENV should be production so that modules do not perform certain development checks
      */
     new webpack.EnvironmentPlugin({
@@ -68,23 +83,32 @@ export default merge.smart(baseConfig, {
     rules: [
       {  // Styles support - CSS
         test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader'
-        ]
+        use: cssLoader
       },
       {  // LESS support - compile all .less files and pipe it to style.css
         test: /\.less$/,
         use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
+          ...cssLoader,
           {
             loader: 'less-loader',
             options: {
               lessOptions: {
                 relativeUrls: true,
+                sourceMap: true,
                 strictMath: true
               }
+            }
+          }
+        ]
+      },
+      {  // SASS support - compile all .sass/.scss files and pipe it to style.css
+        test: /\.(scss|sass)$/,
+        use: [
+          ...cssLoader,
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true
             }
           }
         ]

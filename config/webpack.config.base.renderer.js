@@ -79,6 +79,14 @@ export default merge.smart(baseConfig, {
           }
         ]
       },
+      {  // Styles support - SASS/SCSS - compile all .sass/.scss files and pipe it to style.css
+        test: /\.(scss|sass)$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader'
+        ]
+      },
       {  // WOFF Font
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
         use: merge.smart(fontLoader, {

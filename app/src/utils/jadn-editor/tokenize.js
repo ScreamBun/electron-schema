@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, no-underscore-dangle */
+/* eslint-disable no-param-reassign, no-underscore-dangle, @typescript-eslint/naming-convention */
 import { format } from 'react-json-editor-ajrm/locale';
 import defaultLocale from 'react-json-editor-ajrm/locale/en';
 import {
@@ -37,7 +37,7 @@ const pushAndStore = (buffer, char, type, prefix = '') => {
       buffer[buffer.active] = char;
       break;
     default:
-      if (type !== buffer.active || [buffer.string, char].indexOf('\n') > -1) {
+      if (type !== buffer.active || [buffer.string, char].includes('\n')) {
         if (buffer.active) {
           buffer.quarks.push({
             string: buffer[buffer.active],
@@ -97,12 +97,12 @@ const quarkize = (text, prefix = '') => {
         pushAndStore(buffer, char, type, prefix);
         break;
       case '-':
-        if (i < text.length - 1 && '0123456789'.indexOf(text.charAt(i + 1)) > -1) {
+        if (i < text.length - 1 && '0123456789'.includes(text.charAt(i + 1))) {
           pushAndStore(buffer, char, 'number', prefix);
           break;
         }
       case '.':
-        if (i < text.length - 1 && i > 0 && '0123456789'.indexOf(text.charAt(i + 1)) > -1 && '0123456789'.indexOf(text.charAt(i - 1)) > -1) {
+        if (i < text.length - 1 && i > 0 && '0123456789'.includes(text.charAt(i + 1)) && '0123456789'.includes(text.charAt(i - 1))) {
           pushAndStore(buffer, char, 'number', prefix);
           break;
         }
@@ -123,7 +123,7 @@ const validToken = (string, type) => {
 
   switch (type) {
     case 'primitive':
-      if (['true', 'false', 'null', 'undefined'].indexOf(string) === -1) {
+      if (!['true', 'false', 'null', 'undefined'].includes(string)) {
         return false;
       }
       break;
@@ -171,7 +171,7 @@ const validToken = (string, type) => {
       break;
     case 'number':
       for (let i = 0; i < string.length; i++) {
-        if ('0123456789'.indexOf(string.charAt(i)) === -1 && i === 0) {
+        if (!'0123456789'.includes(string.charAt(i)) && i === 0) {
           if (string.charAt(0) !== '-') {
             return false;
           }
@@ -181,7 +181,7 @@ const validToken = (string, type) => {
       }
       break;
     case 'symbol':
-      if (string.length > 1 || '{[:]},'.indexOf(string) === -1) {
+      if (string.length > 1 || !'{[:]},'.includes(string)) {
         return false;
       }
       break;
@@ -378,7 +378,7 @@ export const DomNodeUpdate = (obj, locale = defaultLocale, colors) => {
         break;
       case 'primitive':
       case 'string':
-        if (['false', 'true', 'null', 'undefined'].indexOf(normalToken.string) > -1) {
+        if (['false', 'true', 'null', 'undefined'].includes(normalToken.string)) {
           const lastIndex = buffer.tokens_normalize.length - 1;
           if (lastIndex >= 0) {
             if (buffer.tokens_normalize[lastIndex].type !== 'string') {
@@ -422,7 +422,7 @@ export const DomNodeUpdate = (obj, locale = defaultLocale, colors) => {
       tokens: [i]
     };
 
-    if (['symbol', 'colon'].indexOf(token.type) === -1 && i + 1 < buffer.tokens_normalize.length) {
+    if (!['symbol', 'colon'].includes(token.type) && i + 1 < buffer.tokens_normalize.length) {
       let count = 0;
       for (let u = i + 1; u < buffer.tokens_normalize.length; u++) {
         const nextToken = buffer.tokens_normalize[u];
@@ -618,25 +618,25 @@ export const DomNodeUpdate = (obj, locale = defaultLocale, colors) => {
       case 'string':
         const firstChar = string.charAt(0);
         const lastChar = string.charAt(string.length - 1);
-        if (quotes.indexOf(firstChar) === -1 && quotes.indexOf(lastChar) !== -1) {
+        if (!quotes.includes(firstChar) && quotes.includes(lastChar)) {
           setError(i, format(locale.string.missingOpen, {
             quote: firstChar
           }));
           break;
         }
-        if (quotes.indexOf(lastChar) === -1 && quotes.indexOf(firstChar) !== -1) {
+        if (!quotes.includes(lastChar) && quotes.includes(firstChar)) {
           setError(i, format(locale.string.missingClose, {
             quote: firstChar
           }));
           break;
         }
-        if (quotes.indexOf(firstChar) > -1 && firstChar !== lastChar) {
+        if (quotes.includes(firstChar) && firstChar !== lastChar) {
           setError(i, format(locale.string.missingClose, {
             quote: firstChar
           }));
           break;
         }
-        if (type === 'string' && quotes.indexOf(firstChar) === -1 && quotes.indexOf(lastChar) === -1) {
+        if (type === 'string' && !quotes.includes(firstChar) && !quotes.includes(lastChar)) {
           setError(i, format(locale.string.mustBeWrappedByQuotes));
           break;
         }
@@ -646,13 +646,13 @@ export const DomNodeUpdate = (obj, locale = defaultLocale, colors) => {
             secondTerm: locale.symbols.colon
           }));
         }
-        if (quotes.indexOf(firstChar) === -1 && quotes.indexOf(lastChar) === -1) {
+        if (!quotes.includes(firstChar) && !quotes.includes(lastChar)) {
           for (let h = 0; h < string.length; h++) {
             if (error) {
               break;
             }
             const c = string.charAt(h);
-            if (alphanumeric.indexOf(c) === -1) {
+            if (!alphanumeric.indexOf(c)) {
               setError(i, format(locale.string.nonAlphanumeric, {
                 token: c
               }));
@@ -768,7 +768,7 @@ export const DomNodeUpdate = (obj, locale = defaultLocale, colors) => {
       delta = false;
       for (let tokenCount = 0; tokenCount < bracketList.length - 1; tokenCount++) {
         const pair = bracketList[tokenCount].string + bracketList[tokenCount + 1].string;
-        if (['[]', '{}'].indexOf(pair) > -1) {
+        if (['[]', '{}'].includes(pair)) {
           removePair(tokenCount);
         }
       }
@@ -789,7 +789,7 @@ export const DomNodeUpdate = (obj, locale = defaultLocale, colors) => {
       setError(_tokenPosition, format(locale.brace[_closingBracketType === ']' ? 'square' : 'curly'].missingClose));
     }
 
-    if ([undefined, ''].indexOf(buffer.json) === -1) {
+    if (![undefined, ''].includes(buffer.json)) {
       try {
         buffer.jsObject = JSON.parse(buffer.json);
       } catch (err) {
@@ -814,7 +814,7 @@ export const DomNodeUpdate = (obj, locale = defaultLocale, colors) => {
           if (token.type === 'linebreak') {
             _line+=1;
           }
-          if (['space', 'linebreak'].indexOf(token.type) === -1) {
+          if (!['space', 'linebreak'].includes(token.type)) {
             charTotal += token.string.length;
           }
           if (charTotal >= errPosition) {
@@ -835,7 +835,7 @@ export const DomNodeUpdate = (obj, locale = defaultLocale, colors) => {
             backslashCount = backslashCount > 0 ? backslashCount + 1 : 1;
           } else {
             if (backslashCount % 2 !== 0 || backslashCount === 0) {
-              if ('\'"bfnrt'.indexOf(char) === -1) {
+              if (!'\'"bfnrt'.includes(char)) {
                 setError(tokenIndex, format(locale.invalidToken.unexpected, {
                   token: '\\'
                 }));
@@ -870,7 +870,7 @@ export const DomNodeUpdate = (obj, locale = defaultLocale, colors) => {
     const countCarrigeReturn = string => {
       let count = 0;
       for (let i = 0; i < string.length; i++) {
-        if (['\n', '\r'].indexOf(string[i]) > -1) count+=1;
+        if (['\n', '\r'].includes(string[i])) count+=1;
       }
       return count;
     };
@@ -972,7 +972,7 @@ export const DomNodeUpdate = (obj, locale = defaultLocale, colors) => {
   for (let i = 0; i < buffer.tokens_merge.length; i++) {
     const token = buffer.tokens_merge[i];
     buffer.indented += token.string;
-    if (['space', 'linebreak'].indexOf(token.type) === -1) {
+    if (!['space', 'linebreak'].includes(token.type)) {
       buffer.tokens_plainText += token.string;
     }
   }
@@ -1010,7 +1010,7 @@ const stringMayRemoveQuotes = (nonAlphaNumeric, text) => {
 
 const stripQuotesFromKey = text => {
   if (text.length === 0) return text;
-  if (['""', "''"].indexOf(text) > -1) return "''";
+  if (['""', "''"].includes(text)) return "''";
   let wrappedInQuotes = false;
 
   if (text.match(/^['"].*["']$/)) {
@@ -1027,7 +1027,7 @@ const stripQuotesFromKey = text => {
     const charList = text.split('');
     for (let ii = 0; ii < charList.length; ii++) {
       let char = charList[ii];
-      if (["'", '"'].indexOf(char) > -1) char = `\${char}`;
+      if (["'", '"'].includes(char)) char = `\${char}`;
       newText += char;
     }
     text = newText;
@@ -1055,7 +1055,7 @@ const escapeCharacter = buffer => {
 };
 
 const determineString = buffer => {
-  if ('\'"'.indexOf(buffer.currentChar) === -1) return false;
+  if (!'\'"'.includes(buffer.currentChar)) return false;
   if (!buffer.stringOpen) {
     addTokenSecondary(buffer);
     buffer.stringStart = buffer.position;
@@ -1074,7 +1074,7 @@ const determineString = buffer => {
 };
 
 const determineValue = buffer => {
-  if (':,{}[]'.indexOf(buffer.currentChar) === -1 || buffer.stringOpen) return false;
+  if (!':,{}[]'.includes(buffer.currentChar) || buffer.stringOpen) return false;
   addTokenSecondary(buffer);
   addTokenPrimary(buffer, buffer.currentChar);
 
@@ -1208,7 +1208,7 @@ export const PlaceholderJSON = (obj, colors) => {
           depth: buffer2.brackets.length
         };
 
-        if ('\'"'.indexOf(C) > -1) {
+        if ('\'"'.includes(C)) {
           rtn.type = buffer2.isValue ? 'string' : 'key';
           if (rtn.type === 'key') rtn.string = stripQuotesFromKey(token);
           if (rtn.type === 'string') {
@@ -1216,7 +1216,7 @@ export const PlaceholderJSON = (obj, colors) => {
             const charList2 = token.slice(1, -1).split('');
             for (let ii = 0; ii < charList2.length; ii++) {
               let char = charList2[ii];
-              if ('\'"'.indexOf(char) > -1) char = `\${char}`;
+              if ('\'"'.includes(char)) char = `\${char}`;
               rtn.string += char;
             }
             rtn.string = `'${rtn.string}'`;
@@ -1235,7 +1235,7 @@ export const PlaceholderJSON = (obj, colors) => {
         if (rtn.token.length > 0 && !buffer2.isValue) {
           rtn.type = 'key';
           rtn.string = token;
-          if (rtn.string.indexOf(' ') > -1) rtn.string = `'${rtn.string}'`;
+          if (rtn.string.includes(' ')) rtn.string = `'${rtn.string}'`;
           rtn.value = rtn.string;
           return rtn;
         }

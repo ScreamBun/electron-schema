@@ -24,13 +24,6 @@ class StructureEditor extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.removeAll = this.removeAll.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.toggleFields = this.toggleFields.bind(this);
-    this.addField = this.addField.bind(this);
-    this.toggleModal = this.toggleModal.bind(this);
-    this.saveModal = this.saveModal.bind(this);
-
     this.state = {
       fieldCollapse: false,
       value: {
@@ -184,7 +177,7 @@ class StructureEditor extends Component {
     return (
       <div className="border m-1 p-1">
         <ButtonGroup size="sm" className="float-right">
-          <Button color="danger" onClick={ this.removeAll } >
+          <Button color="danger" onClick={ this.removeAll.bind(this) } >
             <FontAwesomeIcon icon={ faMinusCircle } />
           </Button>
         </ButtonGroup>
@@ -196,36 +189,36 @@ class StructureEditor extends Component {
         <div className="row m-0">
           <FormGroup className="col-md-4">
             <Label>Name</Label>
-            <Input type="string" placeholder="Name" value={ this.state.value.name } onChange={ this.onChange } />
+            <Input type="string" placeholder="Name" value={ this.state.value.name } onChange={ this.onChange.bind(this) } />
           </FormGroup>
 
           <FormGroup className="col-md-4">
             <Label>&nbsp;</Label>
             <InputGroup>
-              <Button outline color="info" onClick={ this.toggleModal }>Type Options</Button>
+              <Button outline color="info" onClick={ this.toggleModal.bind(this) }>Type Options</Button>
               <OptionsModal
                 optionvalue={ this.state.value.options }
                 isOpen={ this.state.modal }
-                toggleModal={ this.toggleModal }
-                saveModal={ this.saveModal }
+                toggleModal={ this.toggleModal.bind(this) }
+                saveModal={ this.saveModal.bind(this) }
               />
             </InputGroup>
           </FormGroup>
 
           <FormGroup className="col-md-4">
             <Label>Comment</Label>
-            <Input type="textarea" placeholder="Comment" rows={ 1 } value={ this.state.value.comment } onChange={ this.onChange } />
+            <Input type="textarea" placeholder="Comment" rows={ 1 } value={ this.state.value.comment } onChange={ this.onChange.bind(this) } />
           </FormGroup>
 
           <FormGroup tag="fieldset" className="col-12 border">
             <legend>
               Fields
               <ButtonGroup className="float-right">
-                <Button color={ this.state.fieldCollapse ? 'warning' : 'success' } onClick={ this.toggleFields } >
+                <Button color={ this.state.fieldCollapse ? 'warning' : 'success' } onClick={ this.toggleFields.bind(this) } >
                   <FontAwesomeIcon icon={ this.state.fieldCollapse ? faMinusCircle : faPlusCircle } />&nbsp;
                   { this.state.fieldCollapse ? ' Hide' : ' Show' }
                 </Button>
-                <Button color="primary" onClick={ this.addField } >
+                <Button color="primary" onClick={ this.addField.bind(this) } >
                   <FontAwesomeIcon icon={ faPlusSquare } /> Add
                 </Button>
               </ButtonGroup>

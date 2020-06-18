@@ -20,8 +20,6 @@ class MarkDown extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.toggleTabs = this.toggleTabs.bind(this);
-
     this.state = {
       activeTab: 'render'
     };
@@ -42,13 +40,13 @@ class MarkDown extends Component {
             <ButtonGroup className="float-right">
               <Button
                 active={ this.state.activeTab === 'text' }
-                onClick={ this.toggleTabs }
+                onClick={ this.toggleTabs.bind(this) }
               >
                 <FontAwesomeIcon icon={ faCode } />
               </Button>
               <Button
                 active={ this.state.activeTab === 'render' }
-                onClick={ this.toggleTabs }
+                onClick={ this.toggleTabs.bind(this) }
               >
                 <FontAwesomeIcon icon={ faFileAlt } />
               </Button>

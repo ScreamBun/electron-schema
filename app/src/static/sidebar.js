@@ -19,9 +19,6 @@ class SidebarMenu extends Component {
     super(props, context);
     this.mql = window.matchMedia('(min-width: 768px)');
 
-    this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
-    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
-
     this.state = {
       sidebarDocked: this.mql.matches,
       sidebarOpen: false,
@@ -41,11 +38,11 @@ class SidebarMenu extends Component {
   }
 
   componentDidMount() {
-    this.mql.addListener(this.mediaQueryChanged);
+    this.mql.addListener(this.mediaQueryChanged.bind(this));
   }
 
   componentWillUnmount() {
-    this.mql.removeListener(this.mediaQueryChanged);
+    this.mql.removeListener(this.mediaQueryChanged.bind(this));
   }
 
   onSetSidebarOpen(open) {
@@ -109,7 +106,7 @@ class SidebarMenu extends Component {
         sidebar={ this.renderContents() }
         open={ this.state.sidebarOpen }
         docked={ this.state.sidebarDocked }
-        onSetOpen={ this.onSetSidebarOpen }
+        onSetOpen={ this.onSetSidebarOpen.bind(this) }
         sidebarClassName="navbar-dark bg-dark"
         rootId="sidebarRoot"
         sidebarId="sidebarContents"

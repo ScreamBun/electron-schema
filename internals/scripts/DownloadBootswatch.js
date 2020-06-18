@@ -1,7 +1,7 @@
-import path from 'path';
 import fs from 'fs';
-import NamedRegExp from 'named-regexp-groups';
+import path from 'path';
 import download from 'download-file';
+import NamedRegExp from 'named-regexp-groups';
 import request from 'sync-request';
 
 const ROOT_DIR = path.join(__dirname, '..', '..', 'app', 'resources');

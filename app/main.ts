@@ -3,7 +3,8 @@ import {
   app,
   dialog,
   ipcMain,
-  BrowserWindow
+  BrowserWindow,
+  WebPreferences
 } from 'electron';
 import log from 'electron-log';
 import { autoUpdater } from 'electron-updater';
@@ -19,12 +20,12 @@ app.allowRendererProcessReuse = true;
 
 // JADN Setup
 const schemaConverters = {
-  [SchemaFormats.HTML]: (schema: SchemaSimpleJADN) => convert.schema.html.dumps(schema),
-  [SchemaFormats.JADN]: (schema: SchemaSimpleJADN) => convert.schema.jadn.dumps(schema),
-  // [SchemaFormats.JIDL]: (schema: SchemaSimpleJADN) => convert.schema.jidl.dumps(schema),
-  [SchemaFormats.JSON]: (schema: SchemaSimpleJADN) => convert.schema.json.dumps(schema),
-  [SchemaFormats.MarkDown]: (schema: SchemaSimpleJADN) => convert.schema.md.dumps(schema)
-  // [SchemaFormats.PDF]: (schema: SchemaSimpleJADN) => convert.schema.pdf.dumps(schema),
+  [SchemaFormats.HTML]: (schema: SchemaSimpleJADN): string => convert.schema.html.dumps(schema),
+  [SchemaFormats.JADN]: (schema: SchemaSimpleJADN): string => convert.schema.jadn.dumps(schema),
+  [SchemaFormats.JIDL]: (schema: SchemaSimpleJADN): string => convert.schema.jidl.dumps(schema),
+  [SchemaFormats.JSON]: (schema: SchemaSimpleJADN): string => convert.schema.json.dumps(schema),
+  [SchemaFormats.MarkDown]: (schema: SchemaSimpleJADN): string => convert.schema.md.dumps(schema)
+  // [SchemaFormats.PDF]: (schema: SchemaSimpleJADN): string => convert.schema.pdf.dumps(schema),
 };
 
 // App Updater
@@ -47,7 +48,8 @@ if (process.env.NODE_ENV === 'production') {
   require('electron-debug')();
 }
 
-const installExtensions = async () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const installExtensions = async (): Promise<void|any[]> => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
@@ -59,9 +61,18 @@ const installExtensions = async () => {
 };
 
 // Window Creation
-const createMainWindow = async () => {
+const createMainWindow = async (): Promise<void> => {
   if (isDevelopment || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
+  }
+  // Set WebPreferences
+  const webPreferences: WebPreferences = {
+    enableRemoteModule: false
+  };
+  if (isDevelopment || process.env.E2E_BUILD === 'true') {
+    webPreferences.nodeIntegration = true;
+  } else {
+    webPreferences.preload = path.join(__dirname, 'renderer.prod.js');
   }
 
   // Create the browser window
@@ -69,11 +80,7 @@ const createMainWindow = async () => {
     height: 768,
     width: 1024,
     show: false,
-    webPreferences: isDevelopment || process.env.E2E_BUILD === 'true' ? {
-      nodeIntegration: true
-    } : {
-      preload: path.join(__dirname, 'renderer.prod.js')
-    }
+    webPreferences
   });
 
   // Load content
@@ -154,14 +161,14 @@ interface Args {
   schema: SchemaSimpleJADN;
 }
 
-const convertSchema = (args: Args) => {
-  const schema = args.schema ? args.schema : {};
+const convertSchema = (args: Args): string => {
+  const schema = args.schema || {};
   const format = args.format || 'NULL';
 
   if (Object.values(SchemaFormats).includes(format)) {
     return schemaConverters[format](schema);
   }
-  return null;
+  return '';
 };
 
 ipcMain.on('file-save', (event, args) => {

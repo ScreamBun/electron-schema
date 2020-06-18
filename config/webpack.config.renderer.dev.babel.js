@@ -5,6 +5,7 @@
 import { spawn, execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import chalk from 'chalk';
 import { TypedCssModulesPlugin } from 'typed-css-modules-webpack-plugin';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
@@ -34,7 +35,11 @@ const requiredByDLLConfig = module.parent.filename.includes('webpack.config.rend
  * Warn if the DLL is not built
  */
 if (!requiredByDLLConfig && !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))) {
-  console.info('The DLL files are missing. Sit back while we build them for you with "yarn build-dll"');
+  console.log(
+    chalk.black.bgYellow.bold(
+      'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"'
+    )
+  );
   execSync('yarn build-dll');
 }
 
@@ -59,9 +64,9 @@ export default merge.smart(baseConfig, {
   plugins: [
     /**
      * Create global constants which can be configured at compile time
-     * Useful for allowing different behaviour between development builds and release builds
+     * Useful for allowing different behavior between development builds and release builds
      * NODE_ENV should be production so that modules do not perform certain development checks
-     * By default, use 'development' as NODE_ENV. This can be overriden with
+     * By default, use 'development' as NODE_ENV. This can be overridden with
      * 'staging', for example, by changing the ENV variables in the npm scripts
      */
     new webpack.EnvironmentPlugin({

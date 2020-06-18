@@ -17,11 +17,6 @@ class KeyObjectEditor extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.removeAll = this.removeAll.bind(this);
-    this.removeIndex = this.removeIndex.bind(this);
-    this.addIndex = this.addIndex.bind(this);
-    this.onChange = this.onChange.bind(this);
-
     this.state = {
       value: Object.keys(this.props.value).map(k => ({key: k, value: this.props.value[k]}))
     };
@@ -104,7 +99,7 @@ class KeyObjectEditor extends Component {
           data-type="key"
           placeholder={ this.props.placeholder }
           value={ obj.key }
-          onChange={ this.onChange }
+          onChange={ this.onChange.bind(this) }
         />
         <Input
           type="text"
@@ -113,10 +108,10 @@ class KeyObjectEditor extends Component {
           data-type="value"
           placeholder={ this.props.placeholder }
           value={ obj.value }
-          onChange={ this.onChange }
+          onChange={ this.onChange.bind(this) }
         />
         <div className="input-group-append">
-          <Button color="danger" onClick={ this.removeIndex } data-index={ i }>
+          <Button color="danger" onClick={ this.removeIndex.bind(this) } data-index={ i }>
             <FontAwesomeIcon icon={ faMinusSquare } />
           </Button>
         </div>
@@ -126,12 +121,12 @@ class KeyObjectEditor extends Component {
     return (
       <div className="border m-1 p-1">
         <ButtonGroup size="sm" className="float-right">
-          <Button color="info" onClick={ this.addIndex } >
+          <Button color="info" onClick={ this.addIndex.bind(this) } >
             <FontAwesomeIcon
               icon={ faPlusSquare }
             />
           </Button>
-          <Button color="danger" onClick={ this.removeAll } >
+          <Button color="danger" onClick={ this.removeAll.bind(this) } >
             <FontAwesomeIcon icon={ faMinusCircle } />
           </Button>
         </ButtonGroup>

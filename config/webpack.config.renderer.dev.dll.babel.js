@@ -4,7 +4,6 @@
 import path from 'path';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
-
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
 import baseConfig from './webpack.config.base';
@@ -33,7 +32,7 @@ export default merge.smart(baseConfig, {
   plugins: [
     /**
      * Create global constants which can be configured at compile time
-     * Useful for allowing different behaviour between development builds and release builds
+     * Useful for allowing different behavior between development builds and release builds
      * NODE_ENV should be production so that modules do not perform certain development checks
      */
     new webpack.EnvironmentPlugin({

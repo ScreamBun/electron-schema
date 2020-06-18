@@ -1,28 +1,23 @@
 import storage from 'redux-persist/es/storage';
 import { apiMiddleware } from 'redux-api-middleware';
 import { createStore, compose, applyMiddleware } from 'redux';
-import { createFilter } from 'redux-persist-transform-filter';
 import { persistReducer, persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
 
 import createRootReducer from './reducers';
 import asyncDispatchMiddleware from './asyncDispatchMiddleware';
 
-export default history => {
-  const persistedFilter = createFilter(
-    'Auth',
-    [ 'access' ]
-  );
+export default () => {
 
   const reducer = persistReducer(
     {
       key: 'schema_gui',
       storage,
-      whitelist: ['Auth'],
+      whitelist: [],
       blacklist: ['Router'],
-      transforms: [persistedFilter]
+      transforms: []
     },
-    createRootReducer(history)
+    createRootReducer()
   );
 
   const middleware = [
@@ -32,8 +27,8 @@ export default history => {
   ];
 
   // Logger
-  if (process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line global-require
+  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
     const { createLogger } = require('redux-logger');
     const logger = createLogger({
       diff: false,

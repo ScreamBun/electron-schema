@@ -49,8 +49,6 @@ class KeyObjectEditor extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.removeAll = this.removeAll.bind(this);
-
     this.state = {
       ...this.props.value
     };
@@ -98,7 +96,7 @@ class KeyObjectEditor extends Component {
 
     return (
       <div className="border m-1 p-1">
-        <Button color="danger" size="sm" className="float-right" onClick={ this.removeAll } >
+        <Button color="danger" size="sm" className="float-right" onClick={ this.removeAll.bind(this) } >
           <FontAwesomeIcon
             icon={ faMinusCircle }
           />
