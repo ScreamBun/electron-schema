@@ -166,7 +166,17 @@ const convertSchema = (args: Args): string => {
   const format = args.format || 'NULL';
 
   if (Object.values(SchemaFormats).includes(format)) {
-    return schemaConverters[format](schema);
+    try {
+      return schemaConverters[format](schema);
+    } catch (err) {
+      const e = err.toString();
+      if ([SchemaFormats.JADN, SchemaFormats.JSON].includes(format)) {
+        const idx = e.indexOf(':');
+        const splits = [e.slice(0, idx), e.slice(idx + 1)];
+        return `{"${splits[0]}":"${splits[1].trim()}"}`;
+      }
+      return e;
+    }
   }
   return '';
 };

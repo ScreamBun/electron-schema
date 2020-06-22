@@ -1027,7 +1027,7 @@ const stripQuotesFromKey = text => {
     const charList = text.split('');
     for (let ii = 0; ii < charList.length; ii++) {
       let char = charList[ii];
-      if (["'", '"'].includes(char)) char = `\${char}`;
+      if (["'", '"'].includes(char)) char = `\\${char}`;
       newText += char;
     }
     text = newText;
@@ -1216,7 +1216,7 @@ export const PlaceholderJSON = (obj, colors) => {
             const charList2 = token.slice(1, -1).split('');
             for (let ii = 0; ii < charList2.length; ii++) {
               let char = charList2[ii];
-              if ('\'"'.includes(char)) char = `\${char}`;
+              if ('\'"'.includes(char)) char = `\\${char}`;
               rtn.string += char;
             }
             rtn.string = `'${rtn.string}'`;

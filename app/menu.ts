@@ -76,7 +76,7 @@ export default class MenuBuilder {
     return menu;
   }
 
-  baseMenu(): Array<DarwinMenuItemConstructorOptions|MenuItemConstructorOptions>{
+  baseMenu(): Array<DarwinMenuItemConstructorOptions|MenuItemConstructorOptions> {
     const fileMenu: DarwinMenuItemConstructorOptions|MenuItemConstructorOptions = {
       label: 'File',
       submenu: [
