@@ -6,7 +6,6 @@ import { spawn, execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import { TypedCssModulesPlugin } from 'typed-css-modules-webpack-plugin';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
@@ -83,16 +82,13 @@ export default merge.smart(baseConfig, {
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.LoaderOptionsPlugin({
       debug: true
-    }),
-    new TypedCssModulesPlugin({
-      globPattern: 'app/**/*.{css,scss,sass}'
     })
   ],
   devServer: {
     port,
     publicPath,
     compress: true,
-    noInfo: true,
+    noInfo: false,
     stats: 'errors-only',
     inline: true,
     lazy: false,

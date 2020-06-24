@@ -16,10 +16,18 @@ module.exports = {
   'jsx-a11y/anchor-has-content': [2, {
     components: []
   }],
-  'jsx-a11y/anchor-is-valid': [0, {
-    aspects: ['noHref', 'invalidHref', 'preferButton'],
-    components: ['Link'],
-    specialLink: ['to']
+  'jsx-a11y/anchor-is-valid': [2, {
+    aspects: [
+      'noHref',
+      'invalidHref',
+      'preferButton'
+    ],
+    components: [
+      'Link'
+    ],
+    specialLink: [
+      'to'
+    ]
   }],
   'jsx-a11y/aria-activedescendant-has-tabindex': 2,
   'jsx-a11y/aria-props': 2,
@@ -54,10 +62,14 @@ module.exports = {
       'tree',
       'treegrid'
     ],
-    labelAttributes: ['label']
+    labelAttributes: [
+      'label'
+    ]
   }],
   'jsx-a11y/heading-has-content': [2, {
-    components: ['']
+    components: [
+      ''
+    ]
   }],
   'jsx-a11y/html-has-lang': 2,
   'jsx-a11y/iframe-has-title': 2,
@@ -74,7 +86,10 @@ module.exports = {
     allowChildren: false,
     components: [],
     required: {
-      every: ['nesting', 'id']
+      every: [
+        'nesting',
+        'id'
+      ]
     }
   }],
   'jsx-a11y/lang': 2,
@@ -89,10 +104,16 @@ module.exports = {
     ignoreNonDOM: true
   }],
   'jsx-a11y/no-distracting-elements': [2, {
-    elements: ['marquee', 'blink']
+    elements: [
+      'marquee',
+      'blink'
+    ]
   }],
   'jsx-a11y/no-interactive-element-to-noninteractive-role': [2, {
-    tr: ['none', 'presentation']
+    tr: [
+      'none',
+      'presentation'
+    ]
   }],
   'jsx-a11y/no-noninteractive-element-interactions': [2, {
     handlers: [
@@ -121,8 +142,12 @@ module.exports = {
       'tree',
       'treegrid'
     ],
-    table: ['grid'],
-    td: ['gridcell'],
+    table: [
+      'grid'
+    ],
+    td: [
+      'gridcell'
+    ],
     ul: [
       'listbox',
       'menu',
@@ -134,8 +159,10 @@ module.exports = {
     ]
   }],
   'jsx-a11y/no-noninteractive-tabindex': [2, {
-    roles: ['tabpanel'],
-    tags: []
+    tags: [],
+    roles: [
+      'tabpanel'
+    ]
   }],
   'jsx-a11y/no-onchange': 0,
   'jsx-a11y/no-redundant-roles': 2,
@@ -153,4 +180,4 @@ module.exports = {
   'jsx-a11y/role-supports-aria-props': 2,
   'jsx-a11y/scope': 2,
   'jsx-a11y/tabindex-no-positive': 2
-}
+};

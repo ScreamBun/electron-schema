@@ -19,6 +19,17 @@ const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
 const DIST_DIR = path.join(APP_DIR, 'dist');
 
+const minimizer = [];
+if (!process.env.E2E_BUILD) {
+  minimizer.push(
+    new TerserPlugin({
+      parallel: true,
+      sourceMap: true,
+      cache: true,
+    })
+  );
+}
+
 export default merge.smart(baseConfig, {
   mode: NODE_ENV,
   devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
@@ -44,13 +55,7 @@ export default merge.smart(baseConfig, {
     })
   ],
   optimization: {
-    minimizer: [
-      new TerserPlugin({
-        parallel: true,
-        sourceMap: true,
-        cache: true
-      })
-    ]
+    minimizer
   },
   target: 'electron-main',
   /**

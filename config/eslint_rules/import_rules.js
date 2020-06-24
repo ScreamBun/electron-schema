@@ -10,15 +10,17 @@ module.exports = {
   'import/extensions': [2, 'ignorePackages', {
     js: 'never',
     jsx: 'never',
-    mjs: 'never'
+    mjs: 'never',
+    ts: 'never',
+    tsx: 'never'
   }],
   'import/first': 2,
   'import/group-exports': 0,
   'import/imports-first': 0,
-  'import/max-dependencies': [0, {
-    max: 10
+  'import/max-dependencies': [2, {
+    max: 15
   }],
-  'import/named': 2,
+  'import/named': 0,
   'import/namespace': 0,
   'import/newline-after-import': 2,
   'import/no-absolute-path': 2,
@@ -32,7 +34,9 @@ module.exports = {
     allowObject: false
   }],
   'import/no-commonjs': 0,
-  'import/no-cycle': [2, {}],
+  'import/no-cycle': [2, {
+    ignoreExternal: false
+  }],
   'import/no-default-export': 0,
   'import/no-deprecated': 0,
   'import/no-duplicates': 2,
@@ -61,7 +65,6 @@ module.exports = {
       '**/protractor.conf.*.js',
       '**/karma.conf.js'
     ],
-    peerDependencies: true,
     optionalDependencies: false
   }],
   'import/no-internal-modules': [0, {
@@ -93,9 +96,13 @@ module.exports = {
   'import/no-webpack-loader-syntax': 2,
   'import/order': [2, {
     groups: [
-      ['builtin', 'external', 'internal']
+      [
+        'builtin',
+        'external',
+        'internal'
+      ]
     ]
   }],
-  'import/prefer-default-export': 0,
+  'import/prefer-default-export': 2,
   'import/unambiguous': 0
-}
+};

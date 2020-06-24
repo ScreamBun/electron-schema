@@ -21,6 +21,32 @@ const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
 const DIST_DIR = path.join(APP_DIR, 'dist');
 
+const minimizer = []
+if (!process.env.E2E_BUILD) {
+  minimizer.push(
+    new TerserPlugin({
+      cache: true,
+      parallel: true,
+      sourceMap: true,
+      terserOptions: {
+        output: {
+          comments: false
+        }
+      }
+    })
+  );
+  minimizer.push(
+    new OptimizeCSSAssetsPlugin({
+      cssProcessorOptions: {
+        map: {
+          annotation: true,
+          inline: false
+        }
+      }
+    })
+  );
+}
+
 const cssLoader = [
   {
     loader: MiniCssExtractPlugin.loader,
@@ -31,6 +57,7 @@ const cssLoader = [
   {
     loader: 'css-loader',
     options: {
+      importLoaders: 1,
       sourceMap: true
     }
   }
@@ -57,26 +84,7 @@ export default merge.smart(baseConfig, {
     })
   ],
   optimization: {
-    minimizer: [
-      new TerserPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: true,
-        terserOptions: {
-          output: {
-            comments: false
-          }
-        }
-      }),
-      new OptimizeCSSAssetsPlugin({
-        cssProcessorOptions: {
-          map: {
-            inline: false,
-            annotation: true
-          }
-        }
-      })
-    ]
+    minimizer
   },
   target: 'electron-preload',
   module: {

@@ -13,13 +13,14 @@ import {
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { setActiveTab } from '../../store/actions/tabs';
+import * as TabActions from '../../store/actions/tabs';
 
 import logo from '../../../resources/icon.png';
 
 class NavBar extends Component {
   constructor(props, context) {
     super(props, context);
+    this.toggleNav = this.toggleNav.bind(this);
 
     this.state = {
       navOpen: false
@@ -33,13 +34,19 @@ class NavBar extends Component {
   }
 
   render() {
-    const navTabs = this.props.tabs.map(tab => (
-      <NavItem key={ tab }>
+    const { activeView, setActiveTab, tabs } = this.props;
+    const { navOpen } = this.state;
+    const { sidebarToggle } = this.context;
+
+    const navTabs = tabs.map(tab => (
+      <NavItem key={ tab } >
         <NavLink
-          className={ this.props.activeView === tab.toLowerCase() ? 'active' : '' }
+          className={ activeView === tab.toLowerCase() ? 'active' : '' }
           style={{ cursor: 'pointer' }}
-          onClick={ () => this.props.setActiveTab(tab) }
-        >{ tab }</NavLink>
+          onClick={ () => setActiveTab(tab) }
+        >
+          { tab }
+        </NavLink>
       </NavItem>
     ));
 
@@ -47,7 +54,7 @@ class NavBar extends Component {
       <Navbar color="primary" dark expand="md" fixed="top" >
         <div className="container-fluid">
           <NavbarBrand href="#">
-            <img src={ logo } alt='OpenC2 Logo' style={{ paddingRight: 10 }}/>
+            <img src={ logo } alt='OpenC2 Logo' style={{ paddingRight: 10 }} />
             Schema Generator
           </NavbarBrand>
           <ButtonGroup>
@@ -57,7 +64,7 @@ class NavBar extends Component {
               color="info"
               data-toggle="collapse"
               aria-label="Toggle sidebar"
-              onClick={ this.context.sidebarToggle }
+              onClick={ sidebarToggle }
             >
               <FontAwesomeIcon icon={ faEllipsisV } size="lg" className="mx-1" />
             </Button>
@@ -69,12 +76,12 @@ class NavBar extends Component {
               aria-controls="navMain"
               aria-expanded="false"
               aria-label="Toggle navigation"
-              onClick={ this.toggleNav.bind(this) }
+              onClick={ this.toggleNav }
             >
               <FontAwesomeIcon icon={ faBars } size="lg" />
             </Button>
           </ButtonGroup>
-          <Collapse isOpen={ this.state.navOpen } navbar>
+          <Collapse isOpen={ navOpen } navbar>
             <Nav className="mr-auto" navbar>
               { navTabs }
             </Nav>
@@ -101,7 +108,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setActiveTab: tab => dispatch(setActiveTab(tab))
+  setActiveTab: tab => dispatch(TabActions.setActiveTab(tab))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

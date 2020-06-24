@@ -1132,7 +1132,7 @@ export const PlaceholderJSON = (obj, colors) => {
     tokens: []
   };
 
-  // eslint-disable-next-line array-callback-return
+  // eslint-disable-next-line array-callback-return, consistent-return
   buffer2.tokens = buffer.tokens.map(token => {
     switch (token) {
       case ',':

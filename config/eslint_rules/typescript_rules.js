@@ -1,25 +1,23 @@
 // Typescript Rules
 module.exports = {
   '@typescript-eslint/adjacent-overload-signatures': 2,
-  '@typescript-eslint/await-thenable': 2,
-  '@typescript-eslint/ban-ts-ignore': 2,
+  '@typescript-eslint/ban-ts-comment': 2,
   '@typescript-eslint/ban-types': 2,
   '@typescript-eslint/brace-style': [0, '1tbs', {
     allowSingleLine: true
   }],
-  '@typescript-eslint/camelcase': [2, {
-    properties: 'never',
-    ignoreDestructuring: false,
-    ignoreImports: false
-  }],
-  '@typescript-eslint/class-name-casing': 2,
   '@typescript-eslint/comma-spacing': [0, {
     before: false,
     after: true
   }],
-  '@typescript-eslint/consistent-type-assertions': 2,
-  '@typescript-eslint/explicit-function-return-type': 1,
-  '@typescript-eslint/func-call-spacing': [0, 'never' ],
+  '@typescript-eslint/dot-notation': [2, {
+    allowKeywords: true,
+    allowPattern: '',
+    allowPrivateClassPropertyAccess: false
+  }],
+  '@typescript-eslint/explicit-function-return-type': 0,
+  '@typescript-eslint/explicit-module-boundary-types': 0,
+  '@typescript-eslint/func-call-spacing': [0, 'never'],
   '@typescript-eslint/indent': [0, 2, {
     SwitchCase: 1,
     VariableDeclarator: 1,
@@ -39,7 +37,7 @@ module.exports = {
     ObjectExpression: 1,
     ImportDeclaration: 1,
     flatTernaryExpressions: false,
-    'ignoredNodes': [
+    ignoredNodes: [
       'JSXElement',
       'JSXElement > *',
       'JSXAttribute',
@@ -57,11 +55,51 @@ module.exports = {
       'JSXEmptyExpression',
       'JSXSpreadChild'
     ],
-    ignoreComments: false
+    ignoreComments: false,
+    offsetTernaryExpressions: false
   }],
-  '@typescript-eslint/interface-name-prefix': 2,
-  '@typescript-eslint/keyword-spacing': 0,
-  '@typescript-eslint/member-delimiter-style': 2,
+  '@typescript-eslint/keyword-spacing': [0, {
+    before: true,
+    after: true,
+    overrides: {
+      return: {
+        after: true
+      },
+      throw: {
+        after: true
+      },
+      case: {
+        after: true
+      }
+    }
+  }],
+  '@typescript-eslint/lines-between-class-members': [2, 'always', {
+    exceptAfterSingleLine: false
+  }],
+  '@typescript-eslint/member-delimiter-style': 0,
+  '@typescript-eslint/naming-convention': [2,
+    {
+      selector: 'variable',
+      format: [
+        'camelCase',
+        'PascalCase',
+        'UPPER_CASE'
+      ]
+    },
+    {
+      selector: 'function',
+      format: [
+        'camelCase',
+        'PascalCase'
+      ]
+    },
+    {
+      selector: 'typeLike',
+      format: [
+        'PascalCase'
+      ]
+    }
+  ],
   '@typescript-eslint/no-array-constructor': 2,
   '@typescript-eslint/no-dupe-class-members': 2,
   '@typescript-eslint/no-empty-function': [2, {
@@ -73,6 +111,7 @@ module.exports = {
   }],
   '@typescript-eslint/no-empty-interface': 2,
   '@typescript-eslint/no-explicit-any': 1,
+  '@typescript-eslint/no-extra-non-null-assertion': 2,
   '@typescript-eslint/no-extra-parens': [0, 'all', {
     conditionalAssign: true,
     nestedBinaryExpressions: false,
@@ -81,7 +120,6 @@ module.exports = {
     enforceForArrowConditionals: false
   }],
   '@typescript-eslint/no-extra-semi': 0,
-  '@typescript-eslint/no-for-in-array': 2,
   '@typescript-eslint/no-implied-eval': 2,
   '@typescript-eslint/no-inferrable-types': 2,
   '@typescript-eslint/no-magic-numbers': [0, {
@@ -91,12 +129,11 @@ module.exports = {
     detectObjects: false
   }],
   '@typescript-eslint/no-misused-new': 2,
-  '@typescript-eslint/no-misused-promises': 2,
   '@typescript-eslint/no-namespace': 2,
+  '@typescript-eslint/no-non-null-asserted-optional-chain': 2,
   '@typescript-eslint/no-non-null-assertion': 1,
   '@typescript-eslint/no-this-alias': 2,
   '@typescript-eslint/no-throw-literal': 2,
-  '@typescript-eslint/no-unnecessary-type-assertion': 2,
   '@typescript-eslint/no-unused-expressions': [2, {
     allowShortCircuit: false,
     allowTernary: false,
@@ -112,8 +149,9 @@ module.exports = {
     classes: true,
     variables: true
   }],
-  '@typescript-eslint/no-useless-constructor': 1,
-  '@typescript-eslint/no-var-requires': 2,
+  '@typescript-eslint/no-useless-constructor': 2,
+  '@typescript-eslint/no-var-requires': 0,
+  '@typescript-eslint/prefer-as-const': 2,
   '@typescript-eslint/prefer-namespace-keyword': 2,
   '@typescript-eslint/prefer-includes': 2,
   '@typescript-eslint/prefer-regexp-exec': 2,
@@ -121,7 +159,6 @@ module.exports = {
   '@typescript-eslint/quotes': [0, 'single', {
     avoidEscape: true
   }],
-  '@typescript-eslint/require-await': 2,
   '@typescript-eslint/semi': [0, 'always'],
   '@typescript-eslint/space-before-function-paren': [0, {
     anonymous: 'always',
@@ -129,6 +166,6 @@ module.exports = {
     asyncArrow: 'always'
   }],
   '@typescript-eslint/triple-slash-reference': 2,
-  '@typescript-eslint/type-annotation-spacing': 2,
-  '@typescript-eslint/unbound-method': 2,
-}
+  '@typescript-eslint/type-annotation-spacing': 0,
+  '@typescript-eslint/unbound-method': 1
+};

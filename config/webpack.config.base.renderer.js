@@ -5,7 +5,6 @@
 import { spawn, execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { TypedCssModulesPlugin } from 'typed-css-modules-webpack-plugin';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
 
@@ -50,7 +49,9 @@ export default merge.smart(baseConfig, {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV,
-      DEBUG_PROD: process.env.DEBUG_PROD === 'true'
+      // DEBUG_PROD: process.env.DEBUG_PROD === 'true'
+      DEBUG_PROD: false,
+      E2E_BUILD: false
     })
   ],
   target: 'electron-renderer',

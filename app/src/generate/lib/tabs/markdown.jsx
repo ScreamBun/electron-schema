@@ -19,6 +19,7 @@ import { faCode, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 class MarkDown extends Component {
   constructor(props, context) {
     super(props, context);
+    this.toggleTabs = this.toggleTabs.bind(this);
 
     this.state = {
       activeTab: 'render'
@@ -32,6 +33,9 @@ class MarkDown extends Component {
   }
 
   render() {
+    const { schema } = this.props;
+    const { activeTab } = this.state;
+
     return (
       <TabPane tabId="markdown">
         <Card>
@@ -39,33 +43,33 @@ class MarkDown extends Component {
             <span className="h3">MarkDown</span>
             <ButtonGroup className="float-right">
               <Button
-                active={ this.state.activeTab === 'text' }
-                onClick={ this.toggleTabs.bind(this) }
+                active={ activeTab === 'text' }
+                onClick={ this.toggleTabs }
               >
                 <FontAwesomeIcon icon={ faCode } />
               </Button>
               <Button
-                active={ this.state.activeTab === 'render' }
-                onClick={ this.toggleTabs.bind(this) }
+                active={ activeTab === 'render' }
+                onClick={ this.toggleTabs }
               >
                 <FontAwesomeIcon icon={ faFileAlt } />
               </Button>
             </ButtonGroup>
           </CardHeader>
           <CardBody>
-            <TabContent activeTab={ this.state.activeTab }>
+            <TabContent activeTab={ activeTab }>
               <TabPane tabId="text">
                 <pre>
-                  { this.props.schema }
+                  { schema }
                 </pre>
               </TabPane>
               <TabPane tabId="render">
-                <ReactMarkdown source={ this.props.schema } />
+                <ReactMarkdown source={ schema } />
               </TabPane>
             </TabContent>
           </CardBody>
         </Card>
-    </TabPane>
+      </TabPane>
     );
   }
 }

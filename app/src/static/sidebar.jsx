@@ -17,6 +17,7 @@ import SchemaStructure from '../generate/lib/structure';
 class SidebarMenu extends Component {
   constructor(props, context) {
     super(props, context);
+    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
     this.mql = window.matchMedia('(min-width: 768px)');
 
     this.state = {
@@ -30,10 +31,11 @@ class SidebarMenu extends Component {
 
   // pass reference to this down to child component
   getChildContext() {
+    const {sidebarOpen, sidebarDocked } = this.state;
     return {
-      sidebarDocked: this.state.sidebarDocked,
-      sidebarOpen: this.state.sidebarOpen,
-      sidebarToggle: () => this.onSetSidebarOpen(!this.state.sidebarOpen)
+      sidebarDocked,
+      sidebarOpen,
+      sidebarToggle: () => this.onSetSidebarOpen(!sidebarOpen)
     };
   }
 
@@ -94,7 +96,9 @@ class SidebarMenu extends Component {
   }
 
   render() {
-    if (this.mql.matches && !this.state.initCheck) {
+    const { children } = this.props;
+    const { initCheck, sidebarDocked, sidebarOpen } = this.state;
+    if (this.mql.matches && !initCheck) {
       setTimeout(() => this.setState({
         sidebarDocked: true,
         initCheck: true
@@ -104,16 +108,16 @@ class SidebarMenu extends Component {
     return (
       <Sidebar
         sidebar={ this.renderContents() }
-        open={ this.state.sidebarOpen }
-        docked={ this.state.sidebarDocked }
-        onSetOpen={ this.onSetSidebarOpen.bind(this) }
+        open={ sidebarOpen }
+        docked={ sidebarDocked }
+        onSetOpen={ this.onSetSidebarOpen }
         sidebarClassName="navbar-dark bg-dark"
         rootId="sidebarRoot"
         sidebarId="sidebarContents"
         contentId="sidebarMain"
         overlayId="sidebarOverlay"
       >
-        { this.props.children || <span /> }
+        { children || <span /> }
       </Sidebar>
     );
   }
