@@ -7,8 +7,11 @@ import thunk from 'redux-thunk';
 import createRootReducer from './reducers';
 import asyncDispatchMiddleware from './asyncDispatchMiddleware';
 
-export default () => {
+// Base State
+const rootReducer = createRootReducer();
+export type RootState = ReturnType<typeof rootReducer>;
 
+export const configuredStore = (initialState?: RootState) => {
   const reducer = persistReducer(
     {
       key: 'schema_gui',
@@ -17,7 +20,7 @@ export default () => {
       blacklist: ['Router'],
       transforms: []
     },
-    createRootReducer()
+    rootReducer
   );
 
   const middleware = [
@@ -46,10 +49,12 @@ export default () => {
 
   const store = createStore(
     reducer,
-    {},
+    initialState,
     enhancers
   );
 
   persistStore(store);
   return store;
 };
+
+export type Store = ReturnType<typeof configuredStore>;

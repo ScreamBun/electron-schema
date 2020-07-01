@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`reducers convert should handle CONVERT_TO_MARKDOWN_SUCCESS 1`] = `
+Object {
+  "md_schema": "",
+}
+`;
+
+exports[`reducers convert should handle SET_BASE_JADN_SUCCESS 1`] = `
+Object {
+  "jadn_schema": Object {},
+}
+`;
+
+exports[`reducers convert should handle SET_BASE_JADN_SUCCESS 2`] = `
+Object {
+  "jadn_schema": Object {},
+}
+`;
+
+exports[`reducers convert should handle initial state 1`] = `
+Object {
+  "jadn_schema": Object {},
+  "json_schema": Object {},
+  "md_schema": "",
+}
+`;
+
+exports[`reducers convert should handle unknown action type 1`] = `Object {}`;

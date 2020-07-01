@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Button,
   ButtonGroup,
+  FormText,
   Input
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -132,6 +133,7 @@ class KeyObjectEditor extends Component {
         </ButtonGroup>
         <div className="border-bottom mb-2">
           <p className="col-sm-4 my-1"><strong>{ this.props.id }</strong></p>
+          { this.props.description ? <FormText color='muted' className='ml-3'>{ this.props.description }</FormText> : '' }
         </div>
         <div className="row m-0 indices">
           { indices }
@@ -143,6 +145,7 @@ class KeyObjectEditor extends Component {
 
 KeyObjectEditor.propTypes = {
   id: PropTypes.string,
+  description: PropTypes.string,
   placeholder: PropTypes.string,
   value: PropTypes.object,
   change: PropTypes.func,
@@ -151,6 +154,7 @@ KeyObjectEditor.propTypes = {
 
 KeyObjectEditor.defaultProps = {
   id: 'KeyObjectEditor',
+  description: '',
   placeholder: 'KeyObjectEditor',
   value: {},
   change: null,

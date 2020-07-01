@@ -3,11 +3,10 @@ import { Provider } from 'react-redux';
 import { hot } from 'react-hot-loader/root';
 import GenerateSchema from './generate';
 import { Nav, Sidebar } from './static';
-import configureStore from '../store';
+import { Store } from '../store';
 
 type Props = {
-  store: ReturnType<typeof configureStore>;
-  // history: History;
+  store: Store;
 }
 
 

@@ -14,7 +14,7 @@ module.exports = {
     allowRequiredDefaults: false
   }],
   'react/destructuring-assignment': [2, 'always'],
-  'react/display-name': [2, {
+  'react/display-name': [0, {
     ignoreTranspilerName: false
   }],
   'react/forbid-component-props': [0, {
@@ -111,7 +111,7 @@ module.exports = {
   'react/jsx-props-no-multi-spaces': 2,
   'react/jsx-props-no-spreading': [2, {
     html: 'enforce',
-    custom: 'enforce',
+    custom: 'ignore',
     exceptions: []
   }],
   'react/jsx-sort-default-props': [0, {

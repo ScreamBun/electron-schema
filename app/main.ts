@@ -13,22 +13,11 @@ import {
   BrowserWindow,
   WebPreferences
 } from 'electron';
-import log from 'electron-log';
-import { autoUpdater } from 'electron-updater';
 import MenuBuilder from './menu';
 import { actionsJADN } from './jadn';
 
 // Config
 const isDevelopment = process.env.NODE_ENV !== 'production';
-
-// App Updater
-export default class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
 
 // App Window Setup
 let mainWindow: BrowserWindow | null = null;
@@ -106,10 +95,6 @@ const createWindow = async (): Promise<void> => {
   // Build and add app menu
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
-
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
-  new AppUpdater();
 };
 
 /* Add event listeners... */

@@ -17,7 +17,6 @@ DeleteSourceMaps();
 
 const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
-const DIST_DIR = path.join(APP_DIR, 'dist');
 
 const minimizer = [];
 if (!process.env.E2E_BUILD) {
@@ -35,8 +34,8 @@ export default merge.smart(baseConfig, {
   devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
   entry: './app/main',
   output: {
-    path: DIST_DIR,
-    filename: 'main.js'
+    path: APP_DIR,
+    filename: 'main.prod.js'
   },
   plugins: [
     /**

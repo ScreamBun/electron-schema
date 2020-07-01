@@ -74,7 +74,7 @@ module.exports = {
     }
   }],
   '@typescript-eslint/lines-between-class-members': [2, 'always', {
-    exceptAfterSingleLine: false
+    exceptAfterSingleLine: true
   }],
   '@typescript-eslint/member-delimiter-style': 0,
   '@typescript-eslint/naming-convention': [2,

@@ -1,4 +1,3 @@
-# Created by .ignore support plugin (hsz.mobi)
 ### Node template
 # Logs
 logs
@@ -40,6 +39,7 @@ bower_components
 build/Release
 
 # Dependency directories
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules/
 jspm_packages/
 
@@ -161,23 +161,6 @@ fabric.properties
 
 # Jet brains profect workspace
 .idea
-
-# OSX
-.DS_Store
-
-# App packaged
-release
-dist
-dll
-
-# Assorted dev files
-npm-debug.log.*
-*.css.d.ts
-*.sass.d.ts
-*.scss.d.ts
-
-# vim swp files
-*.swp
 
 ### macOS template
 # General
@@ -383,5 +366,29 @@ $RECYCLE.BIN/
 # Local History for Visual Studio Code
 .history/
 
-# Assorted Filed
+# OSX
+.DS_Store
+
+# App packaged
+release
+app/main.prod.js
+app/main.prod.js.map
+app/main.prod.js.license.txt
+dist
+dll
+
+# Assorted Dev files
+npm-debug.log.*
+*.css.d.ts
+*.sass.d.ts
+*.scss.d.ts
+
+# vim swp files
+*.swp
+
+# Assorted Files
 package-lock.json
+*.stats.html
+*.stats.json
+lint_errors.txt
+.idea

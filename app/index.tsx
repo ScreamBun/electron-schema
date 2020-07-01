@@ -3,15 +3,15 @@ import { render } from 'react-dom';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 
 // App Components
-import configureStore from './store';
+import { configuredStore } from './store';
 import App from './src';
 
 // App Styles
-import './resources/styles.global.less';
+import './resources/styles.less';
 
 // App Config
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
-const store = configureStore();
+const store = configuredStore();
 
 // Create main App component
 const Root = () => (

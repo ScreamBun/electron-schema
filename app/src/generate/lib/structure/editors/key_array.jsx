@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Button,
   ButtonGroup,
+  FormText,
   Input
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -67,6 +68,7 @@ const KeyArrayEditor = props => {
 
       <div className="border-bottom mb-2">
         <p className="col-sm-4 my-1"><strong>{ props.id }</strong></p>
+        { props.description ? <FormText color='muted' className='ml-3'>{ props.description }</FormText> : '' }
       </div>
 
       <div className="row m-0 indices">
@@ -78,6 +80,7 @@ const KeyArrayEditor = props => {
 
 KeyArrayEditor.propTypes = {
   id: PropTypes.string,
+  description: PropTypes.string,
   placeholder: PropTypes.string,
   value: PropTypes.array,
   change: PropTypes.func,
@@ -86,6 +89,7 @@ KeyArrayEditor.propTypes = {
 
 KeyArrayEditor.defaultProps = {
   id: 'KeyValueEditor',
+  description: '',
   placeholder: 'KeyValueEditor',
   value: {},
   change: null,

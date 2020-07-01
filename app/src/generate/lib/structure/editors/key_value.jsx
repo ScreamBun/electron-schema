@@ -90,7 +90,7 @@ KeyValueEditor.defaultProps = {
   id: 'KeyValueEditor',
   name: 'KeyValueEditor',
   value: '',
-  description: null,
+  description: '',
   placeholder: 'KeyValueEditor',
   type: 'text',
   change: null,
