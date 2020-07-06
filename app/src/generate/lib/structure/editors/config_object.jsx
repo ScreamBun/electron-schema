@@ -44,13 +44,16 @@ const ConfigKeys = {
   }
 };
 
-// Key Object Editor
-class KeyObjectEditor extends Component {
+// Config Editor
+class ConfigEditor extends Component {
   constructor(props, context) {
     super(props, context);
+    this.removeAll = this.removeAll.bind(this);
+
+    const { value } = this.props;
 
     this.state = {
-      ...this.props.value
+      ...value
     };
   }
 
@@ -59,13 +62,10 @@ class KeyObjectEditor extends Component {
     const stateChange = this.state !== nextState;
 
     if (this.state !== nextState) {
-      this.props.change(nextState);
+      const { change } = this.props;
+      change(nextState);
     }
     return propsChange || stateChange;
-  }
-
-  removeAll() {
-    this.props.remove(this.props.id.toLowerCase());
   }
 
   onChange(k, v) {
@@ -80,7 +80,13 @@ class KeyObjectEditor extends Component {
     });
   }
 
+  removeAll() {
+    const { id, remove } = this.props;
+    remove(id.toLowerCase());
+  }
+
   render() {
+    const { id } = this.props;
     const keys = Object.keys(ConfigKeys).map(k => {
       const keyProps = {
         ...ConfigKeys[k],
@@ -89,20 +95,20 @@ class KeyObjectEditor extends Component {
         removable: false
       };
       if (k in this.state) {
-        keyProps.value = this.state[k];
+        keyProps.value = this.state[k];  // eslint-disable-line react/destructuring-assignment
       }
       return <KeyValueEditor key={ k } id={ k } { ...keyProps } />;
     });
 
     return (
       <div className="border m-1 p-1">
-        <Button color="danger" size="sm" className="float-right" onClick={ this.removeAll.bind(this) } >
+        <Button color="danger" size="sm" className="float-right" onClick={ this.removeAll } >
           <FontAwesomeIcon
             icon={ faMinusCircle }
           />
         </Button>
         <div className="border-bottom mb-2">
-          <p className="col-sm-4 my-1"><strong>{ this.props.id }</strong></p>
+          <p className="col-sm-4 my-1"><strong>{ id }</strong></p>
         </div>
         <div className="col-12 m-0">
           { keys }
@@ -112,7 +118,7 @@ class KeyObjectEditor extends Component {
   }
 }
 
-KeyObjectEditor.propTypes = {
+ConfigEditor.propTypes = {
   id: PropTypes.string,
   placeholder: PropTypes.string,
   value: PropTypes.object,
@@ -120,12 +126,12 @@ KeyObjectEditor.propTypes = {
   remove: PropTypes.func
 };
 
-KeyObjectEditor.defaultProps = {
+ConfigEditor.defaultProps = {
   id: 'ConfigObjectEditor',
   placeholder: 'ConfigObjectEditor',
   value: {},
-  change: null,
-  remove: null
+  change: val => null,  // eslint-disable-line no-unused-vars
+  remove: id => null  // eslint-disable-line no-unused-vars
 };
 
-export default KeyObjectEditor;
+export default ConfigEditor;

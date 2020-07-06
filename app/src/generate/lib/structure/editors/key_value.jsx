@@ -12,21 +12,38 @@ import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 
 // Key Value Editor
 const KeyValueEditor = props => {
+  const {
+    id,
+    value,
+    description,
+    placeholder,
+    type,
+    change,
+    remove
+  } = props;
+  const shadowless = [
+    'checkbox',
+    'file',
+    'hidden',
+    'image',
+    'radio'
+  ];
+
   const inputArgs = {
-    value: props.value,
-    checked: props.type && props.value,
-    onChange: e => props.change(e.target.value)
+    value,
+    checked: type && value,
+    onChange: e => change(e.target.value)
   };
 
-  if (['checkbox', 'radio'].includes(props.type)) {
-    inputArgs.onChange = e => props.change(e.target.checked);
+  if (['checkbox', 'radio'].includes(type)) {
+    inputArgs.onChange = e => change(e.target.checked);
   }
 
-  let remove = '';
-  if (props.remove) {
-    remove = (
+  let removeBtn = '';
+  if (remove) {
+    removeBtn = (
       <div className="input-group-append">
-        <Button color='danger' onClick={ () => props.remove(props.id.toLowerCase()) }>
+        <Button color='danger' onClick={ () => remove(id.toLowerCase()) }>
           <FontAwesomeIcon icon={ faMinusSquare } />
         </Button>
       </div>
@@ -35,18 +52,18 @@ const KeyValueEditor = props => {
 
   return (
     <FormGroup row className="border m-1 p-1">
-      <Label htmlFor={ `editor-${props.id}` } sm={ 2 } ><strong>{ props.id }</strong></Label>
+      <Label htmlFor={ `editor-${id}` } sm={ 2 } ><strong>{ id }</strong></Label>
       <div className="input-group col-sm-10">
         <Input
-          type={ props.type || 'text' }
-          id={ `editor-${props.id}` }
-          className="form-control"
-          placeholder={ props.placeholder }
+          type={ type || 'text' }
+          id={ `editor-${id}` }
+          className={ `form-control ${shadowless.includes(type) ? ' shadow-none' : ''}` }
+          placeholder={ placeholder }
           { ...inputArgs }
         />
-        { remove }
+        { removeBtn }
       </div>
-      { props.description ? <FormText color='muted' className='ml-3'>{ props.description }</FormText> : '' }
+      { description ? <FormText color='muted' className='ml-3'>{ description }</FormText> : '' }
     </FormGroup>
   );
 };
@@ -93,8 +110,8 @@ KeyValueEditor.defaultProps = {
   description: '',
   placeholder: 'KeyValueEditor',
   type: 'text',
-  change: null,
-  remove: null
+  change: (val) => null,  // eslint-disable-line no-unused-vars
+  remove: (idx) => null  // eslint-disable-line no-unused-vars
 };
 
 export default KeyValueEditor;

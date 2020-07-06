@@ -17,9 +17,14 @@ import {
 class KeyObjectEditor extends Component {
   constructor(props, context) {
     super(props, context);
+    this.addIndex = this.addIndex.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.removeAll = this.removeAll.bind(this);
+    this.removeIndex = this.removeIndex.bind(this);
 
+    const { value } = this.props;
     this.state = {
-      value: Object.keys(this.props.value).map(k => ({key: k, value: this.props.value[k]}))
+      value: Object.keys(value).map(k => ({key: k, value: value[k]}))
     };
   }
 
@@ -27,51 +32,13 @@ class KeyObjectEditor extends Component {
     const propsChange = this.props !== nextProps;
     const stateChange = this.state !== nextState;
 
-    if (this.state.value !== nextState.value) {
-      this.props.change(this.toObject(nextState.value));
+    const { value } = this.state;
+    if (value !== nextState.value) {
+      const { change } = this.props;
+      change(this.toObject(nextState.value));
     }
 
     return propsChange || stateChange;
-  }
-
-  toObject(val) {
-    return (val || this.state.value).reduce((obj, row) => ({
-      ...obj,
-      [row.key]: row.value
-    }), {});
-  }
-
-  removeAll() {
-    this.props.remove(this.props.id.toLowerCase());
-  }
-
-  removeIndex(e) {
-    if (this.state.value.length > 1) {
-      const idx = parseInt(e.currentTarget.attributes.getNamedItem('data-index').value, 10);
-
-      this.setState(prevState => ({
-        value: prevState.value.filter((row, i) => i !== idx)
-      }));
-    } else {
-      console.log('cant remove');
-    }
-  }
-
-  addIndex() {
-    if (this.state.value.some(v => v[0] === '')) {
-      return;
-    }
-    console.log('Add KeyObject');
-
-    this.setState(prevState => ({
-      value: [
-        ...prevState.value,
-        {
-          key: '',
-          value: ''
-        }
-      ]
-    }));
   }
 
   onChange(e) {
@@ -89,8 +56,55 @@ class KeyObjectEditor extends Component {
     });
   }
 
+  toObject(val) {
+    const { value } = this.state;
+    return (val || value).reduce((obj, row) => ({
+      ...obj,
+      [row.key]: row.value
+    }), {});
+  }
+
+  removeAll() {
+    const { id, remove } = this.props;
+    remove(id.toLowerCase());
+  }
+
+  removeIndex(e) {
+    const { value } = this.state;
+    if (value.length > 1) {
+      const idx = parseInt(e.currentTarget.attributes.getNamedItem('data-index').value, 10);
+
+      this.setState(prevState => ({
+        value: prevState.value.filter((row, i) => i !== idx)
+      }));
+    } else {
+      console.log('cant remove');
+    }
+  }
+
+  addIndex() {
+    const { value } = this.state;
+    if (value.some(v => v[0] === '')) {
+      return;
+    }
+    console.log('Add KeyObject');
+
+    this.setState(prevState => ({
+      value: [
+        ...prevState.value,
+        {
+          key: '',
+          value: ''
+        }
+      ]
+    }));
+  }
+
   render() {
-    const indices = this.state.value.map((obj, i) => (
+    const { description, id, placeholder } = this.props;
+    const { value } = this.state;
+
+    const indices = value.map((obj, i) => (
       // eslint-disable-next-line react/no-array-index-key
       <div className="input-group col-sm-12 mb-1" key={ i }>
         <Input
@@ -98,21 +112,21 @@ class KeyObjectEditor extends Component {
           className="form-control"
           data-index={ i }
           data-type="key"
-          placeholder={ this.props.placeholder }
+          placeholder={ placeholder }
           value={ obj.key }
-          onChange={ this.onChange.bind(this) }
+          onChange={ this.onChange }
         />
         <Input
           type="text"
           className="form-control"
           data-index={ i }
           data-type="value"
-          placeholder={ this.props.placeholder }
+          placeholder={ placeholder }
           value={ obj.value }
-          onChange={ this.onChange.bind(this) }
+          onChange={ this.onChange }
         />
         <div className="input-group-append">
-          <Button color="danger" onClick={ this.removeIndex.bind(this) } data-index={ i }>
+          <Button color="danger" onClick={ this.removeIndex } data-index={ i }>
             <FontAwesomeIcon icon={ faMinusSquare } />
           </Button>
         </div>
@@ -122,18 +136,18 @@ class KeyObjectEditor extends Component {
     return (
       <div className="border m-1 p-1">
         <ButtonGroup size="sm" className="float-right">
-          <Button color="info" onClick={ this.addIndex.bind(this) } >
+          <Button color="info" onClick={ this.addIndex } >
             <FontAwesomeIcon
               icon={ faPlusSquare }
             />
           </Button>
-          <Button color="danger" onClick={ this.removeAll.bind(this) } >
+          <Button color="danger" onClick={ this.removeAll } >
             <FontAwesomeIcon icon={ faMinusCircle } />
           </Button>
         </ButtonGroup>
         <div className="border-bottom mb-2">
-          <p className="col-sm-4 my-1"><strong>{ this.props.id }</strong></p>
-          { this.props.description ? <FormText color='muted' className='ml-3'>{ this.props.description }</FormText> : '' }
+          <p className="col-sm-4 my-1"><strong>{ id }</strong></p>
+          { description ? <FormText color='muted' className='ml-3'>{ description }</FormText> : '' }
         </div>
         <div className="row m-0 indices">
           { indices }

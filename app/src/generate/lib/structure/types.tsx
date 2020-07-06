@@ -6,11 +6,11 @@ import {
 import { PrimitiveDef, StructureDef } from './interfaces';
 
 interface EditorProps {
-  key?: number|string|undefined;
+  key?: number|string|undefined;  // eslint-disable-line react/require-default-props
   dataIndex: number,
   value: Array<any>,
-  change?: (val: string|Record<string, any>, idx: number) => void;
-  remove?: (idx: number) => void;
+  change?: (val: string|Record<string, any>, idx: number) => void;  // eslint-disable-line react/require-default-props
+  remove?: (idx: number) => void;  // eslint-disable-line react/require-default-props
 };
 
 const typeDef = (props: StructureDef) => {

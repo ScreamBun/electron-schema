@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { isDeepStrictEqual } from 'util';
 import {
   Button,
   ButtonGroup,
@@ -16,23 +17,27 @@ import {
   faPlusSquare
 } from '@fortawesome/free-solid-svg-icons';
 
-import OptionsModal from './OptionsModal';
+import OptionsModal from './options';
 import FieldEditor, { StandardField, EnumeratedField } from './field';
+import { zip } from '../../../../utils';
 
 // Structure Editor
 class StructureEditor extends Component {
   constructor(props, context) {
     super(props, context);
+    this.addField = this.addField.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.removeAll = this.removeAll.bind(this);
+    this.saveModal = this.saveModal.bind(this);
+    this.toggleFields = this.toggleFields.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
+
+    this.fieldKeys = ['name', 'type', 'options', 'comment', 'fields'];
+    const { value } = this.props;
 
     this.state = {
       fieldCollapse: false,
-      value: {
-        name: '',
-        type: '',
-        options: [],
-        comment: '',
-        fields: []
-      },
+      value: zip(this.fieldKeys, value),
       modal: false
     };
 
@@ -46,16 +51,29 @@ class StructureEditor extends Component {
     this.initState();
   }
 
-  initState() {
-    if (this.props.value && typeof(this.props.value) === 'object') {
-      const updatevalue = {};
-      if (this.props.value[0] !== this.state.value.name) updatevalue.name = this.props.value[0];
-      if (this.props.value[1] !== this.state.value.type) updatevalue.type = this.props.value[1];
-      if (this.props.value[2] !== this.state.value.options) updatevalue.options = this.props.value[2];
-      if (this.props.value[3] !== this.state.value.comment) updatevalue.comment = this.props.value[3];
-      if (this.props.value[4] !== this.state.value.fields) updatevalue.fields = this.props.value[4];
+  onChange(e) {
+    const { placeholder, value } = e.target;
+    const key = placeholder.toLowerCase();
 
-      if (Object.keys(updatevalue).length > 0) {
+    this.setState(prevState => ({
+      value: {
+        ...prevState.value,
+        [key]: value
+      }
+    }), () => {
+      const { change, dataIndex } = this.props;
+      // eslint-disable-next-line react/destructuring-assignment
+      change(this.state.value, dataIndex);
+    });
+  }
+
+  initState() {
+    const { value } = this.props;
+    if (value && Array.isArray(value)) {
+      const updatevalue = zip(this.fieldKeys, value);
+
+      // eslint-disable-next-line react/destructuring-assignment
+      if (!isDeepStrictEqual(updatevalue, this.state.value)) {
         this.setState(prevState => ({
           value: {
             ...prevState.value,
@@ -67,12 +85,14 @@ class StructureEditor extends Component {
   }
 
   removeAll() {
-    this.props.remove(this.props.dataIndex);
+    const { dataIndex, remove } = this.props;
+    remove(dataIndex);
   }
 
   addField() {
-    const field = Object.values(((this.state.value.type.toLowerCase() === 'enumerated') ? EnumeratedField : StandardField));
-    field[0] = this.state.value.fields.length + 1;
+    const { value } = this.state;
+    const field = Object.values(((value.type.toLowerCase() === 'enumerated') ? EnumeratedField : StandardField));
+    field[0] = value.fields.length + 1;
 
     this.setState(prevState => {
       const tmpFields = [ ...prevState.value.fields, field ];
@@ -84,23 +104,9 @@ class StructureEditor extends Component {
         }
       };
     }, () => {
-      this.props.change(this.state.value, this.props.dataIndex);
-    });
-  }
-
-  onChange(e) {
-    const key = e.target.placeholder.toLowerCase();
-    const value = e.target.value;
-
-    this.setState(prevState => ({
-      value: {
-        ...prevState.value,
-        [key]: value
-      }
-    }), () => {
-      if (this.props.change) {
-        this.props.change(this.state.value, this.props.dataIndex);
-      }
+      const { change, dataIndex } = this.props;
+      // eslint-disable-next-line react/destructuring-assignment
+      change(this.state.value, dataIndex);
     });
   }
 
@@ -125,23 +131,32 @@ class StructureEditor extends Component {
         options: data
       }
     }), () => {
-      if (this.props.change) {
-        this.props.change(this.state.value, this.props.dataIndex);
-      }
+      const { change, dataIndex } = this.props;
+      // eslint-disable-next-line react/destructuring-assignment
+      change(this.state.value, dataIndex);
     });
   }
 
-  render() {
-    setTimeout(() => this.initState(), 100);
-    const structureFields = (this.state.value.fields || []).map((f, i) => (
-      <FieldEditor
-        key={ i }  // eslint-disable-line react/no-array-index-key
-        dataIndex={ i }
-        enumerated={ this.state.value.type.toLowerCase() === 'enumerated' }
-        value={ f }
-        change={ (val, idx) => this.setState(prevState => {
+  makeFields(value) {
+    const fieldChange = (val, idx) => this.setState(prevState => {
+      const tmpFields = [ ...prevState.value.fields ];
+      tmpFields[idx] = val;
+      return {
+        value: {
+          ...prevState.value,
+          fields: tmpFields
+        }
+      };
+    }, () => {
+      const { change, dataIndex } = this.props;
+      change(this.state.value, dataIndex);  // eslint-disable-line react/destructuring-assignment
+    });
+
+    const fieldRemove = idx => {
+      if (this.state.value.fields.length >= idx) {  // eslint-disable-line react/destructuring-assignment
+        this.setState((prevState) => {
           const tmpFields = [ ...prevState.value.fields ];
-          tmpFields[idx] = val;
+          tmpFields.splice(idx, 1);
           return {
             value: {
               ...prevState.value,
@@ -149,85 +164,86 @@ class StructureEditor extends Component {
             }
           };
         }, () => {
-          if (this.props.change) {
-            this.props.change(this.state.value, this.props.dataIndex);
-          }
-        })}
-        remove={ idx => {
-          if (this.state.value.fields.length >= idx) {
-            this.setState((prevState) => {
-              const tmpFields = [ ...prevState.value.fields ];
-              tmpFields.splice(idx, 1);
-              return {
-                value: {
-                  ...prevState.value,
-                  fields: tmpFields
-                }
-              };
-            }, () => {
-              if (this.props.change) {
-                this.props.change(this.state.value, this.props.dataIndex);
-              }
-            });
-          }
-        }}
+          const { change, dataIndex } = this.props;
+          change(this.state.value, dataIndex);  // eslint-disable-line react/destructuring-assignment
+        });
+      }
+    };
+
+    return (value.fields || []).map((f, i) => (
+      <FieldEditor
+        key={ i }  // eslint-disable-line react/no-array-index-key
+        dataIndex={ i }
+        enumerated={ value.type.toLowerCase() === 'enumerated' }
+        value={ f }
+        change={ fieldChange }
+        remove={ fieldRemove }
       />
     ));
+  }
+
+  render() {
+    const { fieldCollapse, modal, value } = this.state;
+    const structureFields = this.makeFields(value);
 
     return (
       <div className="border m-1 p-1">
         <ButtonGroup size="sm" className="float-right">
-          <Button color="danger" onClick={ this.removeAll.bind(this) } >
+          <Button color="danger" onClick={ this.removeAll } >
             <FontAwesomeIcon icon={ faMinusCircle } />
           </Button>
         </ButtonGroup>
 
         <div className="border-bottom mb-2">
-          <h3 className="col-sm-10 my-1">{ `${this.state.value.name}(${this.state.value.type})` }</h3>
+          <h3 className="col-sm-10 my-1">{ `${value.name}(${value.type})` }</h3>
         </div>
 
         <div className="row m-0">
           <FormGroup className="col-md-4">
             <Label>Name</Label>
-            <Input type="string" placeholder="Name" value={ this.state.value.name } onChange={ this.onChange.bind(this) } />
+            <Input type="string" placeholder="Name" value={ value.name } onChange={ this.onChange } />
           </FormGroup>
 
           <FormGroup className="col-md-4">
             <Label>&nbsp;</Label>
             <InputGroup>
-              <Button outline color="info" onClick={ this.toggleModal.bind(this) }>Type Options</Button>
+              <Button outline color="info" onClick={ this.toggleModal }>Type Options</Button>
               <OptionsModal
-                optionvalue={ this.state.value.options }
-                isOpen={ this.state.modal }
-                toggleModal={ this.toggleModal.bind(this) }
-                saveModal={ this.saveModal.bind(this) }
+                optionValues={ value.options }
+                isOpen={ modal }
+                optionType={ value.type }
+                toggleModal={ this.toggleModal }
+                saveModal={ this.saveModal }
               />
             </InputGroup>
           </FormGroup>
 
           <FormGroup className="col-md-4">
             <Label>Comment</Label>
-            <Input type="textarea" placeholder="Comment" rows={ 1 } value={ this.state.value.comment } onChange={ this.onChange.bind(this) } />
+            <Input type="textarea" placeholder="Comment" rows={ 1 } value={ value.comment } onChange={ this.onChange } />
           </FormGroup>
 
           <FormGroup tag="fieldset" className="col-12 border">
             <legend>
               Fields
               <ButtonGroup className="float-right">
-                <Button color={ this.state.fieldCollapse ? 'warning' : 'success' } onClick={ this.toggleFields.bind(this) } >
-                  <FontAwesomeIcon icon={ this.state.fieldCollapse ? faMinusCircle : faPlusCircle } />&nbsp;
-                  { this.state.fieldCollapse ? ' Hide' : ' Show' }
+                <Button color={ fieldCollapse ? 'warning' : 'success' } onClick={ this.toggleFields } >
+                  <FontAwesomeIcon icon={ fieldCollapse ? faMinusCircle : faPlusCircle } />
+                  &nbsp;
+                  { fieldCollapse ? ' Hide' : ' Show' }
                 </Button>
-                <Button color="primary" onClick={ this.addField.bind(this) } >
-                  <FontAwesomeIcon icon={ faPlusSquare } /> Add
+                <Button color="primary" onClick={ this.addField } >
+                  <FontAwesomeIcon icon={ faPlusSquare } />
+                  &nbsp;
+                  Add
                 </Button>
               </ButtonGroup>
             </legend>
 
-            <Collapse isOpen={ this.state.fieldCollapse }>
+            <Collapse isOpen={ fieldCollapse }>
               { structureFields }
             </Collapse>
-            { !this.state.fieldCollapse && structureFields.length > 0 ? <p>Expand to view/edit fields</p> : '' }
+            { !fieldCollapse && structureFields.length > 0 ? <p>Expand to view/edit fields</p> : '' }
           </FormGroup>
         </div>
       </div>
@@ -245,8 +261,8 @@ StructureEditor.propTypes = {
 StructureEditor.defaultProps = {
   dataIndex: -1,
   value: [],
-  change: null,
-  remove: null
+  change: (val, idx) => null,  // eslint-disable-line no-unused-vars
+  remove: (idx) => null  // eslint-disable-line no-unused-vars
 };
 
 export default StructureEditor;

@@ -14,36 +14,48 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 // Key Array Editor
-const KeyArrayEditor = props => {
-  const removeAll = () => props.remove(props.id.toLowerCase());
+const KeyArrayEditor = props =>  {
+  const {
+    id,
+    description,
+    placeholder,
+    value,
+    change,
+    remove
+  } = props;
 
-  const removeIndex = e => {
-    if (props.value.length > 1) {
-      const index = e.currentTarget.attributes.getNamedItem('data-index').value;
-      const tmpValues = [ ...props.value ];
-      tmpValues.splice(index, 1);
-      props.change(tmpValues);
-    }
-  };
-
-  const addIndex = () => props.change([ ...props.value, '' ]);
-
-  const onChange = e => {
+  const onChange = (e) => {
     const index = e.target.attributes.getNamedItem('data-index').value;
-    const value = e.target.value;
     const tmpValues = [ ...props.value ];
-    tmpValues[index] = value;
+    tmpValues[index] = e.target.value;
     props.change(tmpValues);
   };
 
-  const indices = props.value.map((arr, i) => (
+  const removeAll = () => {
+    remove(id.toLowerCase());
+  };
+
+  const removeIndex = (e) => {
+    if (value.length > 1) {
+      const index = e.currentTarget.attributes.getNamedItem('data-index').value;
+      const tmpValues = [ ...value ];
+      tmpValues.splice(index, 1);
+      change(tmpValues);
+    }
+  };
+
+  const addIndex = () => {
+    change([ ...value, '' ]);
+  };
+
+  const indices = value.map((arr, i) => (
     // eslint-disable-next-line react/no-array-index-key
     <div className="input-group col-sm-12 mb-1" key={ i }>
       <Input
         type="text"
         className="form-control"
         data-index={ i }
-        placeholder={ props.placeholder }
+        placeholder={ placeholder }
         value={ arr }
         onChange={ onChange }
       />
@@ -67,8 +79,8 @@ const KeyArrayEditor = props => {
       </ButtonGroup>
 
       <div className="border-bottom mb-2">
-        <p className="col-sm-4 my-1"><strong>{ props.id }</strong></p>
-        { props.description ? <FormText color='muted' className='ml-3'>{ props.description }</FormText> : '' }
+        <p className="col-sm-4 my-1"><strong>{ id }</strong></p>
+        { description ? <FormText color='muted' className='ml-3'>{ description }</FormText> : '' }
       </div>
 
       <div className="row m-0 indices">
@@ -92,8 +104,8 @@ KeyArrayEditor.defaultProps = {
   description: '',
   placeholder: 'KeyValueEditor',
   value: {},
-  change: null,
-  remove: null
+  change: (val) => null,  // eslint-disable-line no-unused-vars
+  remove: (id) => null  // eslint-disable-line no-unused-vars
 };
 
 export default KeyArrayEditor;

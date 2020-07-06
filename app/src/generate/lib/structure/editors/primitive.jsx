@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { isDeepStrictEqual } from 'util';
 import {
   Button,
   ButtonGroup,
@@ -11,20 +12,23 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
-import OptionsModal from './OptionsModal';
+import OptionsModal from './options';
+import { zip } from '../../../../utils';
 
 // Primitive Editor
 class PrimitiveEditor extends Component {
   constructor(props, context) {
     super(props, context);
+    this.onChange = this.onChange.bind(this);
+    this.removeAll = this.removeAll.bind(this);
+    this.saveModal = this.saveModal.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
+
+    this.fieldKeys = ['name', 'type', 'options', 'comment'];
+    const { value } = this.props;
 
     this.state = {
-      value: {
-        name: '',
-        type: '',
-        options: [],
-        comment: ''
-      },
+      value: zip(this.fieldKeys, value),
       modal: false
     };
   }
@@ -33,15 +37,29 @@ class PrimitiveEditor extends Component {
     this.initState();
   }
 
-  initState() {
-    if (this.props.value && typeof this.props.value === 'object') {
-      const updatevalue = {};
-      if (this.props.value[0] !== this.state.value.name) updatevalue.name = this.props.value[0];
-      if (this.props.value[1] !== this.state.value.type) updatevalue.type = this.props.value[1];
-      if (this.props.value[2] !== this.state.value.options) updatevalue.options = this.props.value[2];
-      if (this.props.value[3] !== this.state.value.comment) updatevalue.comment = this.props.value[3];
+  onChange(e) {
+    const { placeholder, value } = e.target;
+    const key = placeholder.toLowerCase();
 
-      if (Object.keys(updatevalue).length > 0) {
+    this.setState(prevState => ({
+      value: {
+        ...prevState.value,
+        [key]: value
+      }
+    }), () => {
+      const { change, dataIndex } = this.props;
+      // eslint-disable-next-line react/destructuring-assignment
+      change(this.state.value, dataIndex);
+    });
+  }
+
+  initState() {
+    const { value } = this.props;
+    if (value && Array.isArray(value)) {
+      const updatevalue = zip(this.fieldKeys, value);
+
+      // eslint-disable-next-line react/destructuring-assignment
+      if (!isDeepStrictEqual(updatevalue, this.state.value)) {
         this.setState(prevState => ({
           value: {
             ...prevState.value,
@@ -52,24 +70,9 @@ class PrimitiveEditor extends Component {
     }
   }
 
-  onChange(e) {
-    const key = e.target.placeholder.toLowerCase();
-    const value = e.target.value;
-
-    this.setState(prevState => ({
-      value: {
-        ...prevState.value,
-        [key]: value
-      }
-    }), () => {
-      if (this.props.change) {
-        this.props.change(this.state.value, this.props.dataIndex);
-      }
-    });
-  }
-
   removeAll() {
-    this.props.remove(this.props.dataIndex);
+    const { dataIndex, remove } = this.props;
+    remove(dataIndex);
   }
 
   toggleModal() {
@@ -87,43 +90,45 @@ class PrimitiveEditor extends Component {
         options: data
       }
     }), () => {
-      if (this.props.change) {
-        this.props.change(this.state.value, this.props.dataIndex);
-      }
+      const { change, dataIndex } = this.props;
+      // eslint-disable-next-line react/destructuring-assignment
+      change(this.state.value, dataIndex);
     });
   }
 
   render() {
+    const { modal, value } = this.state;
     return (
       <div className="border m-1 p-1">
         <ButtonGroup size="sm" className="float-right">
-          <Button color="danger" onClick={ this.removeAll.bind(this) } >
+          <Button color="danger" onClick={ this.removeAll } >
             <FontAwesomeIcon icon={ faMinusCircle } />
           </Button>
         </ButtonGroup>
 
         <div className="border-bottom mb-2">
-          <h3 className="col-sm-10 my-1">{ `${this.state.value.name}(${this.state.value.type})` }</h3>
+          <h3 className="col-sm-10 my-1">{ `${value.name}(${value.type})` }</h3>
         </div>
 
         <div className="row m-0">
           <FormGroup className="col-md-4">
             <Label>Name</Label>
-            <Input type="string" placeholder="Name" value={ this.state.value.name } onChange={ this.onChange.bind(this) } />
+            <Input type="string" placeholder="Name" value={ value.name } onChange={ this.onChange } />
           </FormGroup>
 
           <FormGroup className="col-md-4">
-              <Label>&nbsp;</Label>
-              <InputGroup>
-                <Button outline color="info" onClick={ this.toggleModal.bind(this) }>Type Options</Button>
-                <OptionsModal
-                  optionvalue={ this.state.value.options }
-                  isOpen={ this.state.modal }
-                  toggleModal={ this.toggleModal.bind(this) }
-                  saveModal={ this.saveModal.bind(this) }
-                />
-              </InputGroup>
-            </FormGroup>
+            <Label>&nbsp;</Label>
+            <InputGroup>
+              <Button outline color="info" onClick={ this.toggleModal }>Type Options</Button>
+              <OptionsModal
+                optionValues={ value.options }
+                isOpen={ modal }
+                optionType={ value.type }
+                toggleModal={ this.toggleModal }
+                saveModal={ this.saveModal }
+              />
+            </InputGroup>
+          </FormGroup>
 
           <FormGroup className="col-md-4">
             <Label>Comment</Label>
@@ -131,8 +136,8 @@ class PrimitiveEditor extends Component {
               type="textarea"
               placeholder="Comment"
               rows={ 1 }
-              value={ this.state.value.comment }
-              onChange={ this.onChange.bind(this) }
+              value={ value.comment }
+              onChange={ this.onChange }
             />
           </FormGroup>
         </div>
@@ -151,8 +156,8 @@ PrimitiveEditor.propTypes = {
 PrimitiveEditor.defaultProps = {
   dataIndex: -1,
   value: [],
-  change: null,
-  remove: null
+  change: (val, idx) => null,  // eslint-disable-line no-unused-vars
+  remove: (idx) => null  // eslint-disable-line no-unused-vars
 };
 
 export default PrimitiveEditor;

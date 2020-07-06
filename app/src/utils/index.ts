@@ -1,4 +1,5 @@
 import {
+  flattenArray,
   mergeArrayObjects,
   updateMerge,
   zip
@@ -16,6 +17,7 @@ import {
 
 export {
   // Array
+  flattenArray,
   mergeArrayObjects,
   updateMerge,
   zip,
