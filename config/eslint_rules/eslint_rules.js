@@ -236,9 +236,9 @@ module.exports = {
   'new-cap': [2, {
     capIsNew: false,
     capIsNewExceptions: ['Immutable.Map', 'Immutable.Set', 'Immutable.List'],
-    properties: true,
     newIsCap: true,
-    newIsCapExceptions: []
+    newIsCapExceptions: [],
+    properties: true
   }],
   'new-parens': 0,
   'newline-after-var': 0,

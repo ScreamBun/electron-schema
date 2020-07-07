@@ -96,11 +96,7 @@ module.exports = {
   'import/no-webpack-loader-syntax': 2,
   'import/order': [2, {
     groups: [
-      [
-        'builtin',
-        'external',
-        'internal'
-      ]
+      ['builtin', 'external', 'internal']
     ]
   }],
   'import/prefer-default-export': 2,
