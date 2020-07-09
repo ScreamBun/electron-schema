@@ -378,6 +378,7 @@ dist
 dll
 
 # Assorted Dev files
+electron-builder.env
 npm-debug.log.*
 *.css.d.ts
 *.sass.d.ts
