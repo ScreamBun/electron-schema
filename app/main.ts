@@ -5,19 +5,28 @@
  * through IPC.
  *
  * When running `yarn build` or `yarn build-main`, this file is compiled to
- * `./app/dist/main.js` using webpack. This gives us some performance wins.
+ * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
 import {
-  app,
-  BrowserWindow,
-  WebPreferences
+  app, BrowserWindow, WebPreferences
 } from 'electron';
+import { autoUpdater } from 'electron-updater';
+import log from 'electron-log';
 import MenuBuilder from './menu';
 import { actionsJADN } from './jadn';
 
 // Config
 const isDevelopment = process.env.NODE_ENV !== 'production';
+
+// Updating
+export default class AppUpdater {
+  constructor() {
+    log.transports.file.level = 'info';
+    autoUpdater.logger = log;
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+}
 
 // App Window Setup
 let mainWindow: BrowserWindow | null = null;
@@ -95,6 +104,10 @@ const createWindow = async (): Promise<void> => {
   // Build and add app menu
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
+
+  // Remove this if your app does not use auto updates
+  // eslint-disable-next-line
+  new AppUpdater();
 };
 
 /* Add event listeners... */

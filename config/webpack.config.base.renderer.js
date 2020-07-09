@@ -49,7 +49,6 @@ export default merge.smart(baseConfig, {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV,
-      // DEBUG_PROD: process.env.DEBUG_PROD === 'true'
       DEBUG_PROD: false,
       E2E_BUILD: false
     })

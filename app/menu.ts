@@ -1,9 +1,5 @@
 import {
-  app,
-  shell,
-  BrowserWindow,
-  Menu,
-  MenuItemConstructorOptions
+  app, shell, BrowserWindow, Menu, MenuItemConstructorOptions
 } from 'electron';
 import contextMenu from 'electron-context-menu';
 import { SchemaFormats } from 'jadnschema';

@@ -22,9 +22,9 @@ const minimizer = [];
 if (!process.env.E2E_BUILD) {
   minimizer.push(
     new TerserPlugin({
-      parallel: true,
-      sourceMap: true,
       cache: true,
+      parallel: true,
+      sourceMap: true
     })
   );
 }
@@ -45,7 +45,6 @@ export default merge.smart(baseConfig, {
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV,
-      DEBUG_PROD: process.env.DEBUG_PROD === 'true',
       START_MINIMIZED: false
     }),
     new BundleAnalyzerPlugin({
