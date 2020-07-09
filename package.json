@@ -27,7 +27,7 @@
     "lint-styles-fix": "yarn --silent lint-styles --fix; exit 0",
     "package": "yarn build && electron-builder build --publish never",
     "package-all": "yarn build && electron-builder build -mwl",
-    "package-ci": "yarn postinstall && yarn build && electron-builder --publish always",
+    "package-ci": "yarn postinstall && yarn package-all && electron-builder -mwl --publish always",
     "package-linux": "yarn build && electron-builder build --linux",
     "package-mac": "yarn build && electron-builder build --mac",
     "package-win": "yarn build && electron-builder build --win --x64",
@@ -236,8 +236,6 @@
     },
     "linux": {
       "target": [
-        "deb",
-        "rpm",
         "AppImage"
       ],
       "category": "Development"

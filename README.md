@@ -3,11 +3,13 @@
 ### About
 - An [ElectronJS](https://www.electronjs.org/) desktop application for creating, editing, and exporting [JADN](https://github.com/oasis-open/openc2-jadn-software) documents. 
 
-### Download
-Note: A Windows .exe version is still currently in progress. This app is currently available on Linux and MacOS systems
+### [Releases](https://github.com/ScreamBun/electron-schema/releases)
 - No external dependencies required; simply download the app and run
-- Linux version available as an [AppImage](https://appimage.org/) [here](www.google.com).
-- MacOS version available [here](www.google.com)
+- Linux version available as an [AppImage](https://appimage.org/)
+- MacOS version available as a DMG and ZIP
+- Windows version available as an EXE and MSI
+#### Release Notes:
+- This application is a work in progress and may contains bugs
 
 ### Quick Guide
 - Create a JADN schema from scratch, or import an existing file (see [Constructing a JADN schema](#constructing-a-jadn-schema) below)
