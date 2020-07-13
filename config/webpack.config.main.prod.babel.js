@@ -45,6 +45,7 @@ export default merge.smart(baseConfig, {
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV,
+      DEBUG_PROD: process.env.DEBUG_PROD === 'true',
       START_MINIMIZED: false
     }),
     new BundleAnalyzerPlugin({
