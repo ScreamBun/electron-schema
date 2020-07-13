@@ -22,5 +22,7 @@ const Root = () => (
 
 // Render the application into the DOM, the #root div inside index.html
 document.addEventListener('DOMContentLoaded', () => {
-  render(<Root />, document.getElementById('root'));
+  setTimeout(() => {
+    render(<Root />, document.getElementById('root'));
+  }, 10);
 });

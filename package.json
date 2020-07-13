@@ -28,6 +28,7 @@
     "package": "yarn build && electron-builder build --publish never",
     "package-all": "yarn build && electron-builder build -mwl",
     "package-ci": "yarn postinstall && yarn package-all && electron-builder -mwl --publish always",
+    "package-debug": "cross-env DEBUG_PROD=true yarn build && electron-builder build",
     "package-linux": "yarn build && electron-builder build --linux",
     "package-mac": "yarn build && electron-builder build --mac",
     "package-win": "yarn build && electron-builder build --win --x64",

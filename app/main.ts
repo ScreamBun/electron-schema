@@ -63,7 +63,7 @@ const createWindow = async (): Promise<void> => {
   if ((isDevelopment || process.env.E2E_BUILD === 'true') && process.env.ERB_SECURE !== 'true') {
     webPreferences.nodeIntegration = true;
   } else {
-    webPreferences.preload = path.join(__dirname, 'renderer.prod.js');
+    webPreferences.preload = path.join(__dirname, 'dist', 'renderer.prod.js');
   }
 
   // Create the browser window
