@@ -10,7 +10,7 @@ import webpack from 'webpack';
 import merge from 'webpack-merge';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
-import baseConfig from './webpack.config.base.renderer';
+import baseConfig, { CSSLoader } from './webpack.config.base.renderer';
 
 const NODE_ENV = 'development';
 
@@ -22,8 +22,8 @@ if (process.env.NODE_ENV === 'production') {
 
 const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
-const DIST_DIR = path.join(APP_DIR, 'dist');
 const DLL_DIR = path.join(ROOT_DIR, 'dll');
+const DIST_DIR = path.join(APP_DIR, 'dist');
 
 const port = process.env.PORT || 1212;
 const publicPath = `http://localhost:${port}/dist`;
@@ -42,18 +42,45 @@ if (!requiredByDLLConfig && !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))
   execSync('yarn build-dll');
 }
 
+let DLLConfig = null;
+if (!requiredByDLLConfig) {
+  DLLConfig = new webpack.DllReferencePlugin({
+    context: DLL_DIR,
+    manifest: require(manifest),
+    sourceType: 'var',
+  });
+}
+
+// Loaders
+const TypingLoader = [
+  'typings-for-css-modules-loader',
+  {
+    loader: 'typings-for-css-modules-loader',
+    options: {
+      modules: {
+        localIdentName: '[name]__[local]__[hash:base64:5]'
+      },
+      sourceMap: true,
+      importLoaders: 1
+    }
+  }
+];
+
 export default merge.smart(baseConfig, {
   mode: NODE_ENV,
   devtool: 'inline-source-map',
-  entry: [
-    ...(process.env.PLAIN_HMR ? [] : ['react-hot-loader/patch']),
-    `webpack-dev-server/client?http://localhost:${port}/`,
-    'webpack/hot/only-dev-server',
-    require.resolve('../app/index.tsx')
-  ],
+  entry: {
+    'dev-loader': [
+      ...(process.env.PLAIN_HMR ? [] : ['react-hot-loader/patch']),
+      `webpack-dev-server/client?http://localhost:${port}/`,
+      'webpack/hot/only-dev-server'
+    ],
+    dll: path.join(DLL_DIR, 'renderer.dev.dll'),
+    renderer: path.join(APP_DIR, 'index.tsx')
+  },
   output: {
     publicPath: `http://localhost:${port}/dist/`,
-    filename: 'renderer.dev.js'
+    filename: '[name].dev.js'
   },
   resolve: {
     alias: {
@@ -62,20 +89,21 @@ export default merge.smart(baseConfig, {
   },
   plugins: [
     /**
-     * Create global constants which can be configured at compile time
-     * Useful for allowing different behavior between development builds and release builds
-     * NODE_ENV should be production so that modules do not perform certain development checks
-     * By default, use 'development' as NODE_ENV. This can be overridden with
+     * Create global constants which can be configured at compile time.
+     *
+     * Useful for allowing different behaviour between development builds and
+     * release builds
+     *
+     * NODE_ENV should be production so that modules do not perform certain
+     * development checks
+     *
+     * By default, use 'development' as NODE_ENV. This can be overriden with
      * 'staging', for example, by changing the ENV variables in the npm scripts
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV
     }),
-    requiredByDLLConfig ? null : new webpack.DllReferencePlugin({
-      context: DLL_DIR,
-      manifest: require(manifest),
-      sourceType: 'var'
-    }),
+    DLLConfig,
     new webpack.HotModuleReplacementPlugin({
       multiStep: true
     }),
@@ -101,23 +129,57 @@ export default merge.smart(baseConfig, {
       poll: 100
     },
     historyApiFallback: {
-      verbose: true,
-      disableDotRule: false
+      disableDotRule: false,
+      verbose: true
     },
     before() {
       if (process.env.START_HOT) {
         console.log('Starting Main Process...');
         spawn('npm', ['run', 'start-main-dev'], {
-          shell: true,
           env: process.env,
+          shell: true,
           stdio: 'inherit'
         })
-          .on('close', code => process.exit(code))
-          .on('error', spawnError => console.error(spawnError));
+          .on('close', (code) => process.exit(code))
+          .on('error', (spawnError) => console.error(spawnError));
       }
     }
   },
   target: 'electron-renderer',
+  module: {
+    rules: [
+      // Styles support - CSS - Extract all .global.css to style.css as is
+      {
+        test: /\.global\.css$/,
+        use: ['style-loader', CSSLoader]
+      },
+      // Styles support - CSS - Pipe other styles through css modules and append to style.css
+      {
+        test: /^((?!\.global).)*\.css$/,
+        use: [
+          'style-loader',
+          merge.smart(CSSLoader, {
+            options: {
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:5]'
+              },
+              importLoaders: 1
+            }
+          })
+        ]
+      },
+      // Styles support - SASS/SCSS - compile all .global.s[ac]ss files and pipe it to style.css
+      {
+        test: /\.global\.(scss|sass)$/,
+        use: ['style-loader', CSSLoader, 'sass-loader']
+      },
+      // Styles support - SASS/SCSS - compile all other .s[ac]ss files and pipe it to style.css
+      {
+        test: /^((?!\.global).)*\.(scss|sass)$/,
+        use: [...TypingLoader, 'sass-loader']
+      }
+    ]
+  },
   node: {
     __dirname: false,
     __filename: false

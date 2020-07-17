@@ -7,7 +7,7 @@ import { configuredStore } from './store';
 import App from './src';
 
 // App Styles
-import './resources/styles.less';
+import './resources/styles.global.scss';
 
 // App Config
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;

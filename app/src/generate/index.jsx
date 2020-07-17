@@ -3,11 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import { Droppable } from 'react-drag-and-drop';
-import {
-  TabContent,
-  TabPane
-} from 'reactstrap';
-
+import { TabContent, TabPane } from 'reactstrap';
 
 import SchemaStructure from './lib/structure';
 import * as Tabs from './lib/tabs';
@@ -63,10 +59,10 @@ class GenerateSchema extends Component {
     });
 
     ipcRenderer.on('schema-new', (event, store) => {
+      const { schema, schemaPath } = this.state;
       const stateUpdate = {};
       switch (store.action) {
         case 'save':
-          const { schema, schemaPath } = this.state;
           ipcRenderer.send(
             'file-save',
             {

@@ -32,6 +32,7 @@ node_modules
 
 # App packaged
 release
+app/*.main.prod.js
 app/main.prod.js
 app/main.prod.js.map
 app/dist
@@ -48,12 +49,6 @@ package.json
 *.sass.d.ts
 *.scss.d.ts
 
-# Non-packaged files
-config
-dll
-internals
-resources
-
-# Assorted
-babel.config.js
-app/src/utils/jadn-editor/mitsuketa
+# Lint Rules
+/configs/eslint_rules-tmp
+/configs/eslint_rules

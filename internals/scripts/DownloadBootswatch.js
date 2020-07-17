@@ -72,7 +72,7 @@ BootswatchThemes.themes.forEach(theme => {
     return processedLine;
   });
 
-  const outFile = path.join(THEME_DIR, `${themeName}.less`);
+  const outFile = path.join(THEME_DIR, `${themeName}.css`);
   const themeCss = fs.createWriteStream(outFile, { flags: 'w' });
   themeCss.write(postProcessCss.join('\n'));
   themeCss.end();

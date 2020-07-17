@@ -1,4 +1,3 @@
-
 // Store functions
 export const SET_TABS_SUCCESS = '@@tabs/SET_TABS_SUCCESS';
 export const setTabs = tabs => {
@@ -9,7 +8,6 @@ export const setTabs = tabs => {
     });
   };
 };
-
 
 export const SET_ACTIVE_TAB_SUCCESS = '@@tabs/SET_ACTIVE_TAB_SUCCESS';
 export const setActiveTab = tab => {

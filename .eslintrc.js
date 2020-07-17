@@ -15,7 +15,7 @@ module.exports = {
       // See https://github.com/benmosher/eslint-plugin-import/issues/1396#issuecomment-575727774 for line below
       node: {},
       webpack: {
-        config: require.resolve('./config/webpack.config.eslint.js')
+        config: require.resolve('./configs/webpack.config.eslint.js')
       }
     }
   },
@@ -26,8 +26,7 @@ module.exports = {
      * "error" or 2 - turn the rule on as an error (exit code is 1 when triggered)
      */
     // eslint-disable-next-line global-require
-    ...require('./config/eslint_rules'),
-    'import/extensions': 0,
+    ...require('./configs/eslint_rules'),
     // A temporary hack related to IDE not resolving correct package.json
     'import/no-extraneous-dependencies': 0
   }

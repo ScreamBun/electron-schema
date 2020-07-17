@@ -11,7 +11,7 @@ import merge from 'webpack-merge';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import DeleteSourceMaps from '../internals/scripts/DeleteSourceMaps';
 
-import baseConfig from './webpack.config.base.renderer';
+import baseConfig, { CSSLoader } from './webpack.config.base.renderer';
 
 const NODE_ENV = 'production';
 CheckNodeEnv(NODE_ENV);
@@ -27,12 +27,7 @@ if (!process.env.E2E_BUILD) {
     new TerserPlugin({
       cache: true,
       parallel: true,
-      sourceMap: true,
-      terserOptions: {
-        output: {
-          comments: false
-        }
-      }
+      sourceMap: true
     })
   );
   minimizer.push(
@@ -47,36 +42,46 @@ if (!process.env.E2E_BUILD) {
   );
 }
 
-const cssLoader = [
-  {
-    loader: MiniCssExtractPlugin.loader,
+// Loaders
+const MiniCssLoader = [
+  MiniCssExtractPlugin.loader,
+  merge.smart(CSSLoader, {
     options: {
-      publicPath: './'
+      modules: {
+        localIdentName: '[name]__[local]__[hash:base64:5]'
+      }
     }
-  },
-  {
-    loader: 'css-loader',
-    options: {
-      importLoaders: 1,
-      sourceMap: true
-    }
-  }
+  })
 ];
 
 export default merge.smart(baseConfig, {
   mode: NODE_ENV,
   devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
+  entry: {
+    renderer: path.join(APP_DIR, 'index.tsx')
+  },
+  output: {
+    path: DIST_DIR,
+    publicPath: './dist/',
+    filename: '[name].prod.js',
+  },
   plugins: [
     /**
-     * Create global constants which can be configured at compile time
-     * Useful for allowing different behavior between development builds and release builds
-     * NODE_ENV should be production so that modules do not perform certain development checks
+     * Create global constants which can be configured at compile time.
+     *
+     * Useful for allowing different behaviour between development builds and
+     * release builds
+     *
+     * NODE_ENV should be production so that modules do not perform certain
+     * development checks
      */
     new webpack.EnvironmentPlugin({
-      NODE_ENV
+      NODE_ENV,
+      DEBUG_PROD: false,
+      E2E_BUILD: false,
     }),
     new MiniCssExtractPlugin({
-      filename: 'css/styles.css'
+      filename: 'css/[name].css'
     }),
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
@@ -89,30 +94,47 @@ export default merge.smart(baseConfig, {
   target: 'electron-preload',
   module: {
     rules: [
-      {  // Styles support - CSS
-        test: /\.css$/,
-        use: cssLoader
-      },
-      {  // LESS support - compile all .less files and pipe it to style.css
-        test: /\.less$/,
+      // Styles support - CSS - Extract all .global.css to style.css as is
+      {
+        test: /\.global\.css$/,
         use: [
-          ...cssLoader,
           {
-            loader: 'less-loader',
+            loader: MiniCssExtractPlugin.loader,
             options: {
-              lessOptions: {
-                relativeUrls: true,
-                sourceMap: true,
-                strictMath: true
-              }
+              publicPath: './'
+            }
+          },
+          CSSLoader
+        ]
+      },
+      // Styles support - CSS - Pipe other styles through css modules and append to style.css
+      {
+        test: /^((?!\.global).)*\.css$/,
+        use: MiniCssLoader
+      },
+      // Styles support - SASS/SCSS - compile all .global.s[ac]ss files and pipe it to style.css
+      {
+        test: /\.global\.(scss|sass)$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          merge.smart(CSSLoader, {
+            options: {
+              importLoaders: 1
+            }
+          }),
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true
             }
           }
         ]
       },
-      {  // SASS support - compile all .sass/.scss files and pipe it to style.css
-        test: /\.(scss|sass)$/,
+      // Styles support - SASS/SCSS - compile all other .s[ac]ss files and pipe it to style.css
+      {
+        test: /^((?!\.global).)*\.(scss|sass)$/,
         use: [
-          ...cssLoader,
+          ...MiniCssLoader,
           {
             loader: 'sass-loader',
             options: {

@@ -16,7 +16,7 @@ export default {
     // https://github.com/webpack/webpack/issues/1114
     libraryTarget: 'commonjs2'
   },
-  // Determine the array of extensions that should be used to resolve modules
+  // Determine the array of extensions that should be used to resolve modules.
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
     modules: [APP_DIR, 'node_modules']

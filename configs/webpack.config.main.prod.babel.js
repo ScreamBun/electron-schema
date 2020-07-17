@@ -32,21 +32,26 @@ if (!process.env.E2E_BUILD) {
 export default merge.smart(baseConfig, {
   mode: NODE_ENV,
   devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
-  entry: './app/main',
+  entry: './app/main.dev.ts',
   output: {
     path: APP_DIR,
     filename: 'main.prod.js'
   },
   plugins: [
     /**
-     * Create global constants which can be configured at compile time
-     * Useful for allowing different behaviour between development builds and release builds
-     * NODE_ENV should be production so that modules do not perform certain development checks
+     * Create global constants which can be configured at compile time.
+     *
+     * Useful for allowing different behaviour between development builds and
+     * release builds
+     *
+     * NODE_ENV should be production so that modules do not perform certain
+     * development checks
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV,
-      DEBUG_PROD: process.env.DEBUG_PROD === 'true',
-      START_MINIMIZED: false
+      DEBUG_PROD: false,
+      START_MINIMIZED: false,
+      E2E_BUILD: false
     }),
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',

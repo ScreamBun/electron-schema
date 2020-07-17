@@ -43,6 +43,7 @@ export function prettyObject(obj: any, indent?: number): string {
     case (obj === undefined):
       break;
     case (obj instanceof Array):
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
         pretty += (obj as Array<any>).join(', ');
         break;
     case (obj instanceof Object):
@@ -58,8 +59,7 @@ export function prettyObject(obj: any, indent?: number): string {
       break;
     default:
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      console.log(`-- ${typeof obj}: ${obj}`);
-      pretty += prettyObject(obj);
+      pretty += `${typeof obj} --> ${obj}`;
       break;
   }
   return pretty;
@@ -91,6 +91,7 @@ export function safeGet(obj: Record<string, any>, key: string, def?: any): any {
   return def;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type KeyFun = (val: any) => string;
 /**
  * Invert an objects key/values
@@ -146,7 +147,9 @@ export function cloneObject(obj: any, hash: WeakMap<Record<string, any>, string>
       result = new Set(obj);
       break;
     case (obj instanceof Map):
+      // eslint-disable-next-line no-case-declarations, @typescript-eslint/no-explicit-any
       const tuples: Array<[any, any]> = [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (obj as Map<any, any>).forEach(([key, val]) => tuples.push([key, cloneObject(val, hash)]) );
       result = new Map(tuples);
       break;
@@ -168,7 +171,7 @@ export function cloneObject(obj: any, hash: WeakMap<Record<string, any>, string>
   return Object.assign(
     result,
     objectFromTuple(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
       ...Object.keys(obj).map<any>(key => [key, cloneObject(obj[key], hash) ])
     )
   );

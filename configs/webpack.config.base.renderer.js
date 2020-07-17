@@ -1,14 +1,10 @@
 /**
- * Build config for development electron renderer process that uses
- * Hot-Module-Replacement - https://webpack.js.org/concepts/hot-module-replacement/
+ * Renderer Shared Rules
  */
-import { spawn, execSync } from 'child_process';
-import fs from 'fs';
 import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
-
-import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
 import baseConfig from './webpack.config.base';
 
@@ -16,9 +12,8 @@ const NODE_ENV = 'production';
 
 const ROOT_DIR = path.join(__dirname, '..');
 const APP_DIR = path.join(ROOT_DIR, 'app');
-const DIST_DIR = path.join(APP_DIR, 'dist');
-const DLL_DIR = path.join(ROOT_DIR, 'dll');
 
+// Shared Loaders
 const URL_LIMIT = 10 * 1024;
 const fontLoader = {
   loader: 'url-loader',
@@ -27,67 +22,41 @@ const fontLoader = {
     fallback: {
       loader: 'file-loader',
       options: {
-        name: 'fonts/[name].[ext]',
-        publicPath: (url, resourcePath, context) => {
-          const isProd = process.env.NODE_ENV === 'production';
-          return isProd ? `../${url}` : `resources/assets/${url}`;
-        }
+        name: 'fonts/[name].[ext]'
       }
     }
   }
 };
 
+export const CSSLoader = {
+  loader: 'css-loader',
+  options: {
+    sourceMap: true
+  }
+};
 
 export default merge.smart(baseConfig, {
   mode: NODE_ENV,
   devtool: 'inline-source-map',
-  entry: path.join(APP_DIR, 'index'),
-  output: {
-    path: DIST_DIR,
-    filename: 'renderer.prod.js'
-  },
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV,
       DEBUG_PROD: false,
       E2E_BUILD: false
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'app.html',
+      template: path.join(APP_DIR, 'app.html'),
+      hash: true,
+      xhtml: true,
+      chunks: ['dev-loader', 'dll', 'renderer'],
     })
   ],
   target: 'electron-renderer',
   module: {
     rules: [
-      {  // Styles support - CSS
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ]
-      },
-      {  // Styles support - LESS - compile all .less files and pipe it to style.css
-        test: /\.less$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: 'less-loader',
-            options: {
-              lessOptions: {
-                relativeUrls: true,
-                strictMath: true
-              }
-            }
-          }
-        ]
-      },
-      {  // Styles support - SASS/SCSS - compile all .sass/.scss files and pipe it to style.css
-        test: /\.(scss|sass)$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader'
-        ]
-      },
-      {  // WOFF Font
+      // WOFF Font
+      {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
         use: merge.smart(fontLoader, {
           options: {
@@ -95,7 +64,8 @@ export default merge.smart(baseConfig, {
           }
         })
       },
-      {  // WOFF2 Font
+      // WOFF2 Font
+      {
         test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
         use: merge.smart(fontLoader, {
           options: {
@@ -103,7 +73,8 @@ export default merge.smart(baseConfig, {
           }
         })
       },
-      {  // TTF Font
+      // TTF Font
+      {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
         use: merge.smart(fontLoader, {
           options: {
@@ -111,7 +82,8 @@ export default merge.smart(baseConfig, {
           }
         })
       },
-      {  // EOT Font
+      // EOT Font
+      {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         use: merge.smart(fontLoader, {
           options: {
@@ -119,7 +91,8 @@ export default merge.smart(baseConfig, {
           }
         })
       },
-      { // SVG
+      // SVG
+      {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         use: {
           loader: 'url-loader',
@@ -129,7 +102,8 @@ export default merge.smart(baseConfig, {
           }
         }
       },
-      {  // Common Image Formats
+      // Common Image Formats
+      {
         test: /\.(?:bmp|ico|gif|png|jpe?g|tiff|webp)$/,
         use: 'url-loader'
       }

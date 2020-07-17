@@ -1,4 +1,4 @@
-// Jest Rules
+// jest Rules
 module.exports = {
   'jest/expect-expect': 1,
   'jest/no-commented-out-tests': 1,
@@ -15,5 +15,5 @@ module.exports = {
   'jest/no-try-expect': 2,
   'jest/valid-describe': 2,
   'jest/valid-expect': 2,
-  'jest/valid-expect-in-promise': 2,
+  'jest/valid-expect-in-promise': 2
 };

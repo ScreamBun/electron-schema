@@ -1,49 +1,50 @@
-// Eslint Base Rules
+// eslint Rules
 module.exports = {
   'accessor-pairs': 0,
   'array-bracket-newline': [0, 'consistent'],
   'array-bracket-spacing': [0, 'never'],
   'array-callback-return': [2, {
-    allowImplicit: true,
-    checkForEach: false
+    'allowImplicit': true,
+    'checkForEach': false
   }],
   'array-element-newline': [0, {
-    multiline: true,
-    minItems: 3
+    'minItems': 3,
+    'multiline': true
   }],
   'arrow-body-style': [0, 'as-needed', {
-    requireReturnForObjectLiteral: false
+    'requireReturnForObjectLiteral': false
   }],
   'arrow-parens': [0, 'always'],
   'arrow-spacing': [0, {
-    after: true,
-    before: true
+    'after': true,
+    'before': true
   }],
   'block-scoped-var': 2,
   'block-spacing': [0, 'always'],
   'brace-style': [0, '1tbs', {
-    allowSingleLine: true
+    'allowSingleLine': true
   }],
   'callback-return': 0,
   'camelcase': [0, {
-    ignoreDestructuring: false,
-    ignoreImports: false,
-    properties: 'never'
+    'ignoreDestructuring': false,
+    'ignoreGlobals': false,
+    'ignoreImports': false,
+    'properties': 'never'
   }],
   'capitalized-comments': [0, 'never', {
-    line: {
-      ignoreConsecutiveComments: true,
-      ignoreInlineComments: true,
-      ignorePattern: '.*'
+    'block': {
+      'ignoreConsecutiveComments': true,
+      'ignoreInlineComments': true,
+      'ignorePattern': '.*'
     },
-    block: {
-      ignoreConsecutiveComments: true,
-      ignoreInlineComments: true,
-      ignorePattern: '.*'
+    'line': {
+      'ignoreConsecutiveComments': true,
+      'ignoreInlineComments': true,
+      'ignorePattern': '.*'
     }
   }],
   'class-methods-use-this': [2, {
-    exceptMethods: [
+    'exceptMethods': [
       'render',
       'getInitialState',
       'getDefaultProps',
@@ -62,24 +63,30 @@ module.exports = {
       'getSnapshotBeforeUpdate'
     ]
   }],
-  'comma-dangle': [2, 'never'],
+  'comma-dangle': [1, {
+    'arrays': 'always-multiline',
+    'exports': 'always-multiline',
+    'functions': 'always-multiline',
+    'imports': 'always-multiline',
+    'objects': 'always-multiline'
+  }],
   'comma-spacing': [2, {
-    after: true,
-    before: false
+    'after': true,
+    'before': false
   }],
   'comma-style': [2, 'last', {
-    exceptions: {
-      ArrayExpression: false,
-      ArrowFunctionExpression: false,
-      ArrayPattern: false,
-      CallExpression: false,
-      FunctionDeclaration: false,
-      FunctionExpression: false,
-      ImportDeclaration: false,
-      ObjectExpression: false,
-      ObjectPattern: false,
-      VariableDeclaration: false,
-      NewExpression: false
+    'exceptions': {
+      'ArrayExpression': false,
+      'ArrayPattern': false,
+      'ArrowFunctionExpression': false,
+      'CallExpression': false,
+      'FunctionDeclaration': false,
+      'FunctionExpression': false,
+      'ImportDeclaration': false,
+      'NewExpression': false,
+      'ObjectExpression': false,
+      'ObjectPattern': false,
+      'VariableDeclaration': false
     }
   }],
   'complexity': [0, 11],
@@ -89,25 +96,25 @@ module.exports = {
   'constructor-super': 2,
   'curly': [2, 'multi-line'],
   'default-case': [2, {
-    commentPattern: '^no default$'
+    'commentPattern': '^no default$'
   }],
   'default-case-last': 0,
   'default-param-last': 0,
   'dot-location': [0, 'property'],
   'dot-notation': [0, {
-    allowKeywords: true,
-    allowPattern: '',
-    allowPrivateClassPropertyAccess: false
+    'allowKeywords': true,
+    'allowPattern': '',
+    'allowPrivateClassPropertyAccess': false
   }],
   'eol-last': [0, 'always'],
   'eqeqeq': [2, 'always', {
-    null: 'ignore'
+    'null': 'ignore'
   }],
   'for-direction': 2,
   'func-call-spacing': [0, 'never'],
   'func-name-matching': [0, 'always', {
-    considerPropertyDescriptor: true,
-    includeCommonJSModuleExports: false
+    'considerPropertyDescriptor': true,
+    'includeCommonJSModuleExports': false
   }],
   'func-names': 1,
   'func-style': [0, 'expression'],
@@ -115,11 +122,11 @@ module.exports = {
   'function-paren-newline': [0, 'consistent'],
   'generator-star': 0,
   'generator-star-spacing': [0, {
-    after: true,
-    before: false
+    'after': true,
+    'before': false
   }],
   'getter-return': [2, {
-    allowImplicit: true
+    'allowImplicit': true
   }],
   'global-require': 2,
   'grouped-accessor-pairs': 0,
@@ -128,24 +135,27 @@ module.exports = {
   'id-blacklist': 0,
   'id-length': 0,
   'id-match': 0,
-  'implicit-arrow-linebreak': [2, 'beside'],
+  'implicit-arrow-linebreak': [0, 'beside'],
   'indent': [0, 2, {
-    ArrayExpression: 1,
-    CallExpression: {
-      arguments: 1
+    'ArrayExpression': 1,
+    'CallExpression': {
+      'arguments': 1
     },
-    flatTernaryExpressions: false,
-    FunctionDeclaration: {
-      parameters: 1,
-      body: 1
+    'FunctionDeclaration': {
+      'body': 1,
+      'parameters': 1
     },
-    FunctionExpression: {
-      parameters: 1,
-      body: 1
+    'FunctionExpression': {
+      'body': 1,
+      'parameters': 1
     },
-    ignoreComments: false,
-    ImportDeclaration: 1,
-    ignoredNodes: [
+    'ImportDeclaration': 1,
+    'ObjectExpression': 1,
+    'SwitchCase': 1,
+    'VariableDeclarator': 1,
+    'flatTernaryExpressions': false,
+    'ignoreComments': false,
+    'ignoredNodes': [
       'JSXElement',
       'JSXElement > *',
       'JSXAttribute',
@@ -163,88 +173,85 @@ module.exports = {
       'JSXEmptyExpression',
       'JSXSpreadChild'
     ],
-    ObjectExpression: 1,
-    offsetTernaryExpressions: false,
-    outerIIFEBody: 1,
-    SwitchCase: 1,
-    VariableDeclarator: 1
+    'offsetTernaryExpressions': false,
+    'outerIIFEBody': 1
   }],
   'indent-legacy': 0,
   'init-declarations': 0,
   'jsx-quotes': [0, 'prefer-double'],
   'key-spacing': [0, {
-    beforeColon: false,
-    afterColon: true
+    'afterColon': true,
+    'beforeColon': false
   }],
   'keyword-spacing': [2, {
-    after: true,
-    before: true,
-    overrides: {
-      case: {
-        after: true
+    'after': true,
+    'before': true,
+    'overrides': {
+      'case': {
+        'after': true
       },
-      return: {
-        after: true
+      'return': {
+        'after': true
       },
-      throw: {
-        after: true
+      'throw': {
+        'after': true
       }
     }
   }],
   'line-comment-position': [0, {
-    applyDefaultPatterns: true,
-    ignorePattern: '',
-    position: 'above'
+    'applyDefaultPatterns': true,
+    'ignorePattern': '',
+    'position': 'above'
   }],
   'linebreak-style': [0, 'unix'],
   'lines-around-comment': 0,
   'lines-around-directive': [2, {
-    after: 'always',
-    before: 'always'
+    'after': 'always',
+    'before': 'always'
   }],
   'lines-between-class-members': [2, 'always', {
-    exceptAfterSingleLine: true
+    'exceptAfterSingleLine': true
   }],
   'max-classes-per-file': [2, 1],
   'max-depth': [0, 4],
   'max-len': [1, 128, 2, {
-    ignoreComments: true,
-    ignoreRegExpLiterals: true,
-    ignoreStrings: true,
-    ignoreTemplateLiterals: true,
-    ignoreUrls: true
+    'ignoreComments': true,
+    'ignoreRegExpLiterals': true,
+    'ignoreStrings': true,
+    'ignoreTemplateLiterals': true,
+    'ignoreUrls': true
   }],
   'max-lines': [0, {
-    max: 300,
-    skipComments: true,
-    skipBlankLines: true
+    'max': 300,
+    'skipBlankLines': true,
+    'skipComments': true
   }],
   'max-lines-per-function': [0, {
-    max: 50,
-    skipBlankLines: true,
-    skipComments: true,
-    IIFEs: true
+    'IIFEs': true,
+    'max': 50,
+    'skipBlankLines': true,
+    'skipComments': true
   }],
   'max-nested-callbacks': 0,
   'max-params': [0, 3],
   'max-statements': [0, 10],
   'max-statements-per-line': [0, {
-    max: 1
+    'max': 1
   }],
   'multiline-comment-style': [0, 'starred-block'],
-  'multiline-ternary': [1, 'never'],
+  'multiline-ternary': [0, 'never'],
   'new-cap': [2, {
-    capIsNew: false,
-    capIsNewExceptions: ['Immutable.Map', 'Immutable.Set', 'Immutable.List'],
-    newIsCap: true,
-    newIsCapExceptions: [],
-    properties: true
+    'capIsNew': false,
+    'capIsNewExceptions': ['Immutable.Map', 'Immutable.Set', 'Immutable.List'],
+    'newIsCap': true,
+    'newIsCapExceptions': [],
+    'properties': true
   }],
   'new-parens': 0,
   'newline-after-var': 0,
   'newline-before-return': 0,
   'newline-per-chained-call': [0, {
-    ignoreChainWithDepth: 4
+    'ignoreChainWithDepth': 4
   }],
   'no-alert': 1,
   'no-array-constructor': 0,
@@ -254,14 +261,14 @@ module.exports = {
   'no-bitwise': 2,
   'no-buffer-constructor': 2,
   'no-caller': 2,
-  'no-case-declarations': 0,
+  'no-case-declarations': 2,
   'no-catch-shadow': 0,
   'no-class-assign': 2,
   'no-comma-dangle': 0,
   'no-compare-neg-zero': 2,
   'no-cond-assign': [2, 'always'],
   'no-confusing-arrow': [0, {
-    allowParens: true
+    'allowParens': true
   }],
   'no-console': 1,
   'no-const-assign': 2,
@@ -279,12 +286,12 @@ module.exports = {
   'no-duplicate-case': 2,
   'no-duplicate-imports': 0,
   'no-else-return': [2, {
-    allowElseIf: false
+    'allowElseIf': false
   }],
   'no-empty': 2,
   'no-empty-character-class': 2,
-  'no-empty-function': [1, {
-    allow: ['arrowFunctions', 'functions', 'methods']
+  'no-empty-function': [0, {
+    'allow': ['arrowFunctions', 'functions', 'methods']
   }],
   'no-empty-pattern': 2,
   'no-eq-null': 0,
@@ -295,24 +302,24 @@ module.exports = {
   'no-extra-boolean-cast': 2,
   'no-extra-label': 2,
   'no-extra-parens': [0, 'all', {
-    conditionalAssign: true,
-    enforceForArrowConditionals: false,
-    ignoreJSX: 'all',
-    nestedBinaryExpressions: false,
-    returnAssign: false
+    'conditionalAssign': true,
+    'enforceForArrowConditionals': false,
+    'ignoreJSX': 'all',
+    'nestedBinaryExpressions': false,
+    'returnAssign': false
   }],
   'no-extra-semi': 1,
   'no-fallthrough': 0,
   'no-floating-decimal': 0,
   'no-func-assign': 2,
   'no-global-assign': [2, {
-    exceptions: []
+    'exceptions': []
   }],
   'no-implicit-coercion': [0, {
-    allow: [],
-    boolean: false,
-    number: true,
-    string: true
+    'allow': [],
+    'boolean': false,
+    'number': true,
+    'string': true
   }],
   'no-implicit-globals': 0,
   'no-implied-eval': 0,
@@ -325,22 +332,23 @@ module.exports = {
   'no-iterator': 2,
   'no-label-var': 2,
   'no-labels': [2, {
-    allowLoop: false,
-    allowSwitch: false
+    'allowLoop': false,
+    'allowSwitch': false
   }],
   'no-lone-blocks': 2,
   'no-lonely-if': 2,
   'no-loop-func': 2,
   'no-loss-of-precision': 0,
   'no-magic-numbers': [0, {
-    detectObjects: false,
-    enforceConst: true,
-    ignore: [],
-    ignoreArrayIndexes: true
+    'detectObjects': false,
+    'enforceConst': true,
+    'ignore': [],
+    'ignoreArrayIndexes': true
   }],
   'no-misleading-character-class': 2,
   'no-mixed-operators': [0, {
-    groups: [
+    'allowSamePrecedence': false,
+    'groups': [
       ['%', '**'],
       ['%', '+'],
       ['%', '-'],
@@ -350,20 +358,19 @@ module.exports = {
       ['&', '|', '<<', '>>', '>>>'],
       ['==', '!=', '===', '!=='],
       ['&&', '||']
-    ],
-    allowSamePrecedence: false
+    ]
   }],
   'no-mixed-requires': [0, false],
-  'no-mixed-spaces-and-tabs': 1,
+  'no-mixed-spaces-and-tabs': 0,
   'no-multi-assign': 2,
   'no-multi-spaces': [0, {
-    ignoreEOLComments: false
+    'ignoreEOLComments': false
   }],
   'no-multi-str': 2,
   'no-multiple-empty-lines': [2, {
-    max: 2,
-    maxBOF: 1,
-    maxEOF: 0
+    'max': 1,
+    'maxBOF': 0,
+    'maxEOF': 0
   }],
   'no-native-reassign': 0,
   'no-negated-condition': 0,
@@ -375,25 +382,25 @@ module.exports = {
   'no-new-require': 2,
   'no-new-symbol': 2,
   'no-new-wrappers': 2,
-  'no-obj-calls': 2,
+  'no-obj-calls': 0,
   'no-octal': 2,
   'no-octal-escape': 2,
   'no-param-reassign': [2, {
-    props: false
+    'props': false
   }],
   'no-path-concat': 2,
   'no-plusplus': [2, {
-    allowForLoopAfterthoughts: true
+    'allowForLoopAfterthoughts': true
   }],
   'no-process-env': 0,
   'no-process-exit': 0,
   'no-proto': 2,
   'no-prototype-builtins': 2,
-  'no-redeclare': 2,
+  'no-redeclare': 0,
   'no-regex-spaces': 2,
   'no-reserved-keys': 0,
   'no-restricted-exports': [0, {
-    restrictedNamedExports: ['default', 'then']
+    'restrictedNamedExports': ['default', 'then']
   }],
   'no-restricted-globals': [2,
     'isFinite',
@@ -458,83 +465,83 @@ module.exports = {
     'top'
   ],
   'no-restricted-imports': [0, {
-    paths: [],
-    patterns: []
+    'paths': [],
+    'patterns': []
   }],
   'no-restricted-modules': 0,
   'no-restricted-properties': [2,
     {
-      object: 'arguments',
-      property: 'callee',
-      message: 'arguments.callee is deprecated'
+      'message': 'arguments.callee is deprecated',
+      'object': 'arguments',
+      'property': 'callee'
     },
     {
-      object: 'global',
-      property: 'isFinite',
-      message: 'Please use Number.isFinite instead'
+      'message': 'Please use Number.isFinite instead',
+      'object': 'global',
+      'property': 'isFinite'
     },
     {
-      object: 'self',
-      property: 'isFinite',
-      message: 'Please use Number.isFinite instead'
+      'message': 'Please use Number.isFinite instead',
+      'object': 'self',
+      'property': 'isFinite'
     },
     {
-      object: 'window',
-      property: 'isFinite',
-      message: 'Please use Number.isFinite instead'
+      'message': 'Please use Number.isFinite instead',
+      'object': 'window',
+      'property': 'isFinite'
     },
     {
-      object: 'global',
-      property: 'isNaN',
-      message: 'Please use Number.isNaN instead'
+      'message': 'Please use Number.isNaN instead',
+      'object': 'global',
+      'property': 'isNaN'
     },
     {
-      object: 'self',
-      property: 'isNaN',
-      message: 'Please use Number.isNaN instead'
+      'message': 'Please use Number.isNaN instead',
+      'object': 'self',
+      'property': 'isNaN'
     },
     {
-      object: 'window',
-      property: 'isNaN',
-      message: 'Please use Number.isNaN instead'
+      'message': 'Please use Number.isNaN instead',
+      'object': 'window',
+      'property': 'isNaN'
     },
     {
-      property: '__defineGetter__',
-      message: 'Please use Object.defineProperty instead.'
+      'message': 'Please use Object.defineProperty instead.',
+      'property': '__defineGetter__'
     },
     {
-      property: '__defineSetter__',
-      message: 'Please use Object.defineProperty instead.'
+      'message': 'Please use Object.defineProperty instead.',
+      'property': '__defineSetter__'
     },
     {
-      object: 'Math',
-      property: 'pow',
-      message: 'Use the exponentiation operator (**) instead.'
+      'message': 'Use the exponentiation operator (**) instead.',
+      'object': 'Math',
+      'property': 'pow'
     }
   ],
   'no-restricted-syntax': [2,
     {
-      selector: 'ForInStatement',
-      message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.'
+      'message': 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.',
+      'selector': 'ForInStatement'
     },
     {
-      selector: 'ForOfStatement',
-      message: 'iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them. Separately, loops should be avoided in favor of array iterations.'
+      'message': 'iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them. Separately, loops should be avoided in favor of array iterations.',
+      'selector': 'ForOfStatement'
     },
     {
-      selector: 'LabeledStatement',
-      message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.'
+      'message': 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.',
+      'selector': 'LabeledStatement'
     },
     {
-      selector: 'WithStatement',
-      message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.'
+      'message': '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.',
+      'selector': 'WithStatement'
     }
   ],
   'no-return-assign': [2, 'always'],
   'no-return-await': 2,
   'no-script-url': 2,
   'no-self-assign': [2, {
-    props: true
+    'props': true
   }],
   'no-self-compare': 2,
   'no-sequences': 2,
@@ -548,48 +555,45 @@ module.exports = {
   'no-tabs': 0,
   'no-template-curly-in-string': 2,
   'no-ternary': 0,
-  'no-this-before-super': 2,
+  'no-this-before-super': 0,
   'no-throw-literal': 0,
   'no-trailing-spaces': [2, {
-    ignoreComments: false,
-    skipBlankLines: false
+    'ignoreComments': false,
+    'skipBlankLines': false
   }],
   'no-undef': 2,
   'no-undef-init': 2,
   'no-undefined': 0,
   'no-underscore-dangle': [2, {
-    allow: [
-      '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__',
-      '^_[^_]'
-    ],
-    allowAfterSuper: true,
-    allowAfterThis: true,
-    allowAfterThisConstructor: false,
-    enforceInMethodNames: false
+    'allow': ['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'],
+    'allowAfterSuper': true,
+    'allowAfterThis': true,
+    'allowAfterThisConstructor': false,
+    'enforceInMethodNames': false
   }],
-  'no-unexpected-multiline': 1,
+  'no-unexpected-multiline': 0,
   'no-unmodified-loop-condition': 0,
   'no-unneeded-ternary': [2, {
-    defaultAssignment: false
+    'defaultAssignment': false
   }],
   'no-unreachable': 2,
   'no-unsafe-finally': 2,
   'no-unsafe-negation': 2,
   'no-unused-expressions': [2, {
-    allowShortCircuit: false,
-    allowTaggedTemplates: false,
-    allowTernary: false
+    'allowShortCircuit': false,
+    'allowTaggedTemplates': false,
+    'allowTernary': false
   }],
   'no-unused-labels': 2,
   'no-unused-vars': [2, {
-    args: 'after-used',
-    ignoreRestSiblings: true,
-    vars: 'all'
+    'args': 'after-used',
+    'ignoreRestSiblings': true,
+    'vars': 'all'
   }],
   'no-use-before-define': [2, {
-    classes: true,
-    functions: true,
-    variables: true
+    'classes': true,
+    'functions': true,
+    'variables': true
   }],
   'no-useless-backreference': 0,
   'no-useless-call': 0,
@@ -599,94 +603,94 @@ module.exports = {
   'no-useless-constructor': 1,
   'no-useless-escape': 2,
   'no-useless-rename': [2, {
-    ignoreDestructuring: false,
-    ignoreExport: false,
-    ignoreImport: false
+    'ignoreDestructuring': false,
+    'ignoreExport': false,
+    'ignoreImport': false
   }],
   'no-useless-return': 2,
   'no-var': 2,
   'no-void': 2,
   'no-warning-comments': [0, {
-    location: 'start',
-    terms: ['todo', 'fixme', 'xxx']
+    'location': 'start',
+    'terms': ['todo', 'fixme', 'xxx']
   }],
   'no-whitespace-before-property': 0,
   'no-with': 2,
   'no-wrap-func': 0,
   'nonblock-statement-body-position': [0, 'beside', {
-    overrides: {}
+    'overrides': {}
   }],
   'object-curly-newline': [2, {
-    ExportDeclaration: {
-      consistent: true,
-      minProperties: 4,
-      multiline: true
+    'ExportDeclaration': {
+      'consistent': true,
+      'minProperties': 4,
+      'multiline': true
     },
-    ImportDeclaration: {
-      consistent: true,
-      minProperties: 4,
-      multiline: true
+    'ImportDeclaration': {
+      'consistent': true,
+      'minProperties': 4,
+      'multiline': true
     },
-    ObjectExpression: {
-      consistent: true,
-      minProperties: 4,
-      multiline: true
+    'ObjectExpression': {
+      'consistent': true,
+      'minProperties': 4,
+      'multiline': true
     },
-    ObjectPattern: {
-      consistent: true,
-      minProperties: 4,
-      multiline: true
+    'ObjectPattern': {
+      'consistent': true,
+      'minProperties': 4,
+      'multiline': true
     }
   }],
   'object-curly-spacing': [0, 'always'],
   'object-property-newline': [0, {
-    allowAllPropertiesOnSameLine: true,
-    allowMultiplePropertiesPerLine: false
+    'allowAllPropertiesOnSameLine': true,
+    'allowMultiplePropertiesPerLine': false
   }],
   'object-shorthand': [2, 'always', {
-    avoidQuotes: true,
-    ignoreConstructors: false
+    'avoidQuotes': true,
+    'ignoreConstructors': false
   }],
   'one-var': [2, 'never'],
   'one-var-declaration-per-line': [0, 'always'],
   'operator-assignment': [2, 'always'],
-  'operator-linebreak': [2, 'before', {
-    overrides: {
+  'operator-linebreak': [0, 'before', {
+    'overrides': {
       '=': 'none'
     }
   }],
   'padded-blocks': [0,
     {
-      blocks: 'never',
-      classes: 'never',
-      switches: 'never'
+      'blocks': 'never',
+      'classes': 'never',
+      'switches': 'never'
     },
     {
-      allowSingleLineBlocks: true
+      'allowSingleLineBlocks': true
     }
   ],
   'padding-line-between-statements': 0,
   'prefer-arrow-callback': [0, {
-    allowNamedFunctions: false,
-    allowUnboundThis: true
+    'allowNamedFunctions': false,
+    'allowUnboundThis': true
   }],
   'prefer-const': [2, {
-    destructuring: 'any',
-    ignoreReadBeforeAssign: true
+    'destructuring': 'any',
+    'ignoreReadBeforeAssign': true
   }],
   'prefer-destructuring': [2,
     {
-      AssignmentExpression: {
-        array: true,
-        object: false
+      'AssignmentExpression': {
+        'array': true,
+        'object': false
       },
-      VariableDeclarator: {
-        array: false,
-        object: true
+      'VariableDeclarator': {
+        'array': false,
+        'object': true
       }
     },
     {
-      enforceForRenamedProperties: false
+      'enforceForRenamedProperties': false
     }
   ],
   'prefer-exponentiation-operator': 0,
@@ -694,7 +698,7 @@ module.exports = {
   'prefer-numeric-literals': 2,
   'prefer-object-spread': 2,
   'prefer-promise-reject-errors': [2, {
-    allowEmptyReject: true
+    'allowEmptyReject': true
   }],
   'prefer-reflect': 0,
   'prefer-regex-literals': 0,
@@ -702,13 +706,13 @@ module.exports = {
   'prefer-spread': 2,
   'prefer-template': 2,
   'quote-props': [0, 'as-needed', {
-    keywords: false,
-    numbers: false,
-    unnecessary: true
+    'keywords': false,
+    'numbers': false,
+    'unnecessary': true
   }],
   'quotes': [2, 'single', {
-    allowTemplateLiterals: true,
-    avoidEscape: true
+    'allowTemplateLiterals': true,
+    'avoidEscape': true
   }],
   'radix': 2,
   'require-atomic-updates': 0,
@@ -719,33 +723,28 @@ module.exports = {
   'rest-spread-spacing': [0, 'never'],
   'semi': [2, 'always'],
   'semi-spacing': [2, {
-    after: true,
-    before: false
+    'after': true,
+    'before': false
   }],
   'semi-style': [0, 'last'],
   'sort-imports': [0, {
-    ignoreCase: false,
-    ignoreDeclarationSort: false,
-    ignoreMemberSort: false,
-    memberSyntaxSortOrder: [
-      'none',
-      'all',
-      'multiple',
-      'single'
-    ]
+    'ignoreCase': false,
+    'ignoreDeclarationSort': false,
+    'ignoreMemberSort': false,
+    'memberSyntaxSortOrder': ['none', 'all', 'multiple', 'single']
   }],
   'sort-keys': [0, 'asc', {
-    caseSensitive: false,
-    natural: true
+    'caseSensitive': false,
+    'natural': true
   }],
   'sort-vars': 0,
   'space-after-function-name': 0,
   'space-after-keywords': 0,
   'space-before-blocks': 0,
   'space-before-function-paren': [0, {
-    anonymous: 'always',
-    asyncArrow: 'always',
-    named: 'never'
+    'anonymous': 'always',
+    'asyncArrow': 'always',
+    'named': 'never'
   }],
   'space-before-function-parentheses': 0,
   'space-before-keywords': 0,
@@ -754,26 +753,26 @@ module.exports = {
   'space-infix-ops': 0,
   'space-return-throw-case': 0,
   'space-unary-ops': [0, {
-    nonwords: false,
-    overrides: {},
-    words: true
+    'nonwords': false,
+    'overrides': {},
+    'words': true
   }],
   'space-unary-word-ops': 0,
   'spaced-comment': [2, 'always', {
-    block: {
-      balanced: true,
-      exceptions: ['-', '+'],
-      markers: ['=', '!', ':', '::']
+    'block': {
+      'balanced': true,
+      'exceptions': ['-', '+'],
+      'markers': ['=', '!', ':', '::']
     },
-    line: {
-      exceptions: ['-', '+'],
-      markers: ['=', '!', '/']
+    'line': {
+      'exceptions': ['-', '+'],
+      'markers': ['=', '!', '/']
     }
   }],
   'strict': [2, 'never'],
   'switch-colon-spacing': [0, {
-    after: true,
-    before: false
+    'after': true,
+    'before': false
   }],
   'symbol-description': 2,
   'template-curly-spacing': 0,
@@ -782,11 +781,11 @@ module.exports = {
   'use-isnan': 2,
   'valid-jsdoc': 0,
   'valid-typeof': [2, {
-    requireStringLiterals: true
+    'requireStringLiterals': true
   }],
   'vars-on-top': 2,
   'wrap-iife': [0, 'outside', {
-    functionPrototypeMethods: false
+    'functionPrototypeMethods': false
   }],
   'wrap-regex': 0,
   'yield-star-spacing': [0, 'after'],

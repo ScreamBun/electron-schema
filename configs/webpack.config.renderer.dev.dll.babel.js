@@ -23,17 +23,21 @@ export default merge.smart(baseConfig, {
     renderer: Object.keys(dependencies || {})
   },
   output: {
-    library: 'renderer',
-    path: DLL_DIR,
     filename: '[name].dev.dll.js',
-    libraryTarget: 'var'
+    library: 'renderer',
+    libraryTarget: 'var',
+    path: DLL_DIR
   },
   context: ROOT_DIR,
   plugins: [
     /**
-     * Create global constants which can be configured at compile time
-     * Useful for allowing different behavior between development builds and release builds
-     * NODE_ENV should be production so that modules do not perform certain development checks
+     * Create global constants which can be configured at compile time.
+     *
+     * Useful for allowing different behaviour between development builds and
+     * release builds
+     *
+     * NODE_ENV should be production so that modules do not perform certain
+     * development checks
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV

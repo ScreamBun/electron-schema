@@ -32,7 +32,6 @@ export function updateMerge(base: Array<Record<string, any>>, plus: Array<Record
   return rtn;
 };
 
-
 /**
  * Merge an array of objects into a single object
  * @param {Array<Record<string, ValType>>} objs - Array to flatten

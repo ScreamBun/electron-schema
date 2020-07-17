@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Sidebar from 'react-sidebar';
 import { Draggable } from 'react-drag-and-drop';
@@ -17,7 +16,8 @@ import SchemaStructure from '../generate/lib/structure';
 class SidebarMenu extends Component {
   constructor(props, context) {
     super(props, context);
-    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
+    this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
+    this.toggleSidebar = this.toggleSidebar.bind(this);
     this.mql = window.matchMedia('(min-width: 768px)');
 
     this.state = {
@@ -31,26 +31,34 @@ class SidebarMenu extends Component {
 
   // pass reference to this down to child component
   getChildContext() {
-    const {sidebarOpen, sidebarDocked } = this.state;
+    const { sidebarOpen, sidebarDocked } = this.state;
     return {
       sidebarDocked,
       sidebarOpen,
-      sidebarToggle: () => this.onSetSidebarOpen(!sidebarOpen)
+      sidebarToggle: () => this.toggleSidebar()
     };
   }
 
   componentDidMount() {
-    this.mql.addListener(this.mediaQueryChanged.bind(this));
+    this.mql.addListener(this.mediaQueryChanged);
+
+    const { initCheck } = this.state;
+    if (this.mql.matches && !initCheck) {
+      this.setState({
+        sidebarDocked: true,
+        initCheck: true
+      });
+    }
   }
 
   componentWillUnmount() {
-    this.mql.removeListener(this.mediaQueryChanged.bind(this));
+    this.mql.removeListener(this.mediaQueryChanged);
   }
 
-  onSetSidebarOpen(open) {
-    this.setState({
-      sidebarOpen: open
-    });
+  toggleSidebar(open) {
+    this.setState(prevState => ({
+      sidebarOpen: open || !prevState.sidebarOpen
+    }));
   }
 
   mediaQueryChanged() {
@@ -97,20 +105,14 @@ class SidebarMenu extends Component {
 
   render() {
     const { children } = this.props;
-    const { initCheck, sidebarDocked, sidebarOpen } = this.state;
-    if (this.mql.matches && !initCheck) {
-      setTimeout(() => this.setState({
-        sidebarDocked: true,
-        initCheck: true
-      }), 10);
-    }
+    const { sidebarDocked, sidebarOpen } = this.state;
 
     return (
       <Sidebar
         sidebar={ this.renderContents() }
         open={ sidebarOpen }
         docked={ sidebarDocked }
-        onSetOpen={ this.onSetSidebarOpen }
+        onSetOpen={ this.toggleSidebar }
         sidebarClassName="navbar-dark bg-dark"
         rootId="sidebarRoot"
         sidebarId="sidebarContents"
@@ -137,4 +139,4 @@ SidebarMenu.childContextTypes = {
   sidebarToggle: PropTypes.func
 };
 
-export default connect()(SidebarMenu);
+export default SidebarMenu;

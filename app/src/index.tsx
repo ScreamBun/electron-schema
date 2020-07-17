@@ -9,7 +9,6 @@ type Props = {
   store: Store;
 }
 
-
 const App = ({ store }: Props) => (
   <Provider store={ store } >
     <Sidebar>
