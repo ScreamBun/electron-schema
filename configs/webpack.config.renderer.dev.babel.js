@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import webpack from 'webpack';
-import merge from 'webpack-merge';
+import { merge } from 'webpack-merge';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
 import baseConfig, { CSSLoader } from './webpack.config.base.renderer';
@@ -28,12 +28,15 @@ const DIST_DIR = path.join(APP_DIR, 'dist');
 const port = process.env.PORT || 1212;
 const publicPath = `http://localhost:${port}/dist`;
 const manifest = path.resolve(DLL_DIR, 'renderer.json');
-const requiredByDLLConfig = module.parent.filename.includes('webpack.config.renderer.dev.dll');
+const requiredByDLLConfig = module.parent.filename.includes(
+  'webpack.config.renderer.dev.dll'
+);
 
-/**
- * Warn if the DLL is not built
- */
-if (!requiredByDLLConfig && !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))) {
+// Warn if the DLL is not built
+if (
+  !requiredByDLLConfig &&
+  !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))
+) {
   console.log(
     chalk.black.bgYellow.bold(
       'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"'
@@ -51,25 +54,11 @@ if (!requiredByDLLConfig) {
   });
 }
 
-// Loaders
-const TypingLoader = [
-  'typings-for-css-modules-loader',
-  {
-    loader: 'typings-for-css-modules-loader',
-    options: {
-      modules: {
-        localIdentName: '[name]__[local]__[hash:base64:5]'
-      },
-      sourceMap: true,
-      importLoaders: 1
-    }
-  }
-];
-
-export default merge.smart(baseConfig, {
+export default merge(baseConfig, {
   mode: NODE_ENV,
   devtool: 'inline-source-map',
   entry: {
+    requirements: ['core-js', 'regenerator-runtime/runtime'],
     'dev-loader': [
       ...(process.env.PLAIN_HMR ? [] : ['react-hot-loader/patch']),
       `webpack-dev-server/client?http://localhost:${port}/`,
@@ -158,7 +147,7 @@ export default merge.smart(baseConfig, {
         test: /^((?!\.global).)*\.css$/,
         use: [
           'style-loader',
-          merge.smart(CSSLoader, {
+          merge(CSSLoader, {
             options: {
               modules: {
                 localIdentName: '[name]__[local]__[hash:base64:5]'
@@ -176,7 +165,20 @@ export default merge.smart(baseConfig, {
       // Styles support - SASS/SCSS - compile all other .s[ac]ss files and pipe it to style.css
       {
         test: /^((?!\.global).)*\.(scss|sass)$/,
-        use: [...TypingLoader, 'sass-loader']
+        use: [
+          'typings-for-css-modules-loader',
+          {
+            loader: 'typings-for-css-modules-loader',
+            options: {
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:5]'
+              },
+              sourceMap: true,
+              importLoaders: 1
+            }
+          },
+          'sass-loader'
+        ]
       }
     ]
   },

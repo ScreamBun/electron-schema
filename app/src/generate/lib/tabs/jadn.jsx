@@ -2,14 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  Card,
-  CardBody,
-  CardHeader,
-  TabPane
+  Card, CardBody, CardHeader, TabPane
 } from 'reactstrap';
 
-import locale from 'react-json-editor-ajrm/locale/en';
-
+import locale from 'react-json-editor/lib/locale/en';
 import JADNInput from '../../../utils/jadn-editor';
 
 // MarkDown Tab

@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
 import {
-  Button,
-  ButtonGroup,
-  Card,
-  CardBody,
-  CardHeader,
-  TabContent,
-  TabPane
+  Button, ButtonGroup, Card, CardBody, CardHeader, TabContent, TabPane
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 

@@ -63,7 +63,7 @@ module.exports = {
       'getSnapshotBeforeUpdate'
     ]
   }],
-  'comma-dangle': [1, {
+  'comma-dangle': [0, {
     'arrays': 'always-multiline',
     'exports': 'always-multiline',
     'functions': 'always-multiline',

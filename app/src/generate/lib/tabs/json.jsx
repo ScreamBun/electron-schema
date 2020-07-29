@@ -2,14 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  Card,
-  CardBody,
-  CardHeader,
-  TabPane
+  Card, CardBody, CardHeader, TabPane
 } from 'reactstrap';
 
-import JSONInput from 'react-json-editor-ajrm';
-import locale from 'react-json-editor-ajrm/locale/en';
+import JSONInput from 'react-json-editor';
+import locale from 'react-json-editor/lib/locale/en';
 
 // JSON Tab
 const JSON = props => {
