@@ -5,28 +5,30 @@ import { ipcRenderer } from 'electron';
 import { Droppable } from 'react-drag-and-drop';
 import { TabContent, TabPane } from 'reactstrap';
 
-import SchemaStructure from './lib/structure';
+import * as SchemaStructure from './lib/structure';
 import * as Tabs from './lib/tabs';
-import * as ConvertActions from '../../store/actions/convert';
+import * as JADNActions from '../../store/actions/jadn';
 import * as TabActions from '../../store/actions/tabs';
+
+const EmptySchema = {
+  meta: {},
+  types: []
+};
 
 class GenerateSchema extends Component {
   constructor(props, context) {
     super(props, context);
     this.onDrop = this.onDrop.bind(this);
-
     this.mql = window.matchMedia('(min-width: 768px)');
 
     this.state = {
-      schema: { meta: {}, types: [] },
+      schema: { ...EmptySchema },
       schemaPath: ''
     };
 
     const { setTabs } = this.props;
     setTabs(['Editor', ...Object.keys(Tabs)]);
     this.tabs = Object.entries(Tabs).map(([name, Tab]) => <Tab key={ name } />);
-
-    this.keys = SchemaStructure;
     this.minHeight = '50em';
 
     ipcRenderer.on('file-open', (event, store) => {
@@ -60,7 +62,6 @@ class GenerateSchema extends Component {
 
     ipcRenderer.on('schema-new', (event, store) => {
       const { schema, schemaPath } = this.state;
-      const stateUpdate = {};
       switch (store.action) {
         case 'save':
           ipcRenderer.send(
@@ -75,25 +76,23 @@ class GenerateSchema extends Component {
 
         case 'erase':
         default:
-          stateUpdate.schema = { meta: {}, types: [] };
-          stateUpdate.schemaPath = '';
-          break;
+          this.setState({
+            schema: { ...EmptySchema },
+            schemaPath: ''
+          });
       }
-      this.setState(stateUpdate);
     });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const propsChange = this.props !== nextProps;
     const stateChange = this.state !== nextState;
-    const { jadn2json, jadn2md, setJADN } = this.props;
+    const { setJADN } = this.props;
     const { schema } = nextState;
 
     // eslint-disable-next-line react/destructuring-assignment
     if (this.state.schema !== schema) {
       setJADN(schema);
-      jadn2json(schema);
-      jadn2md(schema);
     }
 
     return propsChange || stateChange;
@@ -108,7 +107,7 @@ class GenerateSchema extends Component {
             ...prevState.schema,
             meta: {
               ...prevState.schema.meta || {},
-              ...this.keys.meta[data.meta].edit()
+              ...SchemaStructure.Meta[data.meta].edit()
             }
           }
         }));
@@ -116,7 +115,7 @@ class GenerateSchema extends Component {
     } else if (data.types) {
       this.setState(prevState => {
         const tmpTypes = prevState.schema.types || [];
-        const tmpDef = this.keys.types[data.types].edit();
+        const tmpDef = SchemaStructure.Types[data.types].edit();
         if ((tmpTypes.filter(d => d[0] === tmpDef[0]) || []).length === 0) {
           tmpTypes.push(tmpDef);
         }
@@ -134,8 +133,8 @@ class GenerateSchema extends Component {
 
   SchemaEditor() {
     const { schema } = this.state;
-    const metaEditors = Object.keys(this.keys.meta).map((k, i) => {
-      const { editor } = this.keys.meta[k];
+    const metaEditors = Object.keys(SchemaStructure.Meta).map((k, i) => {
+      const { editor } = SchemaStructure.Meta[k];
       if (k in schema.meta) {
         return editor({
           key: i,
@@ -146,7 +145,7 @@ class GenerateSchema extends Component {
               ...prevState.schema,
               meta: {
                 ...prevState.schema.meta,
-                ...this.keys.meta[k].edit(val)
+                ...SchemaStructure.Meta[k].edit(val)
               }
             }
           })),
@@ -172,13 +171,13 @@ class GenerateSchema extends Component {
 
     const typesEditors = (schema.types || []).map((def, i) => {
       const type = def[1].toLowerCase();
-      return this.keys.types[type].editor({
+      return SchemaStructure.Types[type].editor({
         key: i,
         value: def,
         dataIndex: i,
         change: (val, idx) => this.setState(prevState => {
           const tmpTypes = [ ...prevState.schema.types ];
-          tmpTypes[idx] = this.keys.types[val.type.toLowerCase()].edit(val);
+          tmpTypes[idx] = SchemaStructure.Types[val.type.toLowerCase()].edit(val);
           return {
             schema: {
               ...prevState.schema,
@@ -248,9 +247,7 @@ class GenerateSchema extends Component {
 GenerateSchema.propTypes = {
   activeView: PropTypes.string.isRequired,
   setTabs: PropTypes.func.isRequired,
-  setJADN: PropTypes.func.isRequired,
-  jadn2json: PropTypes.func.isRequired,
-  jadn2md: PropTypes.func.isRequired
+  setJADN: PropTypes.func.isRequired
 };
 
 GenerateSchema.defaultProps = {};
@@ -261,9 +258,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   setTabs: tabs => dispatch(TabActions.setTabs(tabs)),
-  setJADN: jadn => dispatch(ConvertActions.setJADN(jadn)),
-  jadn2json: jadn => dispatch(ConvertActions.convertToJSON(jadn)),
-  jadn2md: jadn => dispatch(ConvertActions.convertToMD(jadn))
+  setJADN: jadn => dispatch(JADNActions.setJADN(jadn))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GenerateSchema);

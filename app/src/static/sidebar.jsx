@@ -2,16 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Sidebar from 'react-sidebar';
 import { Draggable } from 'react-drag-and-drop';
-
 import {
-  Card,
-  CardBody,
-  CardHeader,
-  ListGroup,
-  ListGroupItem
+  Card, CardBody, CardHeader, ListGroup, ListGroupItem
 } from 'reactstrap';
-
-import SchemaStructure from '../generate/lib/structure';
+import * as SchemaStructure from '../generate/lib/structure';
 
 class SidebarMenu extends Component {
   constructor(props, context) {
@@ -25,8 +19,6 @@ class SidebarMenu extends Component {
       sidebarOpen: false,
       initCheck: false
     };
-
-    this.keys = SchemaStructure;
   }
 
   // pass reference to this down to child component
@@ -68,16 +60,17 @@ class SidebarMenu extends Component {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   renderContents() {
-    const metaKeys = Object.keys(this.keys.meta).map(k => (
+    const metaKeys = Object.keys(SchemaStructure.Meta).map(k => (
       <Draggable type="meta" data={ k } key={ k } >
-        <ListGroupItem action>{ this.keys.meta[k].key }</ListGroupItem>
+        <ListGroupItem action>{ SchemaStructure.Meta[k].key }</ListGroupItem>
       </Draggable>
     ));
 
-    const typesKeys = Object.keys(this.keys.types).map(k => (
+    const typesKeys = Object.keys(SchemaStructure.Types).map(k => (
       <Draggable type="types" data={ k } key={ k } >
-        <ListGroupItem action>{ this.keys.types[k].key }</ListGroupItem>
+        <ListGroupItem action>{ SchemaStructure.Types[k].key }</ListGroupItem>
       </Draggable>
     ));
 

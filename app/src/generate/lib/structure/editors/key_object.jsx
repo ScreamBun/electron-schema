@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button,
-  ButtonGroup,
-  FormText,
-  Input
+  Button, ButtonGroup, FormText, Input
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faMinusCircle,
-  faMinusSquare,
-  faPlusSquare
+  faMinusCircle, faMinusSquare, faPlusSquare
 } from '@fortawesome/free-solid-svg-icons';
 
 // Key Object Editor

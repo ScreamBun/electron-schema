@@ -51,7 +51,6 @@ export default merge(baseConfig, {
   },
   output: {
     path: DIST_DIR,
-    publicPath: './dist/',
     filename: '[name].prod.js',
   },
   plugins: [

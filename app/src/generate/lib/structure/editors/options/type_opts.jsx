@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { ValidOptions } from 'jadnschema/lib/jadnschema/schema/options';
 
 import KeyValueEditor from '../key_value';
@@ -16,9 +17,11 @@ const ConfigKeys = {
   },
   ktype: {
     description: 'Key type for MapOf'
+    // TODO: change to select?
   },
   vtype: {
-    description: 'Value type for ArrayOf and MapOf'
+    description: 'Value type for ArrayOf and MapOf',
+    type: 'select'
   },
   pointer: {
     description: 'Extension: Enumerated type containing pointers derived from the specified Array, Choice, Map or Record type',
@@ -48,8 +51,19 @@ const ConfigKeys = {
 // Type Options Editor
 const TypeOptionsEditor = props => {
   const {
-    change, deserializedState, id, optionType
+    change, deserializedState, id, optionType, schemaTypes
   } = props;
+
+  const getOptions = (key) => {
+    switch (key) {
+      case 'ktype':
+        return [];
+      case 'vtype':
+        return schemaTypes;
+      default:
+        return [];
+    }
+  };
 
   const validOptions = () => {
     return safeGet(ValidOptions, optionType, []).map(key => {
@@ -60,6 +74,7 @@ const TypeOptionsEditor = props => {
           { ...ConfigKeys[key] }
           placeholder={ key }
           removable={ false }
+          options={ getOptions(key) }
           change={ val => change([key, val], 'type') }
           value={ deserializedState[key] }
         />
@@ -80,6 +95,7 @@ const TypeOptionsEditor = props => {
 };
 
 TypeOptionsEditor.propTypes = {
+  schemaTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   id: PropTypes.string,
   placeholder: PropTypes.string,
   change: PropTypes.func,
@@ -95,4 +111,8 @@ TypeOptionsEditor.defaultProps = {
   optionType: ''
 };
 
-export default TypeOptionsEditor;
+const mapStateToProps = state => ({
+  schemaTypes: [...state.jadn.baseTypes, ...Object.keys(state.jadn.schemaTypes)]
+});
+
+export default connect(mapStateToProps)(TypeOptionsEditor);

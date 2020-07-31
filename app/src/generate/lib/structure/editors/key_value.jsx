@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button,
-  FormGroup,
-  FormText,
-  Input,
-  Label
+  Button, FormGroup, FormText, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -13,14 +9,9 @@ import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 // Key Value Editor
 const KeyValueEditor = props => {
   const {
-    id,
-    value,
-    description,
-    placeholder,
-    type,
-    change,
-    remove
+    id, value, description, options, placeholder, type, change, remove
   } = props;
+
   const shadowless = [
     'checkbox',
     'file',
@@ -37,6 +28,10 @@ const KeyValueEditor = props => {
 
   if (['checkbox', 'radio'].includes(type)) {
     inputArgs.onChange = e => change(e.target.checked);
+  }
+
+  if (type === 'select') {
+    inputArgs.children = options.map(opt => <option key={ opt } value={ opt } >{ opt }</option>);
   }
 
   let removeBtn = '';
@@ -93,12 +88,14 @@ KeyValueEditor.propTypes = {
     'radio',
     'range',
     'search',
+    'select',
     'tel',
     'text',
     'time',
     'url',
     'week'
   ]),
+  options: PropTypes.arrayOf(PropTypes.string), // only for type='select'
   change: PropTypes.func,
   remove: PropTypes.func
 };
@@ -110,6 +107,7 @@ KeyValueEditor.defaultProps = {
   description: '',
   placeholder: 'KeyValueEditor',
   type: 'text',
+  options: [],
   change: (val) => null,  // eslint-disable-line no-unused-vars
   remove: (idx) => null  // eslint-disable-line no-unused-vars
 };

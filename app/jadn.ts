@@ -1,9 +1,6 @@
 import fs from 'fs';
 import {
-  app,
-  dialog,
-  ipcMain,
-  BrowserWindow
+  app, dialog, ipcMain, BrowserWindow
 } from 'electron';
 import { convert, SchemaFormats } from 'jadnschema';
 import { SchemaSimpleJADN } from 'jadnschema/lib/jadnschema/schema/interfaces';

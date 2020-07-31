@@ -1,11 +1,12 @@
 import { ipcRenderer } from 'electron';
 import { SchemaFormats } from 'jadnschema';
 
+const emit = (channel, ...args) => ipcRenderer.invoke(channel, ...args);
+
 // Store functions
 export const SET_BASE_JADN_SUCCESS= '@@convert/SET_BASE_JADN_SUCCESS';
 export const setJADN = schema => {
-  return dispatch => ipcRenderer
-  .invoke('convert-schema', {
+  return dispatch => emit('convert-schema', {
     format: SchemaFormats.JADN,
     schema
   })
@@ -20,8 +21,7 @@ export const setJADN = schema => {
 
 export const CONVERT_TO_JSON_SUCCESS = '@@convert/CONVERT_TO_JSON_SUCCESS';
 export const convertToJSON = schema => {
-  return dispatch => ipcRenderer
-    .invoke('convert-schema', {
+  return dispatch => emit('convert-schema', {
       format: SchemaFormats.JSON,
       schema
     })
@@ -36,8 +36,7 @@ export const convertToJSON = schema => {
 
 export const CONVERT_TO_MARKDOWN_SUCCESS = '@@convert/CONVERT_TO_MARKDOWN_SUCCESS';
 export const convertToMD = schema => {
-  return dispatch => ipcRenderer
-    .invoke('convert-schema', {
+  return dispatch => emit('convert-schema', {
       format: SchemaFormats.MarkDown,
       schema
     })

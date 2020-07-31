@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  PrimitiveEditor,
-  StructureEditor
-} from './editors';
+import { PrimitiveEditor, StructureEditor } from './editors';
 import { PrimitiveDef, StructureDef } from './interfaces';
 
 interface EditorProps {

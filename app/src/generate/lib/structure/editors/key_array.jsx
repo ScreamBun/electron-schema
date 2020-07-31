@@ -1,27 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button,
-  ButtonGroup,
-  FormText,
-  Input
+  Button, ButtonGroup, FormText, Input
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faMinusCircle,
-  faMinusSquare,
-  faPlusSquare
+  faMinusCircle, faMinusSquare, faPlusSquare
 } from '@fortawesome/free-solid-svg-icons';
 
 // Key Array Editor
 const KeyArrayEditor = props =>  {
   const {
-    id,
-    description,
-    placeholder,
-    value,
-    change,
-    remove
+    id, description, placeholder, value, change, remove
   } = props;
 
   const onChange = (e) => {

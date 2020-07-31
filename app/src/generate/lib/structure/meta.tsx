@@ -1,9 +1,6 @@
 import React from 'react';
 import {
-  ConfigObjectEditor,
-  KeyArrayEditor,
-  KeyObjectEditor,
-  KeyValueEditor
+  ConfigObjectEditor, KeyArrayEditor, KeyObjectEditor, KeyValueEditor
 } from './editors';
 import { MetaDef } from './interfaces';
 

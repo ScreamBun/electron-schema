@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { opts2arr, opts2obj, OptionTypes } from 'jadnschema/lib/jadnschema/schema/options';
 import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter
+  Button, Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
 
 import TypeOptionsEditor from './type_opts';

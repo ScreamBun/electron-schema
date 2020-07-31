@@ -2,19 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isDeepStrictEqual } from 'util';
 import {
-  Button,
-  ButtonGroup,
-  Collapse,
-  FormGroup,
-  Input,
-  InputGroup,
-  Label
+  Button, ButtonGroup, Collapse, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faMinusCircle,
-  faPlusCircle,
-  faPlusSquare
+  faMinusCircle, faPlusCircle, faPlusSquare
 } from '@fortawesome/free-solid-svg-icons';
 
 import OptionsModal from './options';
@@ -204,7 +196,7 @@ class StructureEditor extends Component {
             <Input type="string" placeholder="Name" value={ value.name } onChange={ this.onChange } />
           </FormGroup>
 
-          <FormGroup className="col-md-4">
+          <FormGroup className="col-md-2">
             <Label>&nbsp;</Label>
             <InputGroup>
               <Button outline color="info" onClick={ this.toggleModal }>Type Options</Button>
@@ -218,7 +210,7 @@ class StructureEditor extends Component {
             </InputGroup>
           </FormGroup>
 
-          <FormGroup className="col-md-4">
+          <FormGroup className="col-md-6">
             <Label>Comment</Label>
             <Input type="textarea" placeholder="Comment" rows={ 1 } value={ value.comment } onChange={ this.onChange } />
           </FormGroup>

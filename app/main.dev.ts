@@ -43,7 +43,9 @@ if (process.env.NODE_ENV === 'production') {
 
 if (isDevelopment || process.env.DEBUG_PROD === 'true') {
   require('electron-debug')();
-  urlPrefix = `http://localhost:${port}/dist`;
+  if (isDevelopment) {
+    urlPrefix = `http://localhost:${port}/dist`;
+  }
 }
 
 const installExtensions = async () => {

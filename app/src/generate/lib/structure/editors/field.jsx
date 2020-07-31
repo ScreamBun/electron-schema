@@ -1,20 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { isDeepStrictEqual } from 'util';
 import {
-  Button,
-  ButtonGroup,
-  FormGroup,
-  Input,
-  Label
+  Button, ButtonGroup, FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
-
 import OptionsModal from './options';
 import {
-  objectValues,
-  zip
+  objectValues, zip
 } from '../../../../utils';
 
 export const StandardField = {
@@ -36,6 +31,7 @@ class FieldEditor extends Component {
   constructor(props, context) {
     super(props, context);
     this.onChange = this.onChange.bind(this);
+    this.onSelectChange = this.onSelectChange.bind(this);
     this.removeAll = this.removeAll.bind(this);
     this.saveModal = this.saveModal.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
@@ -56,6 +52,22 @@ class FieldEditor extends Component {
   onChange(e) {
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
+
+    this.setState(prevState => ({
+      value: {
+        ...prevState.value,
+        [key]: value
+      }
+    }), () => {
+      const { change, dataIndex } = this.props;
+      // eslint-disable-next-line react/destructuring-assignment
+      change(objectValues(this.state.value), dataIndex);
+    });
+  }
+
+  onSelectChange(e) {
+    const { value } = e.target;
+    const key = e.nativeEvent.target.name.toLowerCase();
 
     this.setState(prevState => ({
       value: {
@@ -113,7 +125,7 @@ class FieldEditor extends Component {
   }
 
   makeOptions() {
-    const { enumerated } = this.props;
+    const { enumerated, schemaTypes } = this.props;
     const { modal, value } = this.state;
 
     if (enumerated) {
@@ -125,6 +137,9 @@ class FieldEditor extends Component {
       );
     }
 
+    const options = schemaTypes.map(t => <option key={ t } value={ t } >{ t }</option>);
+    const val = schemaTypes.includes(value.type) ? value.type : 'Null';
+
     return (
       <div className="col-md-9 p-0 m-0">
         <FormGroup className="col-md-4 d-inline-block">
@@ -134,7 +149,9 @@ class FieldEditor extends Component {
 
         <FormGroup className="col-md-4 d-inline-block">
           <Label>Type</Label>
-          <Input type="string" placeholder="Type" value={ value.type } onChange={ this.onChange } />
+          <Input type="select" name="Type" value={ val } onChange={ this.onSelectChange } >
+            { options }
+          </Input>
         </FormGroup>
 
         <FormGroup className="col-md-4 d-inline-block">
@@ -193,6 +210,7 @@ class FieldEditor extends Component {
 }
 
 FieldEditor.propTypes = {
+  schemaTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   enumerated: PropTypes.bool,
   dataIndex: PropTypes.number,
   value: PropTypes.array,
@@ -208,4 +226,8 @@ FieldEditor.defaultProps = {
   remove: (idx) => null  // eslint-disable-line no-unused-vars
 };
 
-export default FieldEditor;
+const mapStateToProps = state => ({
+  schemaTypes: [...state.jadn.baseTypes, ...Object.keys(state.jadn.schemaTypes)]
+});
+
+export default connect(mapStateToProps)(FieldEditor);

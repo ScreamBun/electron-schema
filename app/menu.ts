@@ -18,6 +18,8 @@ const isWin = ['win32', 'win64'].includes(process.platform);
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
 
+  validInputFields: Array<string> = [];
+
   constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
   }

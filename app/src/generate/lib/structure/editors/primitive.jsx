@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isDeepStrictEqual } from 'util';
 import {
-  Button,
-  ButtonGroup,
-  FormGroup,
-  Input,
-  InputGroup,
-  Label
+  Button, ButtonGroup, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -116,7 +111,7 @@ class PrimitiveEditor extends Component {
             <Input type="string" placeholder="Name" value={ value.name } onChange={ this.onChange } />
           </FormGroup>
 
-          <FormGroup className="col-md-4">
+          <FormGroup className="col-md-2">
             <Label>&nbsp;</Label>
             <InputGroup>
               <Button outline color="info" onClick={ this.toggleModal }>Type Options</Button>
@@ -130,7 +125,7 @@ class PrimitiveEditor extends Component {
             </InputGroup>
           </FormGroup>
 
-          <FormGroup className="col-md-4">
+          <FormGroup className="col-md-6">
             <Label>Comment</Label>
             <Input
               type="textarea"

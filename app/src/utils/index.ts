@@ -1,18 +1,9 @@
 import {
-  flattenArray,
-  mergeArrayObjects,
-  updateMerge,
-  zip
+  flattenArray, mergeArrayObjects, updateMerge, zip
 } from './array';
 
 import {
-  cloneObject,
-  hasProperty,
-  invertObject,
-  objectFromTuple,
-  objectValues,
-  prettyObject,
-  safeGet
+  cloneObject, hasProperty, invertObject, objectFromTuple, objectValues, prettyObject, safeGet
 } from './object';
 
 export {
