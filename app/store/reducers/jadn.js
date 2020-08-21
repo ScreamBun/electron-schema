@@ -19,7 +19,7 @@ export default (state = initialState, action = null) => {
         schemaConversions.forEach(fmt => {
           action.asyncDispatch(ConvertActions[fmt](schema));
         });
-      }, 500);
+      }, 250);
 
       return {
         ...state,
@@ -27,6 +27,10 @@ export default (state = initialState, action = null) => {
           ...(schema.types || []).map(t => [t[0], t[1]] )
         )
       };
+
+    case JADNActions.SET_BASE_JADN_FAILURE:
+      console.error(schema);
+      return state;
 
     default:
       return state;

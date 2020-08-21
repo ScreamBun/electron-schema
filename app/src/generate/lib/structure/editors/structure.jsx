@@ -129,7 +129,7 @@ class StructureEditor extends Component {
     });
   }
 
-  makeFields(value) {
+  makeFields() {
     const fieldChange = (val, idx) => this.setState(prevState => {
       const tmpFields = [ ...prevState.value.fields ];
       tmpFields[idx] = val;
@@ -146,7 +146,7 @@ class StructureEditor extends Component {
 
     const fieldRemove = idx => {
       if (this.state.value.fields.length >= idx) {  // eslint-disable-line react/destructuring-assignment
-        this.setState((prevState) => {
+        this.setState(prevState => {
           const tmpFields = [ ...prevState.value.fields ];
           tmpFields.splice(idx, 1);
           return {
@@ -162,11 +162,13 @@ class StructureEditor extends Component {
       }
     };
 
-    return (value.fields || []).map((f, i) => (
+    // eslint-disable-next-line react/destructuring-assignment
+    const { fields, name, type } = this.state.value;
+    return (fields || []).map((f, i) => (
       <FieldEditor
-        key={ i }  // eslint-disable-line react/no-array-index-key
+        key={ `${name}.${f[1]}` }
         dataIndex={ i }
-        enumerated={ value.type.toLowerCase() === 'enumerated' }
+        enumerated={ type.toLowerCase() === 'enumerated' }
         value={ f }
         change={ fieldChange }
         remove={ fieldRemove }
@@ -176,7 +178,7 @@ class StructureEditor extends Component {
 
   render() {
     const { fieldCollapse, modal, value } = this.state;
-    const structureFields = this.makeFields(value);
+    const structureFields = this.makeFields();
 
     return (
       <div className="border m-1 p-1">

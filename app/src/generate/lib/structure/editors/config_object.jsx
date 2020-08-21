@@ -95,7 +95,8 @@ class ConfigEditor extends Component {
         removable: false
       };
       if (k in this.state) {
-        keyProps.value = this.state[k];  // eslint-disable-line react/destructuring-assignment
+        // eslint-disable-next-line react/destructuring-assignment
+        keyProps.value = this.state[k];
       }
       return <KeyValueEditor key={ k } id={ k } { ...keyProps } />;
     });

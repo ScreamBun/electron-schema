@@ -3,6 +3,10 @@ import {
 } from './array';
 
 import {
+  splitCamel
+} from './general';
+
+import {
   cloneObject, hasProperty, invertObject, objectFromTuple, objectValues, prettyObject, safeGet
 } from './object';
 
@@ -12,6 +16,8 @@ export {
   mergeArrayObjects,
   updateMerge,
   zip,
+  // General
+  splitCamel,
   // Object
   cloneObject,
   hasProperty,

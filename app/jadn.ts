@@ -71,9 +71,6 @@ export const actionsJADN = (mainWindow: BrowserWindow): void => {
   ipcMain.on('file-save', (event, args: Args) => {
     const kargs = { contents: '', filePath: '', ...args };
     const ext = kargs.format ||  SchemaFormats.JADN;
-
-    console.log(kargs.filePath);
-    console.log(app.getPath('documents'), 'documents');
     kargs.filePath = `${kargs.filePath.substr(0, kargs.filePath.lastIndexOf('.'))}.${ext}`;
 
     dialog
@@ -82,9 +79,10 @@ export const actionsJADN = (mainWindow: BrowserWindow): void => {
         defaultPath: kargs.filePath || app.getPath('documents'),
         filters: [{ name: 'Schema Format', extensions: [ext] }]
       })
-      .then((result: Results) => {
-        if (!result.canceled) {
-          kargs.filePath = result.filePath;
+      .then(result => {
+        const rslt = result as Results;
+        if (!rslt.canceled) {
+          kargs.filePath = rslt.filePath;
           const contents = convertSchema({ format: ext, schema: kargs.contents });
 
           fs.writeFile(kargs.filePath, contents, (err: Error) => {
@@ -103,7 +101,7 @@ export const actionsJADN = (mainWindow: BrowserWindow): void => {
             }
           });
         }
-        return result;
+        return rslt;
       })
       .catch((err: Error) => {
         dialog.showMessageBoxSync(mainWindow, {

@@ -24,7 +24,10 @@ if (!process.env.E2E_BUILD) {
     new TerserPlugin({
       cache: true,
       parallel: true,
-      sourceMap: true
+      sourceMap: true,
+      terserOptions: {
+        mangle: false
+      }
     })
   );
 }

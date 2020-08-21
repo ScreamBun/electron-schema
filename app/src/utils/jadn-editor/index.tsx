@@ -1,7 +1,6 @@
 // Original Adapted from json-editor
 import JSONInput from 'react-json-editor';
 
-// eslint-disable-next-line camelcase
 import {
   // formatDomNodeUpdate,
   formatPlaceholderJSON

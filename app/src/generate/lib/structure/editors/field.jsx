@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import OptionsModal from './options';
 import {
-  objectValues, zip
+  objectValues, splitCamel, zip
 } from '../../../../utils';
 
 export const StandardField = {
@@ -125,7 +125,7 @@ class FieldEditor extends Component {
   }
 
   makeOptions() {
-    const { enumerated, schemaTypes } = this.props;
+    const { allTypes, enumerated, schemaTypes } = this.props;
     const { modal, value } = this.state;
 
     if (enumerated) {
@@ -137,8 +137,12 @@ class FieldEditor extends Component {
       );
     }
 
-    const options = schemaTypes.map(t => <option key={ t } value={ t } >{ t }</option>);
-    const val = schemaTypes.includes(value.type) ? value.type : 'Null';
+    const options = Object.keys(schemaTypes).map(optGroup => (
+      <optgroup key={ optGroup } label={ splitCamel(optGroup) } >
+        { schemaTypes[optGroup].map(opt => <option key={ opt } value={ opt } >{ opt }</option> ) }
+      </optgroup>
+    ));
+    const val = allTypes.includes(value.type) ? value.type : 'Null';
 
     return (
       <div className="col-md-9 p-0 m-0">
@@ -210,7 +214,11 @@ class FieldEditor extends Component {
 }
 
 FieldEditor.propTypes = {
-  schemaTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  allTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  schemaTypes: PropTypes.shape({
+    baseTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
+    schemaTypes: PropTypes.arrayOf(PropTypes.string).isRequired
+  }).isRequired,
   enumerated: PropTypes.bool,
   dataIndex: PropTypes.number,
   value: PropTypes.array,
@@ -227,7 +235,11 @@ FieldEditor.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  schemaTypes: [...state.jadn.baseTypes, ...Object.keys(state.jadn.schemaTypes)]
+  allTypes: [...state.jadn.baseTypes, ...Object.keys(state.jadn.schemaTypes)],
+  schemaTypes: {
+    baseTypes: state.jadn.baseTypes,
+    schemaTypes: Object.keys(state.jadn.schemaTypes)
+  }
 });
 
 export default connect(mapStateToProps)(FieldEditor);

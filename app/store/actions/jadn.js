@@ -4,17 +4,21 @@ import { SchemaFormats } from 'jadnschema';
 const emit = (channel, ...args) => ipcRenderer.invoke(channel, ...args);
 
 // Store functions
-export const SET_BASE_JADN_SUCCESS= '@@jadn/SET_BASE_JADN_SUCCESS';
+export const SET_BASE_JADN_SUCCESS = '@@jadn/SET_BASE_JADN_SUCCESS';
+export const SET_BASE_JADN_FAILURE = '@@jadn/SET_BASE_JADN_FAILURE';
 export const setJADN = schema => {
   return dispatch => emit('convert-schema', {
     format: SchemaFormats.JADN,
     schema
   })
   // eslint-disable-next-line promise/always-return
-  .then(jadnSchema => {
+  .then(rslt => {
+    const payload = JSON.parse(rslt);
+    const keys = Object.keys(payload);
+    const type = (keys.includes('meta') && keys.includes('types')) ? SET_BASE_JADN_SUCCESS : SET_BASE_JADN_FAILURE;
     dispatch({
-      type: SET_BASE_JADN_SUCCESS,
-      payload: JSON.parse(jadnSchema)
+      type,
+      payload
     });
   });
 };

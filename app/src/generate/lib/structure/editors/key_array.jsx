@@ -38,7 +38,7 @@ const KeyArrayEditor = props =>  {
     change([ ...value, '' ]);
   };
 
-  const indices = value.map((arr, i) => (
+  const indices = value.map((val, i) => (
     // eslint-disable-next-line react/no-array-index-key
     <div className="input-group col-sm-12 mb-1" key={ i }>
       <Input
@@ -46,7 +46,7 @@ const KeyArrayEditor = props =>  {
         className="form-control"
         data-index={ i }
         placeholder={ placeholder }
-        value={ arr }
+        value={ val }
         onChange={ onChange }
       />
       <div className="input-group-append">

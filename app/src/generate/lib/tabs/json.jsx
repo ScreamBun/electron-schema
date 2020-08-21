@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 
 import JSONInput from 'react-json-editor';
-import locale from 'react-json-editor/lib/locale/en';
+import locale from 'react-json-editor/dist/locale/en';
 
 // JSON Tab
 const JSON = props => {

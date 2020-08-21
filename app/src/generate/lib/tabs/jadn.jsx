@@ -5,7 +5,7 @@ import {
   Card, CardBody, CardHeader, TabPane
 } from 'reactstrap';
 
-import locale from 'react-json-editor/lib/locale/en';
+import locale from 'react-json-editor/dist/locale/en';
 import JADNInput from '../../../utils/jadn-editor';
 
 // MarkDown Tab

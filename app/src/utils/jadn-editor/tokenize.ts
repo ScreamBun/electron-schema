@@ -1,5 +1,5 @@
-import { MarkupToken, MergeToken } from 'react-json-editor/lib/tokenize/interfaces';
-import { followedBySymbol, followsSymbol, newSpan } from 'react-json-editor/lib/tokenize/utils';
+import { MarkupToken, MergeToken } from 'react-json-editor/dist/tokenize/interfaces';
+import { followedBySymbol, followsSymbol, newSpan } from 'react-json-editor/dist/tokenize/utils';
 
 // DOM Node || OnBlue or Update
 /**
