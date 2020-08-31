@@ -19,6 +19,21 @@ export const setJADN = schema => {
   });
 };
 
+export const CONVERT_TO_JIDL_SUCCESS = '@@convert/CONVERT_TO_JIDL_SUCCESS';
+export const convertToJIDL = schema => {
+  return dispatch => emit('convert-schema', {
+      format: SchemaFormats.JIDL,
+      schema
+    })
+    // eslint-disable-next-line promise/always-return
+    .then(jidlSchema => {
+      dispatch({
+        type: CONVERT_TO_JIDL_SUCCESS,
+        payload: jidlSchema
+      });
+    });
+};
+
 export const CONVERT_TO_JSON_SUCCESS = '@@convert/CONVERT_TO_JSON_SUCCESS';
 export const convertToJSON = schema => {
   return dispatch => emit('convert-schema', {

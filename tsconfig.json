@@ -20,7 +20,11 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
+    "typeRoots": [
+      "app/@types",
+      "node_modules/@types"
+    ],
   },
   "exclude": [
     "test",

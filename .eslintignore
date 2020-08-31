@@ -52,3 +52,7 @@ package.json
 # Lint Rules
 /configs/eslint_rules-tmp
 /configs/eslint_rules
+
+# Assorted
+/app/@types
+/app/src/utils/jidl-editor

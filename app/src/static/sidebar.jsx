@@ -62,9 +62,9 @@ class SidebarMenu extends Component {
 
   // eslint-disable-next-line class-methods-use-this
   renderContents() {
-    const metaKeys = Object.keys(SchemaStructure.Meta).map(k => (
-      <Draggable type="meta" data={ k } key={ k } >
-        <ListGroupItem action>{ SchemaStructure.Meta[k].key }</ListGroupItem>
+    const infoKeys = Object.keys(SchemaStructure.Info).map(k => (
+      <Draggable type="info" data={ k } key={ k } >
+        <ListGroupItem action>{ SchemaStructure.Info[k].key }</ListGroupItem>
       </Draggable>
     ));
 
@@ -77,10 +77,10 @@ class SidebarMenu extends Component {
     return (
       <div>
         <Card>
-          <CardHeader>Meta</CardHeader>
+          <CardHeader>Info</CardHeader>
           <CardBody>
             <ListGroup>
-              { metaKeys }
+              { infoKeys }
             </ListGroup>
           </CardBody>
         </Card>

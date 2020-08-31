@@ -1,3 +1,4 @@
+import { ColorProps } from 'react-json-editor/dist/interfaces';
 import { MarkupToken, MergeToken } from 'react-json-editor/dist/tokenize/interfaces';
 import { followedBySymbol, followsSymbol, newSpan } from 'react-json-editor/dist/tokenize/utils';
 
@@ -5,7 +6,7 @@ import { followedBySymbol, followsSymbol, newSpan } from 'react-json-editor/dist
 /**
   * Format the given tokens from the DomNode updates
   * @param {Array<MergeTokens>} tokens - Tokens to format
-  * @param {Colors} colors - Colors to use as the theme
+  * @param {ColorProps} colors - Colors to use as the theme
   * @returns {[number, string]} - [Lines, Markup (HTML String)]
   */
 export function formatDomNodeUpdate(tokens: Array<MergeToken>, colors: ColorProps): [number, string] {

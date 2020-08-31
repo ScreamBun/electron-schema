@@ -389,7 +389,8 @@ npm-debug.log.*
 
 # Assorted Files
 package-lock.json
+lint_errors.txt
+app/preferences.json
 *.stats.html
 *.stats.json
-lint_errors.txt
 .idea

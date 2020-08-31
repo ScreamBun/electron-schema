@@ -2,7 +2,7 @@ import React from 'react';
 import {
   ConfigObjectEditor, KeyArrayEditor, KeyObjectEditor, KeyValueEditor
 } from './editors';
-import { MetaDef } from './interfaces';
+import { InfoDef } from './interfaces';
 
 interface EditorProps {
   key?: number|string|undefined;  // eslint-disable-line react/require-default-props
@@ -14,20 +14,10 @@ interface EditorProps {
   remove?: (idx: number) => void;  // eslint-disable-line react/require-default-props
 };
 
-const metaDef = ({ k = 'key', v = '' }: MetaDef) => ({ [k]: v } as Record<string, any>);
+const metaDef = ({ k = 'key', v = '' }: InfoDef) => ({ [k]: v } as Record<string, any>);
 
-// JADN Meta Structure
+// JADN Info Structure
 export default {
-  title: {
-    key: 'Title',
-    edit: (val: string) => metaDef({ k: 'title', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor { ...props } id="Title" />
-  },
-  description: {
-    key: 'Description',
-    edit: (val: string) => metaDef({ k: 'description', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor { ...props } id="Description" />
-  },
   module: {
     key: 'Module',
     edit: (val: string) => metaDef({ k: 'module', v: val }),
@@ -39,10 +29,35 @@ export default {
       />
     )
   },
-  patch: {
-    key: 'Patch',
-    edit: (val: string) => metaDef({ k: 'patch', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor { ...props } id="Patch" />
+  version: {
+    key: 'Version',
+    edit: (val: string) => metaDef({ k: 'version', v: val }),
+    editor: (props: EditorProps) => <KeyValueEditor { ...props } id="Version" />
+  },
+  title: {
+    key: 'Title',
+    edit: (val: string) => metaDef({ k: 'title', v: val }),
+    editor: (props: EditorProps) => <KeyValueEditor { ...props } id="Title" />
+  },
+  description: {
+    key: 'Description',
+    edit: (val: string) => metaDef({ k: 'description', v: val }),
+    editor: (props: EditorProps) => <KeyValueEditor { ...props } id="Description" />
+  },
+  comment: {
+    key: 'Comment',
+    edit: (val: string) => metaDef({ k: 'comment', v: val }),
+    editor: (props: EditorProps) => <KeyValueEditor { ...props } id="Comment" />
+  },
+  copyright: {
+    key: 'Copyright',
+    edit: (val: string) => metaDef({ k: 'copyright', v: val }),
+    editor: (props: EditorProps) => <KeyValueEditor { ...props } id="Copyright" />
+  },
+  license: {
+    key: 'License',
+    edit: (val: string) => metaDef({ k: 'license', v: val }),
+    editor: (props: EditorProps) => <KeyValueEditor { ...props } id="License" />
   },
   imports: {
     key: 'Imports',

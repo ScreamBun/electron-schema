@@ -11,7 +11,7 @@ import * as JADNActions from '../../store/actions/jadn';
 import * as TabActions from '../../store/actions/tabs';
 
 const EmptySchema = {
-  meta: {},
+  info: {},
   types: []
 };
 
@@ -51,7 +51,7 @@ class GenerateSchema extends Component {
       this.setState(() => {
         const stateUpdate = {};
         if (store.action === 'erase') {
-          stateUpdate.schema = { meta: {}, types: [] };
+          stateUpdate.schema = { info: {}, types: [] };
           stateUpdate.schemaPath = '';
         } else if ('filePath' in store) {
           stateUpdate.schemaPath = store.filePath;
@@ -100,14 +100,14 @@ class GenerateSchema extends Component {
 
   onDrop(data) {
     const { schema } = this.state;
-    if (data.meta) {
-      if (!(data.meta in (schema.meta || {}))) {
+    if (data.info) {
+      if (!(data.info in (schema.info || {}))) {
         this.setState(prevState => ({
           schema: {
             ...prevState.schema,
-            meta: {
-              ...prevState.schema.meta || {},
-              ...SchemaStructure.Meta[data.meta].edit()
+            info: {
+              ...prevState.schema.info || {},
+              ...SchemaStructure.Info[data.info].edit()
             }
           }
         }));
@@ -133,31 +133,31 @@ class GenerateSchema extends Component {
 
   SchemaEditor() {
     const { schema } = this.state;
-    const metaEditors = Object.keys(SchemaStructure.Meta).map((k, i) => {
-      const { editor } = SchemaStructure.Meta[k];
-      if (k in schema.meta) {
+    const infoEditors = Object.keys(SchemaStructure.Info).map((k, i) => {
+      const { editor } = SchemaStructure.Info[k];
+      if (k in schema.info) {
         return editor({
           key: i,
-          value: schema.meta[k],
+          value: schema.info[k],
           placeholder: k,
           change: val => this.setState(prevState => ({
             schema: {
               ...prevState.schema,
-              meta: {
-                ...prevState.schema.meta,
-                ...SchemaStructure.Meta[k].edit(val)
+              info: {
+                ...prevState.schema.info,
+                ...SchemaStructure.Info[k].edit(val)
               }
             }
           })),
           remove: id => {
-            if (id in schema.meta) {
+            if (id in schema.info) {
               this.setState(prevState => {
-                const tmpMeta = { ...prevState.schema.meta };
-                delete tmpMeta[id];
+                const tmpInfo = { ...prevState.schema.info };
+                delete tmpInfo[id];
                 return {
                   schema: {
                     ...prevState.schema,
-                    meta: tmpMeta
+                    info: tmpInfo
                   }
                 };
               });
@@ -205,8 +205,8 @@ class GenerateSchema extends Component {
     return (
       <div>
         <div className="col-12">
-          <h2>Meta</h2>
-          { metaEditors }
+          <h2>Info</h2>
+          { infoEditors }
         </div>
         <hr />
         <div className="col-12">
@@ -223,7 +223,7 @@ class GenerateSchema extends Component {
       <div className="row mx-auto">
         <div id="schema-view" className="col-12">
           <Droppable
-            types={ ['meta', 'types'] } // <= allowed drop types
+            types={ ['info', 'types'] } // <= allowed drop types
             onDrop={ this.onDrop }
             className="col-12 p-0"
             style={{

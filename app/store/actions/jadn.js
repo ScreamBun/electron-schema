@@ -15,7 +15,7 @@ export const setJADN = schema => {
   .then(rslt => {
     const payload = JSON.parse(rslt);
     const keys = Object.keys(payload);
-    const type = (keys.includes('meta') && keys.includes('types')) ? SET_BASE_JADN_SUCCESS : SET_BASE_JADN_FAILURE;
+    const type = (keys.includes('info') && keys.includes('types')) ? SET_BASE_JADN_SUCCESS : SET_BASE_JADN_FAILURE;
     dispatch({
       type,
       payload

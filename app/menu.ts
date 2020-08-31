@@ -4,6 +4,7 @@ import {
 import contextMenu from 'electron-context-menu';
 import { SchemaFormats } from 'jadnschema';
 import { openFile, newSchema, webContentsSave } from './jadn';
+// import Preferences from './preferences';
 import { safeGet, updateMerge } from './src/utils';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
@@ -93,6 +94,14 @@ export default class MenuBuilder {
           label: 'About ElectronReact',
           selector: 'orderFrontStandardAboutPanel:'
         },
+        { type: 'separator' },
+        /*
+        {
+          label: 'Preferences',
+          accelerator: 'Command+,',
+          click: (): void => Preferences.show()
+        },
+        */
         { type: 'separator' },
         {
           label: 'Services',

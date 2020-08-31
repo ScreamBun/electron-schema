@@ -2,6 +2,7 @@ import * as ConvertActions from '../actions/convert';
 
 const initialState = {
   jadn_schema: {},
+  jidl_schema: '',
   json_schema: {},
   md_schema: ''
 };
@@ -12,6 +13,12 @@ export default (state = initialState, action = null) => {
       return {
         ...state,
         jadn_schema: action.payload
+      };
+
+    case ConvertActions.CONVERT_TO_JIDL_SUCCESS:
+      return {
+        ...state,
+        jidl_schema: action.payload
       };
 
     case ConvertActions.CONVERT_TO_JSON_SUCCESS:

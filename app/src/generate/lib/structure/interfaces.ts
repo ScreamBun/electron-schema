@@ -1,5 +1,5 @@
 // Meta Interfaces
-export interface MetaDef {
+export interface InfoDef {
   k: string;
   v: string|Array<string>|Record<string, string>;
 }
