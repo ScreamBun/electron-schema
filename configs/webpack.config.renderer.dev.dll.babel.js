@@ -43,8 +43,8 @@ export default merge(baseConfig, {
       NODE_ENV
     }),
     new webpack.DllPlugin({
-      path: path.join(DLL_DIR, '[name].json'),
-      name: '[name]'
+      name: '[name]',
+      path: path.join(DLL_DIR, '[name].json')
     }),
     new webpack.LoaderOptionsPlugin({
       debug: true,

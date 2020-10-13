@@ -28,15 +28,10 @@ const DIST_DIR = path.join(APP_DIR, 'dist');
 const port = process.env.PORT || 1212;
 const publicPath = `http://localhost:${port}/dist`;
 const manifest = path.resolve(DLL_DIR, 'renderer.json');
-const requiredByDLLConfig = module.parent.filename.includes(
-  'webpack.config.renderer.dev.dll'
-);
+const requiredByDLLConfig = module.parent.filename.includes('webpack.config.renderer.dev.dll');
 
 // Warn if the DLL is not built
-if (
-  !requiredByDLLConfig &&
-  !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))
-) {
+if (!requiredByDLLConfig && !(fs.existsSync(DLL_DIR) && fs.existsSync(manifest))) {
   console.log(
     chalk.black.bgYellow.bold(
       'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"'
@@ -159,24 +154,23 @@ export default merge(baseConfig, {
       },
       // Styles support - SASS/SCSS - compile all .global.s[ac]ss files and pipe it to style.css
       {
-        test: /\.global\.(scss|sass)$/,
+        test: /\.global\.s[ac]ss$/,
         use: ['style-loader', CSSLoader, 'sass-loader']
       },
       // Styles support - SASS/SCSS - compile all other .s[ac]ss files and pipe it to style.css
       {
-        test: /^((?!\.global).)*\.(scss|sass)$/,
+        test: /^((?!\.global).)*\.s[ac]ss$/,
         use: [
-          'typings-for-css-modules-loader',
-          {
-            loader: 'typings-for-css-modules-loader',
+          'style-loader',
+          '@teamsupercell/typings-for-css-modules-loader',
+          merge(CSSLoader, {
             options: {
               modules: {
                 localIdentName: '[name]__[local]__[hash:base64:5]'
               },
-              sourceMap: true,
               importLoaders: 1
             }
-          },
+          }),
           'sass-loader'
         ]
       }

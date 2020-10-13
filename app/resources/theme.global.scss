@@ -1,0 +1,10 @@
+$THEME: 'lumen';
+/*
+TODO: Transition theme styles to sass
+@import "./themes/#{$THEME}/variables";
+@import "./themes/bootstrap/bootstrap";
+@import "./themes/#{$THEME}/bootswatch";
+*/
+
+/* Theme Styles */
+@import "./themes/lumen.css";

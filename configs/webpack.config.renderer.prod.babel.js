@@ -50,8 +50,8 @@ export default merge(baseConfig, {
     renderer: path.join(APP_DIR, 'index.tsx')
   },
   output: {
-    path: DIST_DIR,
     filename: '[name].prod.js',
+    path: DIST_DIR
   },
   plugins: [
     /**
@@ -79,7 +79,7 @@ export default merge(baseConfig, {
   optimization: {
     minimizer
   },
-  target: 'electron-preload',
+  target: process.env.E2E_BUILD || process.env.ERB_SECURE !== 'true' ? 'electron-renderer' : 'electron-preload',
   module: {
     rules: [
       // Styles support - CSS - Extract all .global.css to style.css as is
@@ -111,7 +111,7 @@ export default merge(baseConfig, {
       },
       // Styles support - SASS/SCSS - compile all .global.s[ac]ss files and pipe it to style.css
       {
-        test: /\.global\.(scss|sass)$/,
+        test: /\.global\.s[ac]ss$/,
         use: [
           MiniCssExtractPlugin.loader,
           merge(CSSLoader, {
@@ -129,7 +129,7 @@ export default merge(baseConfig, {
       },
       // Styles support - SASS/SCSS - compile all other .s[ac]ss files and pipe it to style.css
       {
-        test: /^((?!\.global).)*\.(scss|sass)$/,
+        test: /^((?!\.global).)*\.s[ac]ss$/,
         use: [
           MiniCssExtractPlugin.loader,
           merge(CSSLoader, {

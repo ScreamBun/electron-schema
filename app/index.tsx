@@ -7,6 +7,7 @@ import { configuredStore } from './store';
 import App from './src';
 
 // App Styles
+import './resources/theme.global.scss';
 import './resources/styles.global.scss';
 
 // App Config

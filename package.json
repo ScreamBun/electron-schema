@@ -44,7 +44,8 @@
     "test-e2e": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe electron:./app ./test/e2e/HomePage.e2e.ts",
     "test-e2e-live": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe --live electron:./app ./test/e2e/HomePage.e2e.ts",
     "test-watch": "yarn test --watch",
-    "ts-clean": "ts-clean -d app -e .js,.d.ts"
+    "ts-clean": "ts-clean -d app -e .js,.d.ts",
+    "update-themes": "node -r @babel/register ./internals/scripts/DownloadBootswatch.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
@@ -99,13 +100,14 @@
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
     "@babel/register": "^7.11.5",
+    "@teamsupercell/typings-for-css-modules-loader": "^2.3.0",
     "@types/deepmerge": "^2.2.0",
     "@types/enzyme": "^3.10.7",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/jest": "^26.0.14",
     "@types/named-regexp-groups": "^1.0.0",
     "@types/node": "^14.11.8",
-    "@types/react": "^16.9.51",
+    "@types/react": "^16.9.52",
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
     "@types/react-router": "^5.1.8",
@@ -116,8 +118,8 @@
     "@types/redux-logger": "^3.0.8",
     "@types/webpack": "^4.41.22",
     "@types/webpack-env": "^1.15.3",
-    "@typescript-eslint/eslint-plugin": "^4.4.0",
-    "@typescript-eslint/parser": "^4.4.0",
+    "@typescript-eslint/eslint-plugin": "^4.4.1",
+    "@typescript-eslint/parser": "^4.4.1",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.5.2",
     "babel-loader": "^8.1.0",
@@ -138,25 +140,25 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "enzyme-to-json": "^3.6.1",
-    "eslint": "^7.10.0",
+    "eslint": "^7.11.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-typescript": "^11.0.0",
     "eslint-config-erb": "^1.0.0",
     "eslint-config-prettier": "^6.12.0",
-    "eslint-import-resolver-webpack": "^0.13.0",
+    "eslint-import-resolver-webpack": "^0.13.0 ",
     "eslint-plugin-compat": "^3.8.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.1.0",
-    "eslint-plugin-jsx-a11y": "6.3.1",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.21.3",
+    "eslint-plugin-react": "^7.21.4",
     "eslint-plugin-react-hooks": "^4.1.2",
     "eslint-plugin-testcafe": "^0.2.1",
     "file-loader": "^6.1.1",
     "html-webpack-plugin": "^4.5.0",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^26.5.2",
+    "jest": "^26.5.3",
     "lint-staged": "^10.4.0",
     "mini-css-extract-plugin": "^1.0.0",
     "named-regexp-groups": "^1.0.5",
@@ -178,7 +180,6 @@
     "testcafe-react-selectors": "^4.0.0",
     "ts-clean": "^1.0.3",
     "typescript": "^3.9.7",
-    "typings-for-css-modules-loader": "^1.7.0",
     "url-loader": "^4.1.1",
     "webpack": "^4.44.2",
     "webpack-bundle-analyzer": "^3.9.0",
@@ -293,9 +294,7 @@
     "npm": ">=4.x",
     "yarn": ">=0.21.3"
   },
-  "browserslist": [
-    "extends browserslist-config-erb"
-  ],
+  "browserslist": [],
   "prettier": {
     "overrides": [
       {
@@ -321,6 +320,9 @@
   "renovate": {
     "extends": [
       "bliss"
+    ],
+    "baseBranches": [
+      "next"
     ]
   },
   "husky": {
