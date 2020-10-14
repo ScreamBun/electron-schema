@@ -58,7 +58,7 @@
     "electron-log": "^4.2.4",
     "electron-preferences": "^2.0.0",
     "electron-updater": "^4.3.5",
-    "jadnschema": "https://github.com/ScreamBun/jadn-node.git",
+    "jadnschema": "https://github.com/ScreamBun/jadn-node.git#wd-august-14",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-drag-and-drop": "^3.0.0",

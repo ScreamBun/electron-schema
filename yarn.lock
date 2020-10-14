@@ -8645,19 +8645,20 @@ istanbul-reports@^3.0.2:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-"jadnschema@https://github.com/ScreamBun/jadn-node.git":
+"jadnschema@https://github.com/ScreamBun/jadn-node.git#wd-august-14":
   version "0.1.9"
-  resolved "https://github.com/ScreamBun/jadn-node.git#1919699e059ea858abca8a1f1d9253d3141b4632"
+  resolved "https://github.com/ScreamBun/jadn-node.git#cf85c2fdedfef8156ab16a3277c4e1959846d5ec"
   dependencies:
-    debug "^4.1.1"
+    debug "^4.2.0"
+    fs-extra "^9.0.1"
     markdown-table "^2.0.0"
     named-js-regexp "^1.3.5"
     optionator "^0.9.1"
     pluralize "^8.0.0"
-    table "^6.0.1"
+    table "^6.0.3"
     url-parse "^1.4.7"
     v8-compile-cache "^2.1.1"
-    validator "^13.1.1"
+    validator "^13.1.17"
 
 jake@^10.6.1:
   version "10.8.2"
@@ -13911,6 +13912,16 @@ table@^6.0.1:
     slice-ansi "^4.0.0"
     string-width "^4.2.0"
 
+table@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/table/-/table-6.0.3.tgz#e5b8a834e37e27ad06de2e0fda42b55cfd8a0123"
+  integrity sha512-8321ZMcf1B9HvVX/btKv8mMZahCjn2aYrDlpqHaBFCfnox64edeH9kEid0vTLTRR8gWR2A20aDgeuTTea4sVtw==
+  dependencies:
+    ajv "^6.12.4"
+    lodash "^4.17.20"
+    slice-ansi "^4.0.0"
+    string-width "^4.2.0"
+
 tapable@^0.1.8:
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-0.1.10.tgz#29c35707c2b70e50d07482b5d202e8ed446dafd4"
@@ -14971,10 +14982,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-validator@^13.1.1:
-  version "13.1.1"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-13.1.1.tgz#f8811368473d2173a9d8611572b58c5783f223bf"
-  integrity sha512-8GfPiwzzRoWTg7OV1zva1KvrSemuMkv07MA9TTl91hfhe+wKrsrgVN4H2QSFd/U/FhiU3iWPYVgvbsOGwhyFWw==
+validator@^13.1.17:
+  version "13.1.17"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.1.17.tgz#ad677736950adddd3c37209484a6b2e0966579ad"
+  integrity sha512-zL5QBoemJ3jYFb2/j38y7ljhwYGXVLUp8H6W1nVxadnAOvUOytec+L7BHh1oBQ82/TzWXHd+GSaxUWp4lROkLg==
 
 vary@~1.1.2:
   version "1.1.2"

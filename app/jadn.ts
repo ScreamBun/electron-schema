@@ -121,6 +121,14 @@ export const webContentsSave = (mainWindow: BrowserWindow, fmt: SchemaFormats): 
   mainWindow.webContents.send('file-save', { format: fmt });
 };
 
+export const openPreset = (mainWindow: BrowserWindow, name: string, schema: SchemaSimpleJADN): void => {
+  const data = {
+    contents: schema,
+    filePaths: [`${name}.jadn`]
+  }
+  mainWindow.webContents.send('file-open', data);
+};
+
 export const openFile = (mainWindow: BrowserWindow, file?: string): void => {
   if (file) {
     console.log(file);

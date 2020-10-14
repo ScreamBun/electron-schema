@@ -12,39 +12,39 @@ const ConfigKeys = {
     description: 'Extension: Enumerated type derived from the specified Array, Choice, Map or Record type'
   },
   id: {
-    description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName',
-    type: 'checkbox'
+    type: 'checkbox',
+    description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName'
   },
   ktype: {
-    description: 'Key type for MapOf'
     // TODO: change to select?
+    description: 'Key type for MapOf'
   },
   vtype: {
-    description: 'Value type for ArrayOf and MapOf',
-    type: 'select'
+    // TODO: change to select?
+    description: 'Value type for ArrayOf and MapOf'
   },
   pointer: {
-    description: 'Extension: Enumerated type containing pointers derived from the specified Array, Choice, Map or Record type',
-    type: 'checkbox'
+    type: 'checkbox',
+    description: 'Extension: Enumerated type containing pointers derived from the specified Array, Choice, Map or Record type'
   },
   // Validation
   format: {
     description: '(optional) Semantic validation keyword'
   },
   minv: {
-    description: '(optional) Minimum numeric value, octet or character count, or element count',
-    type: 'number'
+    type: 'number',
+    description: '(optional) Minimum numeric value, octet or character count, or element count'
   },
   maxv: {
-    description: '(optional) Maximum numeric value, octet or character count, or element count',
-    type: 'number'
+    type: 'number',
+    description: '(optional) Maximum numeric value, octet or character count, or element count'
   },
   pattern: {
     description: '(optional) Regular expression used to validate a String type'
   },
   unique: {
-    description: '(optional) If present, an ArrayOf instance must not contain duplicate values',
-    type: 'checkbox'
+    type: 'checkbox',
+    description: '(optional) If present, an ArrayOf instance must not contain duplicate values'
   }
 };
 

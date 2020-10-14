@@ -7,16 +7,16 @@ const ConfigKeys = {
     description: 'Reserved for default value'
   },
   dir: {
-    description: 'Use FieldName as a qualifier for fields in FieldType',
-    type: 'checkbox'
+    type: 'checkbox',
+    description: 'Use FieldName as a qualifier for fields in FieldType'
   },
   minc: {
-    description: 'Minimum cardinality',
-    type: 'number'
+    type: 'number',
+    description: 'Minimum cardinality'
   },
   maxc: {
-    description: 'Maximum cardinality',
-    type: 'number'
+    type: 'number',
+    description: 'Maximum cardinality'
   },
   tfield: {
     description: 'Field that specifies the type of this field'

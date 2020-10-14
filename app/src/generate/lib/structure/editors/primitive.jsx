@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
+import { FieldKeys } from './consts';
 import OptionsModal from './options';
 import { zip } from '../../../../utils';
 
@@ -19,11 +20,9 @@ class PrimitiveEditor extends Component {
     this.saveModal = this.saveModal.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
 
-    this.fieldKeys = ['name', 'type', 'options', 'comment'];
     const { value } = this.props;
-
     this.state = {
-      value: zip(this.fieldKeys, value),
+      value: zip(FieldKeys, value),
       modal: false
     };
   }
@@ -51,7 +50,7 @@ class PrimitiveEditor extends Component {
   initState() {
     const { value } = this.props;
     if (value && Array.isArray(value)) {
-      const updatevalue = zip(this.fieldKeys, value);
+      const updatevalue = zip(FieldKeys, value);
 
       // eslint-disable-next-line react/destructuring-assignment
       if (!isDeepStrictEqual(updatevalue, this.state.value)) {

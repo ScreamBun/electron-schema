@@ -3,7 +3,8 @@ import {
 } from 'electron';
 import contextMenu from 'electron-context-menu';
 import { SchemaFormats } from 'jadnschema';
-import { openFile, newSchema, webContentsSave } from './jadn';
+import StarterSchemas from './starters';
+import { newSchema, openFile, openPreset, webContentsSave } from './jadn';
 // import Preferences from './preferences';
 import { safeGet, updateMerge } from './src/utils';
 
@@ -154,6 +155,13 @@ export default class MenuBuilder {
           click: (): void => this.mainWindow.webContents.send('file-save', {})
         },
         { type: 'separator' },
+        {
+          label: 'Open Starter',
+          submenu: Object.keys(StarterSchemas).map(key => ({
+            label: key.replace('_', ' '),
+            click: (): void => openPreset(this.mainWindow, key, safeGet(StarterSchemas, key))
+          }))
+        },
         {
           label: 'Export As',
           submenu: [

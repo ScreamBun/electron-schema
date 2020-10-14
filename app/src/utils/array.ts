@@ -58,8 +58,8 @@ export function mergeArrayObjects<ValType>(...objs: Array<Record<string, ValType
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function zip(keys: Array<string>, values: Array<any>): Record<string, any> {
-  // console.log(`Zip: ${keys} - ${values}`);
   if (keys.length < values.length) {
+    // console.log('Zip', keys, values);
     throw new RangeError('The keys arrays should have the same or more values than the value array');
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
