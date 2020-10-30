@@ -3,13 +3,6 @@ import PropTypes from 'prop-types';
 import KeyValueEditor from '../key_value';
 
 const ConfigKeys = {
-  default: {
-    description: 'Reserved for default value'
-  },
-  dir: {
-    type: 'checkbox',
-    description: 'Use FieldName as a qualifier for fields in FieldType'
-  },
   minc: {
     type: 'number',
     description: 'Minimum cardinality'
@@ -18,8 +11,21 @@ const ConfigKeys = {
     type: 'number',
     description: 'Maximum cardinality'
   },
-  tfield: {
-    description: 'Field that specifies the type of this field'
+  tagid: {
+    // type: ...
+    description: 'Field containing an explicit tag for this Choice type'
+  },
+  dir: {
+    type: 'checkbox',
+    description: 'Use FieldName as a qualifier for fields in FieldType'
+  },
+  key: {
+    type: 'checkbox',
+    description: 'Field is a primary key for this type'
+  },
+  link: {
+    type: 'checkbox',
+    description: 'Field is a relationship link to a type instance'
   }
 };
 

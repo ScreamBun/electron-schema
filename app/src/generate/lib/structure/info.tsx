@@ -18,13 +18,13 @@ const metaDef = ({ k = 'key', v = '' }: InfoDef) => ({ [k]: v } as Record<string
 
 // JADN Info Structure
 export default {
-  module: {
-    key: 'Module',
-    edit: (val: string) => metaDef({ k: 'module', v: val }),
+  package: {
+    key: 'Package',
+    edit: (val: string) => metaDef({ k: 'package', v: val }),
     editor: (props: EditorProps) => (
       <KeyValueEditor
         { ...props }
-        id="Module"
+        id="Package"
         description="Unique name/version"
       />
     )

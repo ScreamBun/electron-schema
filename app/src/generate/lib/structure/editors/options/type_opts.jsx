@@ -7,29 +7,37 @@ import KeyValueEditor from '../key_value';
 import { safeGet } from '../../../../../utils';
 
 const ConfigKeys = {
-  // Structural
-  enum: {
-    description: 'Extension: Enumerated type derived from the specified Array, Choice, Map or Record type'
-  },
   id: {
     type: 'checkbox',
     description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName'
-  },
-  ktype: {
-    // TODO: change to select?
-    description: 'Key type for MapOf'
   },
   vtype: {
     // TODO: change to select?
     description: 'Value type for ArrayOf and MapOf'
   },
+  ktype: {
+    // TODO: change to select?
+    description: 'Key type for MapOf'
+  },
+  enum: {
+    description: 'Extension: Enumerated type derived from the specified Array, Choice, Map or Record type'
+  },
   pointer: {
-    type: 'checkbox',
     description: 'Extension: Enumerated type containing pointers derived from the specified Array, Choice, Map or Record type'
   },
-  // Validation
   format: {
     description: '(optional) Semantic validation keyword'
+  },
+  pattern: {
+    description: '(optional) Regular expression used to validate a String type'
+  },
+  minf: {
+    type: 'number',
+    description: '(optional) Minimum real number value'
+  },
+  maxf: {
+    type: 'number',
+    description: '(optional) Maximum real number value'
   },
   minv: {
     type: 'number',
@@ -39,12 +47,25 @@ const ConfigKeys = {
     type: 'number',
     description: '(optional) Maximum numeric value, octet or character count, or element count'
   },
-  pattern: {
-    description: '(optional) Regular expression used to validate a String type'
-  },
   unique: {
     type: 'checkbox',
     description: '(optional) If present, an ArrayOf instance must not contain duplicate values'
+  },
+  set: {
+    type: 'checkbox',
+    description: '(optional) If present, an ArrayOf instance is unordered and uniques'
+  },
+  unordered: {
+    type: 'checkbox',
+    description: '(optional) If present, an ArrayOf instance is unordered'
+  },
+  extend: {
+    type: 'checkbox',
+    description: '(optional) Type has an extension point where fields may be added'
+  },
+  default: {
+    type: 'checkbox',
+    description: '(optional) Default value'
   }
 };
 

@@ -1,6 +1,6 @@
 export default {
   info: {
-    module: 'http://oasis-open.org/openc2/oc2ls/v1.1',
+    package: 'http://oasis-open.org/openc2/oc2ls/v1.1',
     title: 'OpenC2 Language Profile',
     description: 'Language Profile from the OpenC2 Language Specification version 1.1',
     exports: ['OpenC2-Command', 'OpenC2-Response']
@@ -105,7 +105,7 @@ export default {
       [3, 'hashes', 'Hashes', ['[0'], 'One or more cryptographic hash codes of the file contents']
     ]],
     ['IDN-Domain-Name', 'String', ['/idn-hostname'], 'Internationalized Domain Name - [RFC5890], Section 2.3.2.3', []],
-    ['IDN-Email-Addr', 'String', ['/idn-email'], 'Internationalized email address, [RFC6531]', []],
+    ['IDN-Email-Addr', 'String', ['/idn-email'], 'Internationalized email address - [RFC6531]', []],
     ['IPv4-Net', 'Array', ['/ipv4-net'], 'IPv4 address and prefix length', [
       [1, 'ipv4_addr', 'IPv4-Addr', [], 'IPv4 address as defined in [RFC0791]'],
       [2, 'prefix_length', 'Integer', ['[0'], 'CIDR prefix-length. If omitted, refers to a single host address.']
@@ -140,6 +140,7 @@ export default {
     ]],
     ['Properties', 'ArrayOf', ['*String', '{1', 'q'], 'A list of names that uniquely identify properties of an Actuator.', []],
     ['URI', 'String', ['/uri'], 'Uniform Resource Identifier, [RFC3986]', []],
+    ['Action-Targets', 'MapOf', ['+Action', '*Targets', '{1'], 'Map of each action supported by this actuator to the list of targets applicable to that action', []],
     ['Date-Time', 'Integer', ['{0'], 'Date and Time', []],
     ['Duration', 'Integer', ['{0'], 'A length of time', []],
     ['Feature', 'Enumerated', [], 'Specifies the results to be returned from a query features Command', [
@@ -147,7 +148,7 @@ export default {
       [2, 'profiles', 'List of profiles supported by this Actuator'],
       [3, 'pairs', 'List of supported Actions and applicable Targets'],
       [4, 'rate_limit', 'Maximum number of Commands per minute supported by design or policy'],
-      [5, 'args', 'List of supported Command Argumemnts']
+      [5, 'args', 'List of supported Command Arguments']
     ]],
     ['Hashes', 'Map', ['{1'], 'Cryptographic hash values', [
       [1, 'md5', 'Binary', ['/x', '{16', '}16'], 'MD5 hash as defined in [RFC1321]'],
@@ -175,10 +176,9 @@ export default {
       [2, 'status', 'Respond with progress toward Command completion'],
       [3, 'complete', 'Respond when all aspects of Command completed']
     ]],
-    ['Action-Targets', 'MapOf', ['{1', '+Action', '*Targets'], 'Map of each action supported by this actuator to the list of targets applicable to that action', []],
-    ['Targets', 'ArrayOf', ['*>Target', '{1', '}0', 'q'], 'List of Target types', []],
     ['Version', 'String', [], 'Major.Minor version number', []],
+    ['Command-ID', 'String', ['%^\\S{0,36}$'], 'Command Identifier', []],
     ['Namespace', 'String', ['/uri'], 'Unique name of an Actuator Profile', []],
-    ['Command-ID', 'String', ['%^\\S{0,36}$'], 'Command Identifier', []]
+    ['Targets', 'ArrayOf', ['*>Target', '{1', '}0', 'q'], 'List of Target types', []]
   ]
 };

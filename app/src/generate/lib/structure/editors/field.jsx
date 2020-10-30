@@ -145,7 +145,7 @@ class FieldEditor extends Component {
     const val = allTypes.includes(value.type) ? value.type : 'Null';
 
     return (
-      <div className="col-md-9 p-0 m-0">
+      <div className="col-md-10 p-0 m-0">
         <FormGroup className="col-md-4 d-inline-block">
           <Label>Name</Label>
           <Input type="string" placeholder="Name" value={ value.name } onChange={ this.onChange } />
@@ -190,7 +190,7 @@ class FieldEditor extends Component {
         </div>
 
         <div className="row m-0">
-          <FormGroup className={ enumerated ? 'col-md-4' : 'col-md-3' }>
+          <FormGroup className={ enumerated ? 'col-md-3' : 'col-md-2' }>
             <Label>ID</Label>
             <Input type="number" placeholder="ID" value={ value.id } onChange={ this.onChange } />
           </FormGroup>
