@@ -45,7 +45,7 @@ if (!requiredByDLLConfig) {
   DLLConfig = new webpack.DllReferencePlugin({
     context: DLL_DIR,
     manifest: require(manifest),
-    sourceType: 'var',
+    sourceType: 'var'
   });
 }
 
@@ -63,8 +63,8 @@ export default merge(baseConfig, {
     renderer: path.join(APP_DIR, 'index.tsx')
   },
   output: {
-    publicPath: `http://localhost:${port}/dist/`,
-    filename: '[name].dev.js'
+    filename: '[name].dev.js',
+    publicPath: `http://localhost:${port}/dist/`
   },
   resolve: {
     alias: {
@@ -87,14 +87,14 @@ export default merge(baseConfig, {
     new webpack.EnvironmentPlugin({
       NODE_ENV
     }),
+    new webpack.LoaderOptionsPlugin({
+      debug: true
+    }),
     DLLConfig,
     new webpack.HotModuleReplacementPlugin({
       multiStep: true
     }),
-    new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.LoaderOptionsPlugin({
-      debug: true
-    })
+    new webpack.NoEmitOnErrorsPlugin()
   ],
   devServer: {
     port,

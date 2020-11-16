@@ -25,8 +25,7 @@ export default {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV
-    }),
-    new webpack.NamedModulesPlugin()
+    })
   ],
   module: {
     rules: [
@@ -41,5 +40,8 @@ export default {
         }
       }
     ]
+  },
+  optimization: {
+    namedModules: true
   }
 };

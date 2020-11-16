@@ -28,7 +28,7 @@ export const BREAK: MarkupToken = {
 
 export const SPACE: MarkupToken = {
   type: 'space',
-  string: ' ',
+  string: '&nbsp;',
   value: ' '
 };
 

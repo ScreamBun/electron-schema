@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -30,7 +31,7 @@ class MarkDown extends Component {
     const { activeTab } = this.state;
 
     return (
-      <TabPane tabId="markdown">
+      <TabPane tabId="markdown" className="scroll-tab">
         <Card>
           <CardHeader>
             <span className="h3">MarkDown</span>
@@ -57,7 +58,7 @@ class MarkDown extends Component {
                 </pre>
               </TabPane>
               <TabPane tabId="render">
-                <ReactMarkdown source={ schema } />
+                <ReactMarkdown plugins={[ gfm ]} children={ schema } />
               </TabPane>
             </TabContent>
           </CardBody>

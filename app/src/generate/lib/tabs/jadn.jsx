@@ -12,7 +12,7 @@ import JADNInput from '../../../utils/jadn-editor';
 const JADN = props => {
   const { minHeight, schema } = props;
   return (
-    <TabPane tabId="jadn">
+    <TabPane tabId="jadn" className="scroll-tab">
       <Card>
         <CardHeader>
           <span className="h3">JADN Schema</span>

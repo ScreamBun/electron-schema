@@ -12,7 +12,7 @@ import locale from 'react-json-editor/dist/locale/en';
 const JSON = props => {
   const { minHeight, schema } = props;
   return (
-    <TabPane tabId="json">
+    <TabPane tabId="json" className="scroll-tab">
       <Card>
         <CardHeader>
           <span className="h3">JSON Schema</span>

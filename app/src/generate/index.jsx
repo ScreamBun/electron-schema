@@ -230,8 +230,8 @@ class GenerateSchema extends Component {
               minHeight: this.minHeight
             }}
           >
-            <TabContent activeTab={ activeView }>
-              <TabPane tabId="editor" className="border">
+            <TabContent activeTab={ activeView } >
+              <TabPane tabId="editor" className="border scroll-tab">
                 { this.SchemaEditor() }
               </TabPane>
 

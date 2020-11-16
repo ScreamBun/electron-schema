@@ -130,6 +130,7 @@ function tokenizeGenFieldLine(line: string): Array<MarkupToken> {
     const { groups } = genMatch;
     const [id, name, type, options] = [groups.id.trim(), groups.name.trim(), groups.type.trim(), (groups.options || '').trim()];
     tokens.push(
+      SPACE,
       {
         type: 'number',
         string: id,
@@ -177,6 +178,7 @@ function tokenizeEnumFieldLine(line: string): Array<MarkupToken> {
     const { groups } = enumMatch;
     const [id, value] = [groups.id.trim(), (groups.value || '').trim()];
     tokens.push(
+      SPACE,
       {
         type: 'number',
         string: id,

@@ -12,7 +12,7 @@ import JIDLInput from '../../../utils/jidl-editor';
 const JIDL = props => {
   const { minHeight, schema } = props;
   return (
-    <TabPane tabId="jidl">
+    <TabPane tabId="jidl" className="scroll-tab">
       <Card>
         <CardHeader>
           <span className="h3">JIDL Schema</span>

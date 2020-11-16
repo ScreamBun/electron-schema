@@ -66,7 +66,7 @@ export default merge(baseConfig, {
     new webpack.EnvironmentPlugin({
       NODE_ENV,
       DEBUG_PROD: false,
-      E2E_BUILD: false,
+      E2E_BUILD: false
     }),
     new MiniCssExtractPlugin({
       filename: 'css/[name].css'
