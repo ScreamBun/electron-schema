@@ -371,9 +371,9 @@ $RECYCLE.BIN/
 
 # App packaged
 release
-app/main.prod.js
-app/main.prod.js.map
-app/main.prod.js.license.txt
+src/main.prod.js
+src/main.prod.js.map
+src/main.prod.js.license.txt
 dist
 dll
 
@@ -388,9 +388,8 @@ npm-debug.log.*
 *.swp
 
 # Assorted Files
-package-lock.json
 lint_errors.txt
-app/preferences.json
+src/preferences.json
 *.stats.html
 *.stats.json
 .idea

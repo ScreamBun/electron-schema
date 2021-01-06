@@ -24,12 +24,13 @@
     "typeRoots": [
       "app/@types",
       "node_modules/@types"
-    ],
+    ]
   },
   "exclude": [
     "test",
     "release",
-    "app/dist",
-    "dll"
+    "src/main.prod.js",
+    "src/dist",
+    ".erb/dll"
   ]
 }
