@@ -32,10 +32,10 @@ node_modules
 
 # App packaged
 release
-app/*.main.prod.js
-app/main.prod.js
-app/main.prod.js.map
-app/dist
+src/*.main.prod.js
+src/main.prod.js
+src/main.prod.js.map
+src/dist
 dll
 
 .idea
@@ -50,9 +50,9 @@ package.json
 *.scss.d.ts
 
 # Lint Rules
-/configs/eslint_rules-tmp
-/configs/eslint_rules
+.erb/configs/eslint_rules-tmp
+.erb/configs/eslint_rules
 
 # Assorted
-/app/@types
-/app/src/utils/jidl-editor
+/src/@types
+/src/src/utils/jidl-editor

@@ -204,7 +204,7 @@ class GenerateSchema extends Component {
 
     return (
       <div>
-        <div className="col-12">
+        <div className="col-12 pt-2">
           <h2>Info</h2>
           { infoEditors }
         </div>

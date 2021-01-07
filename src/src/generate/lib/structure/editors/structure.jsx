@@ -9,9 +9,9 @@ import {
   faMinusCircle, faPlusCircle, faPlusSquare
 } from '@fortawesome/free-solid-svg-icons';
 
-import { FieldKeys } from './consts';
+import { TypeKeys, StandardFieldKeys, EnumeratedFieldKeys } from './consts';
 import OptionsModal from './options';
-import FieldEditor, { StandardField, EnumeratedField } from './field';
+import FieldEditor from './field';
 import { zip } from '../../../../utils';
 
 // Structure Editor
@@ -28,7 +28,7 @@ class StructureEditor extends Component {
     const { value } = this.props;
     this.state = {
       fieldCollapse: false,
-      value: zip(FieldKeys, value),
+      value: zip(TypeKeys, value),
       modal: false
     };
 
@@ -82,7 +82,7 @@ class StructureEditor extends Component {
 
   addField() {
     const { value } = this.state;
-    const field = Object.values(((value.type.toLowerCase() === 'enumerated') ? EnumeratedField : StandardField));
+    const field = Object.values(((value.type.toLowerCase() === 'enumerated') ? EnumeratedFieldKeys : StandardFieldKeys));
     field[0] = value.fields.length + 1;
 
     this.setState(prevState => {

@@ -6,6 +6,16 @@ module.exports = {
   '@typescript-eslint/brace-style': [0, '1tbs', {
     'allowSingleLine': true
   }],
+  '@typescript-eslint/comma-dangle': [0, {
+    'arrays': 'always-multiline',
+    'enums': 'always-multiline',
+    'exports': 'always-multiline',
+    'functions': 'always-multiline',
+    'generics': 'always-multiline',
+    'imports': 'always-multiline',
+    'objects': 'always-multiline',
+    'tuples': 'always-multiline'
+  }],
   '@typescript-eslint/comma-spacing': [0, {
     'after': true,
     'before': false
@@ -13,7 +23,8 @@ module.exports = {
   '@typescript-eslint/dot-notation': [2, {
     'allowKeywords': true,
     'allowPattern': '',
-    'allowPrivateClassPropertyAccess': false
+    'allowPrivateClassPropertyAccess': false,
+    'allowProtectedClassPropertyAccess': false
   }],
   '@typescript-eslint/explicit-function-return-type': 0,
   '@typescript-eslint/explicit-module-boundary-types': 0,
@@ -109,6 +120,7 @@ module.exports = {
   '@typescript-eslint/no-extra-semi': 0,
   '@typescript-eslint/no-implied-eval': 2,
   '@typescript-eslint/no-inferrable-types': 2,
+  '@typescript-eslint/no-loop-func': 2,
   '@typescript-eslint/no-magic-numbers': [0, {
     'detectObjects': false,
     'enforceConst': true,
@@ -119,6 +131,8 @@ module.exports = {
   '@typescript-eslint/no-namespace': 2,
   '@typescript-eslint/no-non-null-asserted-optional-chain': 2,
   '@typescript-eslint/no-non-null-assertion': 1,
+  '@typescript-eslint/no-redeclare': 2,
+  '@typescript-eslint/no-shadow': 2,
   '@typescript-eslint/no-this-alias': 2,
   '@typescript-eslint/no-throw-literal': 2,
   '@typescript-eslint/no-unused-expressions': [2, {
@@ -149,6 +163,7 @@ module.exports = {
     'asyncArrow': 'always',
     'named': 'never'
   }],
+  '@typescript-eslint/space-infix-ops': 0,
   '@typescript-eslint/triple-slash-reference': 2,
   '@typescript-eslint/type-annotation-spacing': 0
 };

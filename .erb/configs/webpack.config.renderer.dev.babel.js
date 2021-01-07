@@ -56,7 +56,7 @@ export default merge(baseConfig, {
   },
   output: {
     filename: '[name].dev.js',
-    publicPath: `http://localhost:${port}/dist/`
+    publicPath
   },
   plugins: [
     /**

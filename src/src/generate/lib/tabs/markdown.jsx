@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
-import gfm from 'remark-gfm'
+import gfm from 'remark-gfm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -58,7 +58,9 @@ class MarkDown extends Component {
                 </pre>
               </TabPane>
               <TabPane tabId="render">
-                <ReactMarkdown plugins={[ gfm ]} children={ schema } />
+                <ReactMarkdown plugins={ [gfm] }>
+                  { schema }
+                </ReactMarkdown>
               </TabPane>
             </TabContent>
           </CardBody>

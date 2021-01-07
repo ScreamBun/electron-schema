@@ -55,7 +55,7 @@ module.exports = {
   'react/jsx-curly-spacing': [2, 'always', {
     'allowMultiline': true,
     'spacing': {
-	    'objectLiterals': 'never'
+      'objectLiterals': 'never'
     }
   }],
   'react/jsx-equals-spacing': [2, 'never'],

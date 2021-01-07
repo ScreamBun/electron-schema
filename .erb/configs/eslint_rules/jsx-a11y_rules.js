@@ -24,6 +24,9 @@ module.exports = {
     'ignoreNonDom': false
   }],
   'jsx-a11y/aria-unsupported-elements': 2,
+  'jsx-a11y/autocomplete-valid': [0, {
+    'inputComponents': []
+  }],
   'jsx-a11y/click-events-have-key-events': 2,
   'jsx-a11y/control-has-associated-label': [2, {
     'controlComponents': [],

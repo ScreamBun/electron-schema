@@ -11,18 +11,19 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, shell, BrowserWindow, WebPreferences } from 'electron';
+import { app, shell, BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { actionsJADN } from './jadn';
 
 // Config
+const port = process.env.PORT || 1212;
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
 const ROOT_DIR = __dirname;
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
-const urlPrefix = `file://${DIST_DIR}`;
+let urlPrefix = `file://${DIST_DIR}`;
 const ASSETS_DIR = app.isPackaged ? path.join(process.resourcesPath, 'assets') : path.join(ROOT_DIR, '../assets');
 const getAssetPath = (...paths: string[]): string => path.join(ASSETS_DIR, ...paths);
 
@@ -45,6 +46,10 @@ if (isProd) {
 
 if (isDev || process.env.DEBUG_PROD === 'true') {
   require('electron-debug')();
+  if (isDev) {
+    urlPrefix = `http://localhost:${port}/dist`;
+  }
+
 }
 
 const installExtensions = async () => {

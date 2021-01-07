@@ -7,24 +7,9 @@ import {
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { StandardFieldKeys, EnumeratedFieldKeys } from './consts';
 import OptionsModal from './options';
-import {
-  objectValues, splitCamel, zip
-} from '../../../../utils';
-
-export const StandardField = {
-  id: 1,
-  name: 'name',
-  type: '',
-  options: [],
-  comment: ''
-};
-
-export const EnumeratedField = {
-  id: 1,
-  value: 'value',
-  comment: ''
-};
+import { objectValues, splitCamel, zip } from '../../../../utils';
 
 // Field Editor
 class FieldEditor extends Component {
@@ -37,7 +22,7 @@ class FieldEditor extends Component {
     this.toggleModal = this.toggleModal.bind(this);
 
     const { enumerated, value } = this.props;
-    this.fieldKeys = Object.keys(enumerated ? EnumeratedField : StandardField);
+    this.fieldKeys = enumerated ? EnumeratedFieldKeys : StandardFieldKeys;
 
     this.state = {
       value: zip(this.fieldKeys, value),

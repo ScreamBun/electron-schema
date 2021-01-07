@@ -6,7 +6,7 @@ import { CLIEngine } from 'eslint';
 import lintConfig from '../../.eslintrc';
 
 // Config Vars
-const ROOT_DIR = path.join(__dirname, '..', '..');
+const ROOT_DIR = path.join(__dirname, '..');
 const RULES_DIR = path.join(ROOT_DIR, 'configs', 'eslint_rules-tmp');
 
 // Make rules dir if not exists

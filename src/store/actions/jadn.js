@@ -11,13 +11,12 @@ export const setJADN = schema => {
     format: SchemaFormats.JADN,
     schema
   })
-  // eslint-disable-next-line promise/always-return
   .then(rslt => {
     const payload = JSON.parse(rslt);
     const keys = Object.keys(payload);
-    const type = (keys.includes('info') && keys.includes('types')) ? SET_BASE_JADN_SUCCESS : SET_BASE_JADN_FAILURE;
     dispatch({
-      type,
+      // eslint-disable-next-line promise/always-return
+      type: (keys.includes('info') && keys.includes('types')) ? SET_BASE_JADN_SUCCESS : SET_BASE_JADN_FAILURE,
       payload
     });
   });

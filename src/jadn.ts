@@ -125,7 +125,7 @@ export const openPreset = (mainWindow: BrowserWindow, name: string, schema: Sche
   const data = {
     contents: schema,
     filePaths: [`${name}.jadn`]
-  }
+  };
   mainWindow.webContents.send('file-open', data);
 };
 

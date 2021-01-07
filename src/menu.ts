@@ -4,7 +4,9 @@ import {
 import contextMenu from 'electron-context-menu';
 import { SchemaFormats } from 'jadnschema';
 import StarterSchemas from './starters';
-import { newSchema, openFile, openPreset, webContentsSave } from './jadn';
+import {
+  newSchema, openFile, openPreset, webContentsSave
+} from './jadn';
 // import Preferences from './preferences';
 import { safeGet, updateMerge } from './src/utils';
 
@@ -15,11 +17,13 @@ interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
 
 const isDebug = process.env.NODE_ENV !== 'production' || process.env.DEBUG_PROD === 'true';
 const isMac = process.platform === 'darwin';
-const isWin = ['win32', 'win64'].includes(process.platform);
+// const isWin = ['win32', 'win64'].includes(process.platform);
 
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
+
   validInputFields: Array<string> = [];
+
   readonly acceleratorKey = isMac ? 'Command' : 'Ctrl';
 
   constructor(mainWindow: BrowserWindow) {
@@ -37,6 +41,7 @@ export default class MenuBuilder {
   }
 
   setupContextMenu(): void {
+    // eslint-disable-next-line no-undef
     const isVisible = (params: Electron.ContextMenuParams, action: string): boolean => {
       let vis = params.isEditable;
       vis = vis && safeGet(params.editFlags, `can${action}`, false);

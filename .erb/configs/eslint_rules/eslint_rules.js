@@ -133,6 +133,7 @@ module.exports = {
   'guard-for-in': 2,
   'handle-callback-err': 0,
   'id-blacklist': 0,
+  'id-denylist': 0,
   'id-length': 0,
   'id-match': 0,
   'implicit-arrow-linebreak': [0, 'beside'],
@@ -394,6 +395,7 @@ module.exports = {
   }],
   'no-process-env': 0,
   'no-process-exit': 0,
+  'no-promise-executor-return': 0,
   'no-proto': 2,
   'no-prototype-builtins': 2,
   'no-redeclare': 0,
@@ -569,6 +571,7 @@ module.exports = {
     'allowAfterSuper': true,
     'allowAfterThis': true,
     'allowAfterThisConstructor': false,
+    'allowFunctionParams': true,
     'enforceInMethodNames': false
   }],
   'no-unexpected-multiline': 0,
@@ -577,6 +580,9 @@ module.exports = {
     'defaultAssignment': false
   }],
   'no-unreachable': 2,
+  'no-unreachable-loop': [0, {
+    'ignore': []
+  }],
   'no-unsafe-finally': 2,
   'no-unsafe-negation': 2,
   'no-unused-expressions': [2, {
@@ -590,7 +596,7 @@ module.exports = {
     'ignoreRestSiblings': true,
     'vars': 'all'
   }],
-  'no-use-before-define': [2, {
+  'no-use-before-define': [0, {
     'classes': true,
     'functions': true,
     'variables': true
